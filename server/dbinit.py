@@ -3,6 +3,8 @@ import sys
 
 import psycopg2 as dbapi2
 
+conn = dbapi2.connect(host="localhost", database="petek", user="postgres", password="secret")
+
 
 INIT_STATEMENTS = [
     "CREATE TABLE IF NOT EXISTS DUMMY (NUM INTEGER)",
