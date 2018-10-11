@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Login from '../components/User/Login.vue'
+import Register from '../components/User/Register.vue'
 
 // The meta data for your routes
 const meta = require('./meta.json')
@@ -25,7 +27,17 @@ export function createRouter () {
         route('/', 'Welcome'),
         route('/inspire', 'Inspire'),
         // Global redirect for 404
-        { path: '*', redirect: '/' }
+        { path: '*', redirect: '/' },
+        {
+          path: '/register',
+          name: 'Register',
+          component: Register
+        },
+        {
+          path: '/login',
+          name: 'Login',
+          component: Login
+        }
       ]
     })
 

@@ -10,11 +10,12 @@ import {
   VGrid,
   VToolbar,
   VCard,
-  transitions
+  transitions, VTextField, VAlert
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
 import App from './App.vue'
 import Components from 'components/_index'
+import AlertComp from '../components/Shared/Alert'
 
 import { createStore } from 'store/index'
 import { createRouter } from 'router/index'
@@ -31,7 +32,10 @@ Vue.use(Vuetify, {
     VGrid,
     VToolbar,
     VCard,
-    transitions
+    transitions,
+    VAlert,
+    VTextField
+
   },
   theme: {
     primary: '#ee44aa',
@@ -43,6 +47,8 @@ Vue.use(Vuetify, {
     warning: '#FFC107'
   }
 })
+
+Vue.component('app-alert', AlertComp);
 
 Object.keys(Components).forEach(key => {
   Vue.component(key, Components[key])

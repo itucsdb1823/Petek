@@ -8,7 +8,7 @@
       app
     >
       <v-list>
-        <v-list-tile 
+        <v-list-tile
           router
           :to="item.to"
           :key="i"
@@ -29,7 +29,7 @@
     </v-toolbar>
     <v-toolbar fixed app :clipped-left="clipped">
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn 
+      <v-btn
         icon
         @click.native.stop="miniVariant = !miniVariant"
       >
@@ -88,6 +88,7 @@
   import Meta from 'mixins/meta'
 
   export default {
+    components: {},
     mixins: [Meta],
 
     data () {
@@ -96,8 +97,9 @@
         drawer: true,
         fixed: false,
         items: [
-          { icon: 'apps', title: 'Welcome', to: '/' },
-          { icon: 'bubble_chart', title: 'Inspire', to: '/inspire' }
+          { icon: 'apps', title: 'Home', to: '/' },
+          { icon: 'face', title: 'Register', to: '/register' },
+          { icon: 'lock_open', title: 'Login', to: '/login' },
         ],
         miniVariant: false,
         right: true,
