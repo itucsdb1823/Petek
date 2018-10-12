@@ -1,4 +1,4 @@
-from server.models import Base
+from server.models.Base import Base
 
 
 class User(Base):
