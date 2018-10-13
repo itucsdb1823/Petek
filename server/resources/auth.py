@@ -1,32 +1,50 @@
-from flask_restful import Resource
+from flask_restful import Resource, reqparse
 from flask import jsonify
-import psycopg2
-from server.config import config
-from server import cur, conn
+from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 from server.models.User import User
 
+parser = reqparse.RequestParser()
+parser.add_argument('name', type=str, help='Name must be a string')
+parser.add_argument('password', type=str, help='Password must be a string')
 
-class Auth(Resource):
+
+class Register(Resource):
     def get(self):
-        user = User(username='yavuz', password='asdf')
-        user.save()
-        command = (
-            """
-            """
-        )
-        if command is not None:
-            cur.execute(command)
-        conn.commit()
-
         return jsonify({
             'sa': 'as'
         })
 
+
+class Login(Resource):
     def post(self):
-        pass
+        args = parser.parse_args()
+        name = args['name']
+        password = args['password']
 
-    def put(self):
-        pass
+        user = User.get(name, password)
 
-    def delete(self):
-        pass
+        if user is not None:
+            token = {'jwt': create_jwt(identity={
+                'name': user['name'],
+                'email': user['email'],
+                'id': user['id']
+            })}
+            return jsonify({
+                'access_token': token,
+                'data': {
+                    'name': user['name'],
+                    'email': user['email'],
+                }
+            })
+
+        return jsonify({
+            'data': 'Credentials do not match with our records.'
+        }, 401)
+
+
+class Account(Resource):
+    @jwt_required
+    def get(self):
+        return jsonify({
+            'user': get_jwt_identity()
+        })
