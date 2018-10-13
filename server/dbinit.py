@@ -1,6 +1,12 @@
-import psycopg2 as dbapi2
+# import psycopg2 as dbapi2
+import psycopg2
+from config import config
 
-conn = dbapi2.connect(host="localhost", database="petek", user="postgres", password="SaulGoodman123")
+params = config(filename="database.ini")
+
+# connect to the PostgreSQL server
+print('Connecting to the PostgreSQL database...')
+conn = psycopg2.connect(**params)
 
 yes = {'yes', 'y', 'ye', '', 'Y', 'Yes'}
 no = {'no', 'n', 'N', 'No'}
@@ -9,9 +15,21 @@ DROP_STATEMENTS = [
     "DROP TABLE users"
 ]
 
-
 INIT_STATEMENTS = [
-    "CREATE TABLE IF NOT EXISTS users (NUM INTEGER)"
+    """CREATE TABLE IF NOT EXISTS users (
+            id serial PRIMARY KEY,
+            name varchar(255) NOT NULL,
+            email varchar(255) UNIQUE NOT NULL,
+            password varchar(255) NOT NULL,
+            confirmation_code varchar(255) NULL,
+            confirmed boolean NOT NULL DEFAULT FALSE,
+            banned boolean NOT NULL DEFAULT FALSE,
+            slug varchar(255) UNIQUE,
+            created_at timestamp NOT NULL,
+            profile_picture varchar(255)
+        )
+    """
+
 ]
 
 

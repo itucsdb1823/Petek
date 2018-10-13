@@ -11,4 +11,3 @@ venv/
 docs/build/
 
 database.ini
-dbinit.py
