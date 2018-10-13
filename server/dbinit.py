@@ -1,28 +1,51 @@
-import os
-import sys
-
 import psycopg2 as dbapi2
 
 conn = dbapi2.connect(host="localhost", database="petek", user="postgres", password="secret")
 
+yes = {'yes', 'y', 'ye', ''}
+no = {'no', 'n'}
 
-INIT_STATEMENTS = [
-    "CREATE TABLE IF NOT EXISTS DUMMY (NUM INTEGER)",
-    "INSERT INTO DUMMY VALUES (42)",
+DROP_STATEMENTS = [
+    "DROP TABLE users"
 ]
 
 
-def initialize(url):
-    with dbapi2.connect(url) as connection:
-        cursor = connection.cursor()
-        for statement in INIT_STATEMENTS:
-            cursor.execute(statement)
-        cursor.close()
+INIT_STATEMENTS = [
+    "CREATE TABLE IF NOT EXISTS users (NUM INTEGER)"
+]
+
+
+def initialize(commands):
+    cursor = conn.cursor()
+    for statement in commands:
+        cursor.execute(statement)
+        conn.commit()
+    cursor.close()
+
+
+def drop_all():
+    print("Do you really want to drop all tables?(Y\\N)")
+    choice = input().lower()
+    if choice in yes:
+        print("Dropping all tables...")
+        initialize(DROP_STATEMENTS)
+
+
+def update_all():
+    print("Updating all tables...")
+    initialize(INIT_STATEMENTS)
 
 
 if __name__ == "__main__":
-    url = os.getenv("DATABASE_URL")
-    if url is None:
-        print("Usage: DATABASE_URL=url python dbinit.py", file=sys.stderr)
-        sys.exit(1)
-    initialize(url)
+    while True:
+        print("Please select your choice:")
+        print("1) Update tables")
+        print("2) Drop tables")
+        print("3) Exit")
+        choice = int(input())
+        if choice == 1:
+            update_all()
+        if choice == 2:
+            drop_all()
+        if choice == 3:
+            exit()
