@@ -22,7 +22,7 @@ class Auth(Resource):
                 banned boolean NOT NULL DEFAULT 0
                 slug varchar(255) UNIQUE
                 created_at timestamp NOT NULL
-                profile_picture bytea
+                profile_picture varchar(255)
             )
             """
 

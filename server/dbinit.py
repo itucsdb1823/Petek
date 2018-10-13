@@ -1,9 +1,9 @@
 import psycopg2 as dbapi2
 
-conn = dbapi2.connect(host="localhost", database="petek", user="postgres", password="secret")
+conn = dbapi2.connect(host="localhost", database="petek", user="postgres", password="SaulGoodman123")
 
-yes = {'yes', 'y', 'ye', ''}
-no = {'no', 'n'}
+yes = {'yes', 'y', 'ye', '', 'Y', 'Yes'}
+no = {'no', 'n', 'N', 'No'}
 
 DROP_STATEMENTS = [
     "DROP TABLE users"
