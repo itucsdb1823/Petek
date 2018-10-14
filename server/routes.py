@@ -3,13 +3,15 @@ from server import server#, bcrypt, db
 from random import *
 from flask_restful import Api
 from flask_cors import CORS
-from server.resources.auth import Auth
+from server.resources.auth import *
 
 cors = CORS(server, resources={r"/api/*": {"origins": "*"}})
 
 api = Api(server)
 
-api.add_resource(Auth, '/api/register')
+api.add_resource(Register, '/api/register')
+api.add_resource(Login, '/api/login')
+api.add_resource(Account, '/api/account')
 
 
 @server.route('/', defaults={'path': ''})
