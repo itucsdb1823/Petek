@@ -7,8 +7,11 @@ conn = dbapi2.connect(host="localhost", database="petek", user="postgres", passw
 
 
 INIT_STATEMENTS = [
-    "CREATE TABLE IF NOT EXISTS DUMMY (NUM INTEGER)",
-    "INSERT INTO DUMMY VALUES (42)",
+    """CREATE TABLE IF NOT EXISTS tokens (
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        token VARCHAR(255) PRIMARY KEY UNIQUE,
+        revoked BOOLEAN DEFAULT 0
+    )""",
 ]
 
 

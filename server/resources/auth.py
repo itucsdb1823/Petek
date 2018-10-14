@@ -12,8 +12,7 @@ class Auth(Resource):
         user.save()
         command = (
             """
-            CREATE TABLE IF NOT EXISTS users (
-                id PRIMARY KEY,
+            CREATE TABLE users (
                 name VARCHAR(255),
                 email VARCHAR(255) UNIQUE
             )
