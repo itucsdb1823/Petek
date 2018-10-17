@@ -12,17 +12,11 @@ yes = {'yes', 'y', 'ye', '', 'Y', 'Yes'}
 no = {'no', 'n', 'N', 'No'}
 
 DROP_STATEMENTS = [
-    "DROP TABLE users"
+    "DROP TABLE IF EXISTS users",
+    "DROP TABLE IF EXISTS tokens"
 ]
 
 INIT_STATEMENTS = [
-<<<<<<< HEAD
-    """CREATE TABLE IF NOT EXISTS tokens (
-        user_id INTEGER NOT NULL REFERENCES users(id),
-        token VARCHAR(255) PRIMARY KEY UNIQUE,
-        revoked BOOLEAN DEFAULT 0
-    )""",
-=======
     """CREATE TABLE IF NOT EXISTS users (
             id serial PRIMARY KEY,
             name varchar(255) NOT NULL,
@@ -35,9 +29,13 @@ INIT_STATEMENTS = [
             created_at timestamp NOT NULL,
             profile_picture varchar(255)
         )
-    """
-
->>>>>>> 2e7f5a96e9caaa9bdc96c5365c3d597c2ce57ab6
+    """,
+    """CREATE TABLE IF NOT EXISTS tokens (
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        token VARCHAR(255) PRIMARY KEY UNIQUE,
+        revoked BOOLEAN DEFAULT FALSE,
+        created_at timestamp NOT NULL
+    )""",
 ]
 
 
