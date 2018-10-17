@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Auth from '../services/Auth'
 
 Vue.use(Vuex)
 
@@ -7,42 +8,59 @@ export function createStore () {
   return new Vuex.Store({
     state: {
       user: null,
+      token: null,
+      email: null,
       loading: false,
       error: null,
     },
 
     actions: {
-      // Register user
       register({commit}, payload){
-        commit('setLoading', true);
-        commit('clearError');
-        // Register User
-        commit('setLoading', false);
+        commit('setLoading', true)
+        commit('clearError')
         const user = {
-          id: 'asdfasjdflas',
-          email: payload.email
+          email: payload.email,
+          name: payload.name,
+          password: payload.password
         }
-        commit('setUser', user)
-        commit('setError', 'Error Message')
+
+        Auth.register(user)
+          .then((data) => {
+            commit('setUser', data)
+        }).catch((error) => {
+          console.log(error)
+          commit('setError', 'Error Message')
+        })
+        commit('setLoading', false)
       },
+
       // Login user
       login({commit}, payload){
-        commit('setLoading', true);
-        commit('clearError');
-        // Register User
-        commit('setLoading', false);
+        commit('setLoading', true)
+        commit('clearError')
+
         const user = {
-          id: 'asdfasjdflas',
           email: payload.email,
+          password: payload.password
         }
-        commit('setUser', user)
+
+        Auth.login(user).then(data => {
+          commit('setUser', data)
+        }).catch(error => {
+          console.log(error)
+        })
       },
+
+      // Logout
+      logout({commit}) {
+        commit('setUser', null)
+      }
     },
 
     mutations: {
       setUser(state, payload){
         state.user = payload;
-        },
+      },
       setLoading (state, payload) {
         state.loading = payload
       },
