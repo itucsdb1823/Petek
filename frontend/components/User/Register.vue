@@ -11,6 +11,23 @@
                     <v-card-text>
                         <v-container>
                             <form @submit.prevent="register">
+
+                                <!--Name Surname INPUT FIELD-->
+                                <v-layout row>
+                                    <v-flex xs12>
+                                        <v-text-field
+                                                name="name"
+                                                label="Name Surname"
+                                                id="name"
+                                                v-model="name"
+                                                type="name"
+                                                required
+                                        >
+
+                                        </v-text-field>
+                                    </v-flex>
+                                </v-layout>
+
                                 <!--EMAIL INPUT FIELD-->
                                 <v-layout row>
                                     <v-flex xs12>
@@ -84,6 +101,7 @@
         components: {},
         data() {
             return {
+                name: '',
                 email: '',
                 password: '',
                 confirmPassword: ''
@@ -92,7 +110,7 @@
         methods: {
             register(){
                 // Vuex
-                this.$store.dispatch('register', {email: this.email, password: this.password})
+                this.$store.dispatch('register', {name: this.name, email: this.email, password: this.password})
             },
             onDismissed () {
                 console.log('Dismissed Alert');
