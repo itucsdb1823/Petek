@@ -12,7 +12,7 @@
           router
           :to="item.to"
           :key="i"
-          v-for="(item, i) in items"
+          v-for="(item, i) in menuItems"
           exact
         >
           <v-list-tile-action>
@@ -20,6 +20,19 @@
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title v-text="item.title"></v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-list-tile
+          router
+          exact
+          @click="logout"
+          v-if="userIsAuthenticated"
+        >
+          <v-list-tile-action>
+            <v-icon>exit_to_app</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Logout</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -96,15 +109,36 @@
         clipped: false,
         drawer: true,
         fixed: false,
-        items: [
-          { icon: 'apps', title: 'Home', to: '/' },
-          { icon: 'face', title: 'Register', to: '/register' },
-          { icon: 'lock_open', title: 'Login', to: '/login' },
-        ],
         miniVariant: false,
         right: true,
         rightDrawer: false,
         title: 'Vuetify.js'
+      }
+    },
+    computed: {
+      userIsAuthenticated(){
+        const user = this.$store.getters.user;
+        return user !== null && user !== undefined;
+      },
+      menuItems(){
+        console.log(this.$store.getters.user)
+        let menuItems = [
+          { icon: 'apps', title: 'Home', to: '/' },
+          { icon: 'face', title: 'Register', to: '/register' },
+          { icon: 'lock_open', title: 'Login', to: '/login' },
+        ];
+        if(this.userIsAuthenticated){
+            menuItems = [
+                { icon: 'apps', title: 'Home', to: '/' },
+                { icon: 'person', title: 'Profile', link: '/profile'}
+            ]
+        }
+        return menuItems;
+      },
+    },
+    methods: {
+      logout() {
+        this.$store.dispatch('logout')
       }
     }
   }
