@@ -4,6 +4,7 @@ from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 from server.models.User import User
 from server import cur, conn
 
+
 parser = reqparse.RequestParser()
 parser.add_argument('name', type=str, help='Name must be a string')
 parser.add_argument('password', type=str, help='Password must be a string')
@@ -19,9 +20,20 @@ class Register(Resource):
         password_confirm = args['password_confirm']
         email = args['email']
 
-        # Validation rules will be applied here
+        # Validation rules start
 
+        # Rule 1
+        if(password != password_confirm):
+            print("Passwords do not match")
+            return False
+
+        # Rule 2
         user = User(name, password, email)
+        if user.is_valid() is False:
+            print("User is not valid")
+            return False
+
+        # Validation rules end
         token = user.create()
 
         return jsonify({
