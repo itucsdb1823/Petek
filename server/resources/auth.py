@@ -25,13 +25,13 @@ class Register(Resource):
         # Rule 1
         if(password != password_confirm):
             print("Passwords do not match")
-            return False
+            return jsonify({"Passwords do not match"})
 
         # Rule 2
         user = User(name, password, email)
         if user.is_valid() is False:
             print("User is not valid")
-            return False
+            return jsonify({"User is not valid, email is not valid or unique."})
 
         # Validation rules end
         token = user.create()

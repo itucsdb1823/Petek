@@ -7,6 +7,7 @@ import time
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 import psycopg2.extras
 from validate_email import validate_email
+from slugify import slugify
 
 #import string
 #invalidChars = set(string.punctuation.replace("ç", "c"))
@@ -47,21 +48,15 @@ class User(Base):
 
     def generate_slug(self, name):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        slug = ""
-        for c in name:
-            if c is " ":
-                slug += "-"
-            else:
-                slug += c
-        rslug = slug
+        slug = slugify(name)
         slug_is_not_unique = True
         i = 2
-        first_add = True
+        tslug = slug
         while slug_is_not_unique:
             cur.execute("SELECT * FROM users WHERE slug=%s LIMIT 1", (slug,))
             found = cur.fetchone()
             if found is not None:
-                slug = rslug + str(i)
+                slug = tslug + str(i)
                 i += 1
             else:
                 slug_is_not_unique = False
@@ -87,7 +82,7 @@ class User(Base):
         hashed_password = bcrypt.generate_password_hash(self.password).decode('utf-8')
         ts = time.time()
         created_at = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        slug = self.generate_slug(self, self.name)
+        slug = self.generate_slug(name=self.name)
 
         # check uniqueness of the user, create slug from name and check its uniqueness
 
