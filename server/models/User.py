@@ -25,6 +25,8 @@ class User(Base):
     password = ''
     email = ''
     token = ''
+    slug = ''
+    id = ''
 
     def __init__(self, name, password, email):
         self.name = name
@@ -82,25 +84,25 @@ class User(Base):
         hashed_password = bcrypt.generate_password_hash(self.password).decode('utf-8')
         ts = time.time()
         created_at = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        slug = self.generate_slug(name=self.name)
+        self.slug = self.generate_slug(name=self.name)
 
         # check uniqueness of the user, create slug from name and check its uniqueness
 
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute(
             "INSERT INTO users(name, email, password, slug, created_at) VALUES(%s, %s, %s, %s, %s) returning id",
-            (self.name, self.email, hashed_password, slug, str(created_at)))
+            (self.name, self.email, hashed_password, self.slug, str(created_at)))
 
-        user_id = cur.fetchone()['id']
+        self.id = cur.fetchone()['id']
 
         token = {'jwt': create_jwt(identity={
-            'id': user_id
+            'id': self.id
 
         })}
 
         cur.execute("INSERT INTO tokens(user_id, token, created_at) VALUES(%s, %s, %s)",
-                    (str(user_id), str(token['jwt']), str(created_at)))
+                    (str(self.id), str(token['jwt']), str(created_at)))
 
         conn.commit()
         cur.close()
-        return token
+        return token['jwt']
