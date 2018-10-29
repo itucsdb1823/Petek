@@ -71,6 +71,11 @@
     </v-toolbar>
     <v-content>
       <v-container fluid>
+        <v-layout row v-if="error">
+            <v-flex xs12 sm6 offset-sm3>
+                <app-alert v-for="err in error" @dismissed="onDismissed" :text="err"></app-alert>
+            </v-flex>
+          </v-layout>
         <v-slide-y-transition mode="out-in">
           <router-view></router-view>
         </v-slide-y-transition>
@@ -121,7 +126,6 @@
         return user !== null && user !== undefined;
       },
       menuItems(){
-        console.log(this.$store.getters.user)
         let menuItems = [
           { icon: 'apps', title: 'Home', to: '/' },
           { icon: 'face', title: 'Register', to: '/register' },
@@ -135,10 +139,16 @@
         }
         return menuItems;
       },
+      error () {
+        return this.$store.getters.error
+      },
     },
     methods: {
       logout() {
         this.$store.dispatch('logout')
+      },
+      onDismissed () {
+        this.$store.dispatch('clearError');
       }
     }
   }
