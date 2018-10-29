@@ -17,7 +17,7 @@ import App from './App.vue'
 import Components from 'components/_index'
 import AlertComp from '../components/Shared/Alert'
 
-import { createStore } from 'store/index'
+import { createStore, clientStore } from 'store/index'
 import { createRouter } from 'router/index'
 import { sync } from 'vuex-router-sync'
 
@@ -58,8 +58,13 @@ Object.keys(Components).forEach(key => {
 // app instances on each call (which is called for each SSR request)
 export function createApp (ssrContext) {
   // create store and router instances
-  const store = createStore()
   const router = createRouter()
+  let store
+  if (process.env.VUE_ENV === 'server') {
+    store = createStore()
+  } else {
+    store = clientStore
+  }
 
   // sync the router with the vuex store.
   // this registers `store.state.route`
@@ -72,7 +77,10 @@ export function createApp (ssrContext) {
     router,
     store,
     ssrContext,
-    render: h => h(App)
+    render: h => h(App),
+    mounted() {
+		  this.$store.commit('initialiseStore');
+	  }
   })
 
   // expose the app, the router and the store.
