@@ -1,10 +1,5 @@
 <template>
     <v-container>
-        <v-layout row v-if="error">
-            <v-flex xs12 sm6 offset-sm3>
-                <app-alert @dismissed="onDismissed" :text="error"></app-alert>
-            </v-flex>
-        </v-layout>
         <v-layout row>
             <v-flex xs12 sm6 offset-sm3>
                 <v-card>
@@ -64,10 +59,10 @@
                                 <v-layout row>
                                     <v-flex xs12>
                                         <v-text-field
-                                                name="confirmPassword"
+                                                name="passwordConfirm"
                                                 label="Confirm Password"
-                                                id="confirmPassword"
-                                                v-model="confirmPassword"
+                                                id="passwordConfirm"
+                                                v-model="passwordConfirm"
                                                 type="password"
                                                 required
                                                 :rules="[comparePasswords]"
@@ -97,48 +92,46 @@
 </template>
 
 <script>
-    export default {
-        components: {},
-        data() {
-            return {
-                name: '',
-                email: '',
-                password: '',
-                confirmPassword: ''
-            }
-        },
-        methods: {
-            register(){
-                // Vuex
-                this.$store.dispatch('register', {name: this.name, email: this.email, password: this.password})
-            },
-            onDismissed () {
-                console.log('Dismissed Alert');
-                this.$store.dispatch('clearError');
-            }
-        },
-        computed: {
-            comparePasswords() {
-                return this.password !== this.confirmPassword ? 'Passwords do not match' : true;
-            },
-            user(){
-                return this.$store.getters.user;
-            },
-            error () {
-                return this.$store.getters.authError
-            },
-            loading () {
-                return this.$store.getters.loading
-            }
-        },
-        watch: {
-            user(value){
-                if(value !== null && value !== undefined){
-                    this.$router.push('/');
-                }
-            }
+  export default {
+    components: {},
+    data() {
+      return {
+        name: '',
+        email: '',
+        password: '',
+        passwordConfirm: ''
+      }
+    },
+    methods: {
+      register(){
+        const user = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordConfirm: this.passwordConfirm
         }
+        this.$store.dispatch('register', user)
+      },
+    },
+    computed: {
+      comparePasswords() {
+        return this.password !== this.passwordConfirm ? 'Passwords do not match' : true;
+      },
+      user(){
+        return this.$store.getters.user;
+      },
+      loading () {
+        return this.$store.getters.loading
+      }
+    },
+    watch: {
+      user(value){
+        if(value !== null && value !== undefined){
+          this.$router.push('/');
+        }
+      }
     }
+  }
 </script>
 
 <style>
