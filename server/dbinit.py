@@ -41,6 +41,10 @@ INIT_STATEMENTS = [
         revoked BOOLEAN DEFAULT FALSE,
         created_at timestamp NOT NULL
     )""",
+    """CREATE TABLE IF NOT EXISTS term(
+        id SERIAL PRIMARY KEY,
+        name CHAR(6)
+    )""",
 ]
 
 
