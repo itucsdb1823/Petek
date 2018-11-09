@@ -45,6 +45,12 @@ INIT_STATEMENTS = [
         id SERIAL PRIMARY KEY,
         name CHAR(6)
     )""",
+    """CREATE TABLE IF NOT EXISTS course(
+            id INTEGER,
+            code CHAR(5),
+            name VARCHAR(255),
+            PRIMARY KEY(id, code)
+        )""",
 ]
 
 
