@@ -42,15 +42,34 @@ INIT_STATEMENTS = [
         created_at timestamp NOT NULL
     )""",
     """CREATE TABLE IF NOT EXISTS term(
-        id SERIAL PRIMARY KEY,
-        name CHAR(6)
+        season VARCHAR(6),
+        year VARCHAR(6),
+        PRIMARY KEY(season, year)
     )""",
     """CREATE TABLE IF NOT EXISTS course(
-            id INTEGER,
-            code CHAR(5),
+            id VARCHAR(4),
+            code INTEGER,
+            english BOOLEAN,
             name VARCHAR(255),
-            PRIMARY KEY(id, code)
+            PRIMARY KEY(id, code, english)
         )""",
+    """CREATE TABLE IF NOT EXISTS note(
+        id SERIAL PRIMARY KEY UNIQUE,
+        title VARCHAR(255),
+        content TEXT,
+        lecturer VARCHAR(255),
+        link VARCHAR(255),
+        slug VARCHAR(255) UNIQUE,
+        course_id VARCHAR(4),
+        course_code INTEGER,
+        english BOOLEAN,
+        term_year VARCHAR(6),
+        term_season VARCHAR(6),
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        created_at TIMESTAMP NOT NULL,
+        FOREIGN KEY (course_id, course_code, english) REFERENCES course(id, code, english),
+        FOREIGN KEY (term_year,term_season) REFERENCES term(season, year)
+    )""",
 ]
 
 
