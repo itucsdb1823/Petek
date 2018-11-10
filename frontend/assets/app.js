@@ -10,12 +10,13 @@ import {
   VGrid,
   VToolbar,
   VCard,
-  transitions, VTextField, VAlert
+  transitions, VTextField, VAlert, VDataTable
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
 import App from './App.vue'
 import Components from 'components/_index'
 import AlertComp from '../components/Shared/Alert'
+// import DataTable from 'v-data-table'
 
 import { createStore, clientStore } from 'store/index'
 import { createRouter } from 'router/index'
@@ -34,8 +35,8 @@ Vue.use(Vuetify, {
     VCard,
     transitions,
     VAlert,
-    VTextField
-
+    VTextField,
+    VDataTable
   },
   theme: {
     primary: '#ee44aa',
