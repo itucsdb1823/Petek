@@ -130,7 +130,7 @@
           { icon: 'apps', title: 'Home', to: '/' },
           { icon: 'face', title: 'Register', to: '/register' },
           { icon: 'lock_open', title: 'Login', to: '/login' },
-          { icon: '', title: 'Notes', to: '/notes' },
+          { icon: 'reorder', title: 'Notes', to: '/notes' },
         ];
         if(this.userIsAuthenticated){
             menuItems = [
