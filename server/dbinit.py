@@ -4,6 +4,7 @@ from config import config
 from faker import Faker
 from flask import Flask
 from flask_bcrypt import Bcrypt
+import sys
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
 bcrypt = Bcrypt(server)
@@ -80,20 +81,26 @@ def generate_random_data(number_of_elements):
 
 
 if __name__ == "__main__":
-    while True:
-        print("Please select your choice:")
-        print("1) Update tables")
-        print("2) Drop tables")
-        print("3) Fill database with random data")
-        print("4) Exit")
-        choice = int(input())
-        if choice == 1:
+    if len(sys.argv) > 1:
+        if sys.argv[1] == 'update':
             update_all()
-        if choice == 2:
-            drop_all()
-        if choice == 3:
-            print("Please enter the number of random elements: ")
-            number_of_elements = int(input())
-            generate_random_data(number_of_elements)
-        if choice == 4:
-            exit()
+        elif sys.argv[1] == 'drop':
+            initialize(DROP_STATEMENTS)
+    else:
+        while True:
+            print("Please select your choice:")
+            print("1) Update tables")
+            print("2) Drop tables")
+            print("3) Fill database with random data")
+            print("4) Exit")
+            choice = int(input())
+            if choice == 1:
+                update_all()
+            if choice == 2:
+                drop_all()
+            if choice == 3:
+                print("Please enter the number of random elements: ")
+                number_of_elements = int(input())
+                generate_random_data(number_of_elements)
+            if choice == 4:
+                exit()

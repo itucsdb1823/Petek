@@ -1,2 +1,2 @@
 web: gunicorn server:server
-release: python dbinit.py
+release: cd server && python dbinit.py update
