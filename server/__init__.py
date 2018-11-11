@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_jwt_simple import JWTManager
 import psycopg2.extras
 from server.config import config
+from server.helpers import setEnv
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
 
@@ -11,6 +12,7 @@ server.config['SECRET_KEY'] = '5ea8e7ed82a4e1fd0cca8d08a003344c'
 server.config['JWT_SECRET_KEY'] = 'fjsalkd131j31k3l3k1c4e1fd0cca8d08a0'
 jwt = JWTManager(server)
 
+setEnv()
 params = config()
 
 # connect to the PostgreSQL server
