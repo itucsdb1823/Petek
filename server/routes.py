@@ -19,4 +19,4 @@ api.add_resource(Account, '/api/account')
 def catch_all(path):
     # user = User(first_name='Yavuzz', last_name='Kocaa', age=21)
     # user.save()
-    return render_template("index.html")
+    return 'a'
