@@ -1,9 +1,10 @@
 import axios from 'axios'
 import { clientStore } from "../store"
+import { baseURL } from '../config';
 
 export default () => {
   return axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: baseURL,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     transformRequest: [(data) => {
       let str = [];
