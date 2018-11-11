@@ -10,6 +10,9 @@ const storeOptions = {
       loading: false,
       error: null,
       store: "1",
+      terms: [
+        '17/18', '16/17', '15/16'
+      ],
       notes: [
         {
           id: 1,
@@ -151,6 +154,9 @@ const storeOptions = {
       },
       notes(state){
         return state.notes
+      },
+      terms(state){
+        return state.terms
       }
     }
 }

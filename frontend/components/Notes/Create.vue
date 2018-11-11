@@ -6,7 +6,7 @@
                     <v-card-text>
                         <v-container>
                             <form @submit.prevent="createNote">
-                                <!--CONFIRM PASSWORD INPUT FIELD-->
+                                <!--Title Input Field-->
                                 <v-layout row>
                                     <v-flex xs12>
                                         <v-text-field
@@ -19,42 +19,60 @@
                                         </v-text-field>
                                     </v-flex>
                                 </v-layout>
-                                <v-layout row>
-                                    <v-flex xs12>
-                                        <v-text-field
-                                                name="code"
-                                                label="Code"
-                                                id="code"
-                                                v-model="code"
-                                                type="text"
-                                        >
-                                        </v-text-field>
-                                    </v-flex>
-                                </v-layout>
-                                <v-layout row>
-                                    <v-flex xs12>
-                                        <v-text-field
-                                                name="lecturer"
-                                                label="Lecturer"
-                                                id="lecturer"
-                                                v-model="lecturer"
-                                                type="text"
-                                        >
-                                        </v-text-field>
-                                    </v-flex>
-                                </v-layout>
+                              <!--Course ID Dropdown-->
+                              <v-layout row justify-space-between align-center>
+                                <v-flex sm4>
+                                  <v-select
+                                    :items="courseID"
+                                    menu-props="auto"
+                                    label="Course ID"
+                                  ></v-select>
+                                </v-flex>
+                              <!--Course Codes Dropdown-->
+                                <v-flex sm4>
+                                  <v-select
+                                    :items="courseCodes"
+                                    menu-props="auto"
+                                    label="Course Code"
+                                  ></v-select>
+                                </v-flex>
+                              <!--English Checkbox Button-->
+                                <v-flex sm2>
+                                <input type="checkbox" id="eng" v-model="English">
+                                <label for="eng">English?</label>
+                                </v-flex>
+                              </v-layout>
+                              <!--Lecturers Dropdown-->
+                                <v-flex xs12>
+                                  <v-select
+                                    :items="lecturers"
+                                    menu-props="auto"
+                                    label="Lecturer"
+                                  ></v-select>
+                                </v-flex>
+                              <!--Terms Dropdown-->
                                 <v-flex xs6>
                                   <v-select
-                                    :items="term"
+                                    :items="terms"
                                     v-model="t1"
                                     menu-props="auto"
-                                    label="Select"
-                                    hide-details
+                                    label="Terms"
                                     single-line
                                   ></v-select>
                                 </v-flex>
-
-
+                                <!--Course URL Input Field-->
+                                <v-layout row>
+                                    <v-flex xs12>
+                                        <v-text-field
+                                                name="title"
+                                                label="Course URL (ex: Google Drive Link)"
+                                                id="title"
+                                                v-model="title"
+                                                type="text"
+                                        >
+                                        </v-text-field>
+                                    </v-flex>
+                                </v-layout>
                                 <v-layout row>
                                     <v-flex xs12>
                                         <v-btn type="submit" :disabled="loading" :loading="loading">
@@ -80,26 +98,32 @@
     data() {
       return {
         title: '',
-        code: '',
-        lecturer: '',
+        courseID: [],
+        courseCodes: [],
+        lecturers: [],
         t1:"17/18",
-        term: ['17/18', '16/17', '15/16'],
         date: '',
-        sharer: ''
+        sharer: '',
+        English: false
       }
     },
     methods: {
       createNote() {
         const note = {
            title: this.title,
-           code: this.code,
-           lecturer: this.lecturer,
+           courseID: this.courseID,
+           lecturers: this.lecturers,
            term: this.term,
            date: this.date,
            sharer: this.sharer
         }
         this.$store.dispatch('createNote', note)
       },
+    },
+    computed: {
+        terms(){
+            return this.$store.getters.terms;
+        }
     }
   }
 </script>
