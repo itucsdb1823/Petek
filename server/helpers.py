@@ -11,6 +11,7 @@ def response(json, status=200):
 
 def setEnv():
     if os.environ.get('DATABASE', None) is not None:
+        print('Printing environment variables')
         f = open('server/database.ini', 'w')
         f.write("[postgresql]")
         f.write("\nuser=" + str(os.environ.get('USER')))
