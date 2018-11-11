@@ -5,7 +5,7 @@
                 <v-card>
                     <v-card-text>
                         <v-container>
-                            <form @submit.prevent="createNote">
+                            <form @submit.prevent="create_note">
                                 <!--Title Input Field-->
                                 <v-layout row>
                                     <v-flex xs12>
@@ -23,9 +23,10 @@
                               <v-layout row justify-space-between align-center>
                                 <v-flex sm4>
                                   <v-select
-                                    :items="courseID"
+                                    :items="courseIDs"
                                     menu-props="auto"
                                     label="Course ID"
+                                    v-model="courseID"
                                   ></v-select>
                                 </v-flex>
                               <!--Course Codes Dropdown-->
@@ -34,6 +35,7 @@
                                     :items="courseCodes"
                                     menu-props="auto"
                                     label="Course Code"
+                                    v-model="courseCode"
                                   ></v-select>
                                 </v-flex>
                               <!--English Checkbox Button-->
@@ -48,13 +50,14 @@
                                     :items="lecturers"
                                     menu-props="auto"
                                     label="Lecturer"
+                                    v-model="lecturer"
                                   ></v-select>
                                 </v-flex>
                               <!--Terms Dropdown-->
                                 <v-flex xs6>
                                   <v-select
                                     :items="terms"
-                                    v-model="t1"
+                                    v-model="term"
                                     menu-props="auto"
                                     label="Terms"
                                     single-line
@@ -64,10 +67,10 @@
                                 <v-layout row>
                                     <v-flex xs12>
                                         <v-text-field
-                                                name="title"
+                                                name="url"
                                                 label="Course URL (ex: Google Drive Link)"
-                                                id="title"
-                                                v-model="title"
+                                                id="url"
+                                                v-model="url"
                                                 type="text"
                                         >
                                         </v-text-field>
@@ -75,7 +78,7 @@
                                 </v-layout>
                                 <v-layout row>
                                     <v-flex xs12>
-                                        <v-btn type="submit" :disabled="loading" :loading="loading">
+                                        <v-btn type="submit">
                                             Create Note
                                             <span slot="loader" class="custom-loader">
                                                 <v-icon light>cached</v-icon>
@@ -98,24 +101,31 @@
     data() {
       return {
         title: '',
-        courseID: [],
-        courseCodes: [],
-        lecturers: [],
-        t1:"17/18",
+        courseIDs: ["ATA", "MAT", "TUR"],
+        courseCodes: ["101", "102", "103"],
+        lecturers: ["Turgut Uyar", "Hayri Turgut Uyar", "HTU"],
+        courseID:"ATA",
+        courseCode:"101",
+        lecturer:"Turgut Uyar",
+        term:"17/18",
+        url: '',
+        English: false,
         date: '',
-        sharer: '',
-        English: false
+        sharer: ''
       }
     },
     methods: {
-      createNote() {
+      create_note() {
         const note = {
-           title: this.title,
-           courseID: this.courseID,
-           lecturers: this.lecturers,
-           term: this.term,
-           date: this.date,
-           sharer: this.sharer
+          title: this.title,
+          courseID: this.courseID,
+          courseCode: this.courseCode,
+          lecturer: this.lecturer,
+          term: this.term,
+          url: this.url,
+          english: this.English,
+          date: this.date,
+          sharer: this.sharer
         }
         this.$store.dispatch('createNote', note)
       },

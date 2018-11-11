@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Auth from '../services/Auth'
+import Note from '../services/Note'
 
 Vue.use(Vuex)
 
 const storeOptions = {
     state: {
       user: null,
+      note: null,
       loading: false,
       error: null,
       store: "1",
@@ -117,7 +119,19 @@ const storeOptions = {
       },
       setError({commit}, payload){
         commit('setError', payload)
+      },
+
+      // Create Note
+      createNote({commit}, payload){
+        console.log("\nTrying to add note...\n");
+        console.log(payload);
+        Note.create(payload).then(result => {
+          console.log("\nAdded note is: " + result.data + "\n");
+        }).catch(error => {
+          commit('setError', 'yüklenemedi');
+        })
       }
+
     },
     // commit
     mutations: {
