@@ -10,7 +10,7 @@ def response(json, status=200):
 
 
 def setEnv():
-    if not os.environ.get('DATABASE'):
+    if os.environ.get('DATABASE'):
         f = open('server/database.ini', 'w')
         f.write("[postgresql]")
         f.write("\nuser=" + str(os.environ.get('USER')))
