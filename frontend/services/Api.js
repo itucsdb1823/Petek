@@ -1,8 +1,13 @@
 import axios from 'axios'
 import { clientStore } from "../store"
-import { baseURL } from '../config';
 
 export default () => {
+  let baseURL;
+  if(process.env.BASEURL !== null && process.env.BASEURL !== undefined ){
+    baseURL = 'https://dummy-server-08.herokuapp.com/api'
+  }else{
+    baseURL = 'http://localhost:5000/api'
+  }
   return axios.create({
     baseURL: baseURL,
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

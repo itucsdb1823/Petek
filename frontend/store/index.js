@@ -9,7 +9,69 @@ const storeOptions = {
       user: null,
       loading: false,
       error: null,
-      store: "1"
+      store: "1",
+      notes: [
+        {
+          id: 1,
+          title: 'Title 1',
+          content: 'Content 1',
+          course: 'BLG 231',
+          lecturer: 'Turgut Uyar',
+          term: '18/19 Güz',
+          user_id: 1,
+          date: '06/11/2018',
+        },
+        {
+          id: 2,
+          title: 'Title 2',
+          content: 'Content 2',
+          course: 'BLG 222',
+          lecturer: 'Turgut Uyar',
+          term: '18/19 Güz',
+          user_id: 1,
+          date: '06/11/2018',
+        },
+        {
+          id: 1,
+          title: 'Title 1',
+          content: 'Content 1',
+          course: 'BLG 231',
+          lecturer: 'Turgut Uyar',
+          term: '18/19 Güz',
+          user_id: 1,
+          date: '06/11/2018',
+        },
+        {
+          id: 2,
+          title: 'Title 2',
+          content: 'Content 2',
+          course: 'BLG 222',
+          lecturer: 'Turgut Uyar',
+          term: '18/19 Güz',
+          user_id: 1,
+          date: '06/11/2018',
+        },
+        {
+          id: 1,
+          title: 'Title 1',
+          content: 'Content 1',
+          course: 'BLG 231',
+          lecturer: 'Turgut Uyar',
+          term: '18/19 Güz',
+          user_id: 1,
+          date: '06/11/2018',
+        },
+        {
+          id: 2,
+          title: 'Title 2',
+          content: 'Content 2',
+          course: 'BLG 222',
+          lecturer: 'Turgut Uyar',
+          term: '18/19 Güz',
+          user_id: 1,
+          date: '06/11/2018',
+        }
+      ]
     },
     // dispatch
     actions: {
@@ -79,13 +141,16 @@ const storeOptions = {
     },
     getters: {
       user(state){
-        return state.user;
+        return state.user
       },
       error(state){
         return state.error
       },
       loading(state){
         return state.loading
+      },
+      notes(state){
+        return state.notes
       }
     }
 }
