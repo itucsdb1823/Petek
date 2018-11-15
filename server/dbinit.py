@@ -9,6 +9,10 @@ from migrations.create_users_table import create_users_table
 from migrations.create_tokens_table import create_tokens_table
 from migrations.create_terms_table import create_terms_table
 from migrations.create_courses_table import create_courses_table
+from seeders.UsersTableSeeder import users_table_seeder
+from seeders.CoursesTableSeeder import courses_table_seeder
+from seeders.TermsTableSeeder import terms_table_seeder
+from seeders.NotesTableSeeder import notes_table_seeder
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
 bcrypt = Bcrypt(server)
@@ -60,49 +64,22 @@ def update_all():
     initialize(INIT_STATEMENTS)
 
 
-def generate_random_data(users_number = 5, notes_number = 5, courses_number = 5):
+def generate_random_data(seeders):
     fake = Faker('tr_TR')
-
-    terms_number = 9
     fake_hash = bcrypt.generate_password_hash('secret').decode('utf-8')
     cur = conn.cursor()
-    for i in range(0, users_number):
-        cur.execute("""INSERT INTO users(name, email, password, confirmation_code, slug, created_at)
-                    VALUES(%s, %s, %s, %s, %s, %s) returning id""",
-                    (str(fake.name()), str(fake.email()), fake_hash, str(fake.user_name()),
-                     str(fake.slug()), str(fake.date_time_this_month())))
 
-    for i in range(0, courses_number):
-        cur.execute("""INSERT INTO courses(name) VALUES(%s) returning id""",
-                    (str(fake.lexify(text="???", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ")),))
-
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('GÜZ'), str('16/17')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-               (str('BAHAR'), str('16/17')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('YAZ'), str('16/17')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('GÜZ'), str('17/18')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('BAHAR'), str('17/18')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('YAZ'), str('17/18')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('GÜZ'), str('18/19')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('BAHAR'), str('15/16')))
-    cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
-                (str('YAZ'), str('15/16')))
-
-    # for i in range(0, notes_number):
-    #     cur.execute("""INSERT INTO notes(title, link, slug, course_id, course_code, term_id, user_id, created_at)
-    #                         VALUES(%s, %s, %s, %s, %s, %s, %s, %s) returning id""",
-    #                 (str(fake.text()), str(fake.text()), str(fake.slug()),
-    #                  int(fake.random_int(min=1, max=courses_number)), int(fake.random_int(min=100, max=600)),
-    #                  int(fake.random_int(min=1, max=terms_number)), int(fake.random_int(min=1, max=users_number)),
-    #                  str(fake.date_time_this_month())
-    #                  ))
+    for i in seeders:
+        i = int(i)
+        if i == 1:
+            users_table_seeder(cur=cur, fake=fake, fake_hash=fake_hash)
+        if i == 2:
+            courses_table_seeder(cur=cur, fake=fake)
+        if i == 3:
+            terms_table_seeder(cur=cur)
+        if i == 4:
+            print("adding")
+            notes_table_seeder(cur=cur, fake=fake)
 
     conn.commit()
     cur.close()
@@ -121,12 +98,12 @@ if __name__ == "__main__":
         if choice == 2:
             drop_all()
         if choice == 3:
-            print("Please enter the number of random users: ")
-            users_number = int(input())
-            print("Please enter the number of random notes: ")
-            notes_number= int(input())
-            print("Please enter the number of random courses: ")
-            courses_number = int(input())
-            generate_random_data(users_number, notes_number, courses_number)
+            print("Please enter the number(s) of which seeders to run (Put space between choices): ")
+            print("1) Users Table Seeder")
+            print("2) Courses Table Seeder")
+            print("3) Terms Table Seeder")
+            print("4) Notes Table Seeder")
+            choices = input().split(' ')
+            generate_random_data(choices)
         if choice == 4:
             exit()
