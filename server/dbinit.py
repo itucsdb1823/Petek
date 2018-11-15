@@ -4,6 +4,11 @@ from config import config
 from faker import Faker
 from flask import Flask
 from flask_bcrypt import Bcrypt
+from migrations.create_notes_table import create_notes_table
+from migrations.create_users_table import create_users_table
+from migrations.create_tokens_table import create_tokens_table
+from migrations.create_terms_table import create_terms_table
+from migrations.create_courses_table import create_courses_table
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
 bcrypt = Bcrypt(server)
@@ -26,49 +31,11 @@ DROP_STATEMENTS = [
 ]
 
 INIT_STATEMENTS = [
-    """CREATE TABLE IF NOT EXISTS users (
-            id serial PRIMARY KEY,
-            name varchar(255) NOT NULL,
-            email varchar(255) UNIQUE NOT NULL,
-            password varchar(255) NOT NULL,
-            confirmation_code varchar(255) NULL,
-            confirmed boolean NOT NULL DEFAULT FALSE,
-            banned boolean NOT NULL DEFAULT FALSE,
-            slug varchar(255) UNIQUE,
-            created_at timestamp NOT NULL,
-            profile_picture varchar(255)
-        )
-    """,
-    """CREATE TABLE IF NOT EXISTS tokens (
-        user_id INTEGER NOT NULL REFERENCES users(id),
-        token VARCHAR(255) PRIMARY KEY UNIQUE,
-        revoked BOOLEAN DEFAULT FALSE,
-        created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-    )""",
-    """CREATE TABLE IF NOT EXISTS terms(
-        id SERIAL PRIMARY KEY,
-        season VARCHAR(6),
-        term_year VARCHAR(6),
-        CONSTRAINT unique_term UNIQUE (season, term_year)
-    )""",
-    """CREATE TABLE IF NOT EXISTS courses(
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(4) UNIQUE
-        )""",
-    """CREATE TABLE IF NOT EXISTS notes(
-        id SERIAL PRIMARY KEY UNIQUE,
-        title VARCHAR(255) NOT NULL,
-        content TEXT,
-        lecturer VARCHAR(255) DEFAULT 'Unknown',
-        link VARCHAR(255) NOT NULL,
-        slug VARCHAR(255) UNIQUE NOT NULL,
-        course_id INTEGER NOT NULL REFERENCES courses(id),
-        course_code INTEGER,
-        english BOOLEAN DEFAULT FALSE,
-        term_id INTEGER REFERENCES terms(id),
-        user_id INTEGER NOT NULL REFERENCES users(id),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )""",
+    create_users_table,
+    create_tokens_table,
+    create_terms_table,
+    create_courses_table,
+    create_notes_table
 ]
 
 
@@ -128,14 +95,14 @@ def generate_random_data(users_number = 5, notes_number = 5, courses_number = 5)
     cur.execute("""INSERT INTO terms(season, term_year) VALUES(%s, %s) returning id""",
                 (str('YAZ'), str('15/16')))
 
-    for i in range(0, notes_number):
-        cur.execute("""INSERT INTO notes(title, link, slug, course_id, course_code, term_id, user_id, created_at)
-                            VALUES(%s, %s, %s, %s, %s, %s, %s, %s) returning id""",
-                    (str(fake.text()), str(fake.text()), str(fake.slug()),
-                     int(fake.random_int(min=1, max=courses_number)), int(fake.random_int(min=100, max=600)),
-                     int(fake.random_int(min=1, max=terms_number)), int(fake.random_int(min=1, max=users_number)),
-                     str(fake.date_time_this_month())
-                     ))
+    # for i in range(0, notes_number):
+    #     cur.execute("""INSERT INTO notes(title, link, slug, course_id, course_code, term_id, user_id, created_at)
+    #                         VALUES(%s, %s, %s, %s, %s, %s, %s, %s) returning id""",
+    #                 (str(fake.text()), str(fake.text()), str(fake.slug()),
+    #                  int(fake.random_int(min=1, max=courses_number)), int(fake.random_int(min=100, max=600)),
+    #                  int(fake.random_int(min=1, max=terms_number)), int(fake.random_int(min=1, max=users_number)),
+    #                  str(fake.date_time_this_month())
+    #                  ))
 
     conn.commit()
     cur.close()
