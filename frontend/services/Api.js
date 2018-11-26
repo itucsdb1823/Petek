@@ -2,9 +2,15 @@ import axios from 'axios'
 import { clientStore } from "../store"
 
 export default () => {
+  let user = clientStore.getters.user
+  // console.log(user)
+  if(user !== undefined && user !== null) user = user.token
   return axios.create({
     baseURL: 'http://localhost:5000/api',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Bearer ' + user
+    },
     transformRequest: [(data) => {
       let str = [];
       for(let p in data)
