@@ -1,5 +1,10 @@
 <template>
     <v-container>
+      <v-layout row>
+        <v-flex xs12 sm12>
+          <v-btn color="success" to="notes/create">Create Note</v-btn>
+        </v-flex>
+      </v-layout>
         <v-layout row>
             <v-flex xs12 sm12>
                 <v-data-table
@@ -8,6 +13,7 @@
                   class="elevation-1"
                 >
                   <template slot="items" slot-scope="props">
+                    <td @click="note(props.item.slug)"><v-icon>visibility</v-icon></td>
                     <td>{{ props.item.title }}</td>
                     <td class="text-xs-left">{{ props.item.course }}</td>
                     <td class="text-xs-left">{{ props.item.lecturer }}</td>
@@ -22,32 +28,42 @@
 </template>
 
 <script>
-    export default {
-        components: {},
-        data() {
-            return {
-              headers: [
-                {
-                  text: 'Title',
-                  align: 'left',
-                  sortable: false,
-                  value: 'name'
-                },
-                { text: 'Code', value: 'code' },
-                { text: 'Lecturer', value: 'lecturer' },
-                { text: 'Term/Season', value: 'term' },
-                { text: 'Date', value: 'date' },
-                { text: 'Sharer', value: 'sharer' }
-              ],
-            }
-        },
-        methods: {
-
-        },
-        computed: {
-            notes(){
-                return this.$store.getters.notes;
-            }
-        }
+  export default {
+    components: {},
+    data() {
+      return {
+        headers: [
+          {
+            text: '#',
+            align: 'left',
+            sortable: false,
+          },
+          {
+            text: 'Title',
+            align: 'left',
+            sortable: false,
+            value: 'name'
+          },
+          { text: 'Code', value: 'code' },
+          { text: 'Lecturer', value: 'lecturer' },
+          { text: 'Term/Season', value: 'term' },
+          { text: 'Date', value: 'date' },
+          { text: 'Sharer', value: 'sharer' }
+        ],
+      }
+    },
+    methods: {
+      note(note_slug){
+        this.$router.push('notes/' + note_slug)
+      }
+    },
+    computed: {
+      notes(){
+        return this.$store.getters.notes;
+      }
+    },
+    mounted(){
+      this.$store.dispatch('getNotes')
     }
+  }
 </script>
