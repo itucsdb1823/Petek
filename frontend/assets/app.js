@@ -10,7 +10,7 @@ import {
   VGrid,
   VToolbar,
   VCard,
-  transitions, VTextField, VAlert, VDataTable, VSelect
+  transitions, VTextField, VAlert, VDataTable, VSelect, VCheckbox
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
 import App from './App.vue'
@@ -37,7 +37,8 @@ Vue.use(Vuetify, {
     VAlert,
     VTextField,
     VDataTable,
-    VSelect
+    VSelect,
+    VCheckbox
   },
   theme: {
     primary: '#ee44aa',

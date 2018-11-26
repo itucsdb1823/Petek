@@ -135,7 +135,8 @@
         if(this.userIsAuthenticated){
             menuItems = [
                 { icon: 'apps', title: 'Home', to: '/' },
-                { icon: 'person', title: 'Profile', link: '/profile'}
+                { icon: 'person', title: 'Profile', link: '/profile'},
+                { icon: 'reorder', title: 'Notes', to: '/notes' },
             ]
         }
         return menuItems;
