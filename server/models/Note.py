@@ -53,6 +53,8 @@ class Note(Base):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("SELECT * FROM notes WHERE slug=%s LIMIT 1", (slug,))
         note = cur.fetchone()
+        cur.execute("SELECT name, slug, email FROM users WHERE id=%s LIMIT 1", (note['user_id'],))
+        note['user'] = cur.fetchone()
         cur.close()
         return note
 
@@ -128,5 +130,8 @@ class Note(Base):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("SELECT * FROM notes ORDER BY created_at DESC")
         notes = cur.fetchall()
+        for note in notes:
+            cur.execute("SELECT name, slug, email FROM users WHERE id=%s LIMIT 1", (note['user_id'],))
+            note['user'] = cur.fetchone()
         cur.close()
         return notes
