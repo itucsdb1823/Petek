@@ -18,6 +18,14 @@ const app = express()
 
 const template = fs.readFileSync(resolve('./assets/index.template.html'), 'utf-8')
 
+if(process.env.BASEURL !== null && process.env.BASEURL !== undefined){
+  const fs = require('fs')
+  let text = `export const baseURL = '${process.env.BASEURL}'`
+  fs.writeFile('config.js', text, (err) => {
+    if (err) console.log(err);
+  })
+}
+
 function createRenderer (bundle, options) {
   // https://github.com/vuejs/vue/blob/dev/packages/vue-server-renderer/README.md#why-use-bundlerenderer
   return createBundleRenderer(bundle, Object.assign(options, {
