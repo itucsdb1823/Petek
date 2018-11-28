@@ -108,7 +108,12 @@
   export default {
     components: {},
     mixins: [Meta],
-
+    metaInfo: {
+      // if no subcomponents specify a metaInfo.title, this title will be used
+      title: 'Notes',
+      // all titles will be injected into this template
+      titleTemplate: '%s | Petek'
+    },
     data () {
       return {
         clipped: false,

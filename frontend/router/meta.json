@@ -8,5 +8,11 @@
     "title": "Create something amazing",
     "description": "",
     "keywords": ""
+  },
+  "/notes": {
+    "title": "Notes - Petek"
+  },
+  "/notes/create": {
+    "title": "Create Note - Petek"
   }
 }

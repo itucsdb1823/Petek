@@ -61,11 +61,11 @@ export function createRouter () {
 
     // Send a pageview to Google Analytics
     router.beforeEach((to, from, next) => {
-        if (typeof ga !== 'undefined') {
-            ga('set', 'page', to.path)
-            ga('send', 'pageview')
-        }
-        next()
+      if (typeof ga !== 'undefined') {
+        ga('set', 'page', to.path)
+        ga('send', 'pageview')
+      }
+      next()
     })
 
     return router
