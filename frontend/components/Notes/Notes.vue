@@ -14,12 +14,12 @@
                 >
                   <template slot="items" slot-scope="props">
                     <td @click="note(props.item.slug)"><v-icon>visibility</v-icon></td>
-                    <td>{{ props.item.title }}</td>
+                    <td @click="note(props.item.slug)">{{ props.item.title }}</td>
                     <td class="text-xs-left">{{ props.item.course }}</td>
                     <td class="text-xs-left">{{ props.item.lecturer }}</td>
                     <td class="text-xs-left">{{ props.item.term }}</td>
                     <td class="text-xs-left">{{ props.item.date }}</td>
-                    <td class="text-xs-left">{{ props.item.user_id }}</td>
+                    <td class="text-xs-left">{{ props.item.user.name }}</td>
                   </template>
                 </v-data-table>
             </v-flex>
@@ -54,7 +54,8 @@
     },
     methods: {
       note(note_slug){
-        this.$router.push('notes/' + note_slug)
+        console.log(note_slug)
+        let go = this.$router.push(`notes/${note_slug}`)
       }
     },
     computed: {

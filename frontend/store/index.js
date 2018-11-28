@@ -16,7 +16,9 @@ const storeOptions = {
       store: "1",
       terms: [],
       courses: [],
-      notes: []
+      notes: [],
+      deleteNote: false,
+      editNote: false
     },
     // dispatch
     actions: {
@@ -99,11 +101,30 @@ const storeOptions = {
         }).catch(error => {
           commit('setError', ['An error has occured'])
         })
+      },
+      deleteNote({commit}, payload){
+        Note.deleteNote(payload).then(result => {
+          commit('deleteNote', true)
+        }).catch(error => {
+          commit('setError', error.errors)
+        })
+      },
+      editNote({commit}, payload){
+        Note.editNote(payload).then(result => {
+          commit('editNote', true)
+        }).catch(error => {
+          commit('setError', error.errors)
+        })
       }
-
     },
     // commit
     mutations: {
+      deleteNote(state, payload){
+        state.deleteNote = payload;
+      },
+      editNote(state, payload){
+        state.editNote = payload;
+      },
       setCourses(state, payload){
         state.courses = payload
       },
@@ -138,6 +159,12 @@ const storeOptions = {
 		  }
     },
     getters: {
+      deleteNote(state){
+        return state.deleteNote
+      },
+      editNote(state){
+        return state.editNote
+      },
       user(state){
         return state.user
       },

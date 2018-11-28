@@ -10,12 +10,13 @@ import {
   VGrid,
   VToolbar,
   VCard,
-  transitions, VTextField, VAlert, VDataTable, VSelect, VCheckbox
+  transitions, VTextField, VAlert, VDataTable, VSelect, VCheckbox, VDivider, VDialog
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
 import App from './App.vue'
 import Components from 'components/_index'
 import AlertComp from '../components/Shared/Alert'
+import Meta from 'vue-meta'
 // import DataTable from 'v-data-table'
 
 import { createStore, clientStore } from 'store/index'
@@ -38,7 +39,9 @@ Vue.use(Vuetify, {
     VTextField,
     VDataTable,
     VSelect,
-    VCheckbox
+    VCheckbox,
+    VDivider,
+    VDialog
   },
   theme: {
     primary: '#ee44aa',
@@ -50,6 +53,8 @@ Vue.use(Vuetify, {
     warning: '#FFC107'
   }
 })
+
+Vue.use(Meta)
 
 Vue.component('app-alert', AlertComp);
 
