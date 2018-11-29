@@ -46,8 +46,58 @@ class Note(Base):
         conn.commit()
         cur.close()
 
-    def update(self, note):
-        pass
+    def update(self):
+        title = self.title
+        content = self.content
+        lecturer = self.lecturer
+        link = self.link
+        english = self.english
+        course_id = self.course_id
+        course_code = self.course_code
+        term_id = self.term_id
+
+        if self.validate() is False:
+            return False
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        cur.execute("SELECT * FROM notes WHERE id=%s AND "
+                    "user_id = %s LIMIT 1", (self.id, self.user_id))
+        note = cur.fetchone()
+
+        if note is None:
+            self.errors.append("This note doesn't belong to your user id")
+            self.errors.append("Or this note doesn't exist in the database")
+            return False
+
+        if title:
+            cur.execute("UPDATE notes SET title=%s WHERE id=%s", (title, note.id))
+            slug = self.generate_slug(name=title)
+            cur.execute("UPDATE notes SET slug=%s WHERE id=%s", slug, note.id)
+        if content:
+            cur.execute("UPDATE notes SET content=%s WHERE id=%s", content, note.id)
+        if lecturer:
+            cur.execute("UPDATE notes SET lecturer=%s WHERE id=%s", lecturer, note.id)
+        if link:
+            cur.execute("UPDATE notes SET link=%s WHERE id=%s", link, note.id)
+        if english:
+            cur.execute("UPDATE notes SET english=TRUE WHERE id=%s", note.id)
+        else:
+            cur.execute("UPDATE notes SET english=FALSE WHERE id=%s", note.id)
+        if course_id:
+            cur.execute("UPDATE notes SET course_id=%s WHERE id=%s", str(course_id), note.id)
+        if course_code:
+            cur.execute("UPDATE notes SET course_code=%s WHERE id=%s", str(course_code), note.id)
+        if term_id:
+            cur.execute("UPDATE notes SET term_id=%s WHERE id=%s", str(term_id), note.id)
+
+        ts = time.time()
+        created_at = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        cur.execute("UPDATE notes SET created_at=%s WHERE id=%s", (str(created_at), note.id))
+
+        conn.commit()
+        cur.close()
+        return True
 
     def get(self, slug):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)

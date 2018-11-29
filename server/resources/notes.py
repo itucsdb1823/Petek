@@ -5,7 +5,6 @@ from server.models.Note import Note
 from server.helpers import response
 from server import cur, conn
 
-
 parser = reqparse.RequestParser()
 parser.add_argument('title', type=str, help='Title must be a string')
 parser.add_argument('content', type=str, help='Content must be a string')
@@ -43,6 +42,34 @@ class NoteCreate(Resource):
         return response({
             'message': 'Note successfully created!'
         })
+
+
+class NoteUpdate(Resource):
+    @jwt_required
+    def post(self):
+        args = parser.parse_args()
+        title = args['title']
+        content = args['content']
+        lecturer = args['lecturer']
+        link = args['link']
+        course_id = args['course_id']
+        course_code = args['course_code']
+        english = args['english']
+        term_id = args['term_id']
+        user_id = get_jwt_identity()['id']
+
+        new_note = Note(title=title, content=content,
+                    lecturer=lecturer, link=link, course_id=course_id, course_code=course_code,
+                    english=english, term_id=term_id, user_id=user_id)
+
+        if new_note.update():
+            return response({
+                'message': 'Note successfully updated!'
+            })
+        else:
+            return response({
+                'errors': new_note.getErrors()
+            }, 401)
 
 
 class NoteDelete(Resource):
