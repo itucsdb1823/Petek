@@ -9,10 +9,13 @@ from migrations.create_users_table import create_users_table
 from migrations.create_tokens_table import create_tokens_table
 from migrations.create_terms_table import create_terms_table
 from migrations.create_courses_table import create_courses_table
+from migrations.create_lecturers_table import create_lecturers_table
 from seeders.UsersTableSeeder import users_table_seeder
 from seeders.CoursesTableSeeder import courses_table_seeder
 from seeders.TermsTableSeeder import terms_table_seeder
 from seeders.NotesTableSeeder import notes_table_seeder
+from seeders.LecturersTableSeeder import lecturers_table_seeder
+
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
 bcrypt = Bcrypt(server)
@@ -30,8 +33,8 @@ DROP_STATEMENTS = [
     "DROP TABLE IF EXISTS courses",
     "DROP TABLE IF EXISTS terms",
     "DROP TABLE IF EXISTS tokens",
+    "DROP TABLE IF EXISTS lecturers",
     "DROP TABLE IF EXISTS users",
-
 ]
 
 INIT_STATEMENTS = [
@@ -39,7 +42,8 @@ INIT_STATEMENTS = [
     create_tokens_table,
     create_terms_table,
     create_courses_table,
-    create_notes_table
+    create_notes_table,
+    create_lecturers_table
 ]
 
 
@@ -78,9 +82,10 @@ def generate_random_data(seeders):
         if i == 3:
             terms_table_seeder(cur=cur)
         if i == 4:
-            print("adding")
             notes_table_seeder(cur=cur, fake=fake)
-
+        if i == 5:
+            lecturers_table_seeder(cur=cur, fake=fake)
+    
     conn.commit()
     cur.close()
 
@@ -103,6 +108,7 @@ if __name__ == "__main__":
             print("2) Courses Table Seeder")
             print("3) Terms Table Seeder")
             print("4) Notes Table Seeder")
+            print("5) Lecturers Table Seeder")
             choices = input().split(' ')
             generate_random_data(choices)
         if choice == 4:
