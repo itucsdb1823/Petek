@@ -14,6 +14,7 @@ from seeders.UsersTableSeeder import users_table_seeder
 from seeders.CoursesTableSeeder import courses_table_seeder
 from seeders.TermsTableSeeder import terms_table_seeder
 from seeders.NotesTableSeeder import notes_table_seeder
+from seeders.LecturersTableSeeder import lecturers_table_seeder
 
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
@@ -81,8 +82,9 @@ def generate_random_data(seeders):
         if i == 3:
             terms_table_seeder(cur=cur)
         if i == 4:
-            print("adding")
             notes_table_seeder(cur=cur, fake=fake)
+        if i == 5:
+            lecturers_table_seeder(cur=cur, fake=fake)
     
     conn.commit()
     cur.close()
@@ -106,6 +108,7 @@ if __name__ == "__main__":
             print("2) Courses Table Seeder")
             print("3) Terms Table Seeder")
             print("4) Notes Table Seeder")
+            print("5) Lecturers Table Seeder")
             choices = input().split(' ')
             generate_random_data(choices)
         if choice == 4:
