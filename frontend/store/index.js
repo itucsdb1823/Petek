@@ -1,77 +1,24 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Auth from '../services/Auth'
+import Note from '../services/Note'
+import Term from '../services/Term'
+import Course from '../services/Course'
 
 Vue.use(Vuex)
 
 const storeOptions = {
     state: {
       user: null,
+      note: null,
       loading: false,
       error: null,
       store: "1",
-      notes: [
-        {
-          id: 1,
-          title: 'Title 1',
-          content: 'Content 1',
-          course: 'BLG 231',
-          lecturer: 'Turgut Uyar',
-          term: '18/19 Güz',
-          user_id: 1,
-          date: '06/11/2018',
-        },
-        {
-          id: 2,
-          title: 'Title 2',
-          content: 'Content 2',
-          course: 'BLG 222',
-          lecturer: 'Turgut Uyar',
-          term: '18/19 Güz',
-          user_id: 1,
-          date: '06/11/2018',
-        },
-        {
-          id: 1,
-          title: 'Title 1',
-          content: 'Content 1',
-          course: 'BLG 231',
-          lecturer: 'Turgut Uyar',
-          term: '18/19 Güz',
-          user_id: 1,
-          date: '06/11/2018',
-        },
-        {
-          id: 2,
-          title: 'Title 2',
-          content: 'Content 2',
-          course: 'BLG 222',
-          lecturer: 'Turgut Uyar',
-          term: '18/19 Güz',
-          user_id: 1,
-          date: '06/11/2018',
-        },
-        {
-          id: 1,
-          title: 'Title 1',
-          content: 'Content 1',
-          course: 'BLG 231',
-          lecturer: 'Turgut Uyar',
-          term: '18/19 Güz',
-          user_id: 1,
-          date: '06/11/2018',
-        },
-        {
-          id: 2,
-          title: 'Title 2',
-          content: 'Content 2',
-          course: 'BLG 222',
-          lecturer: 'Turgut Uyar',
-          term: '18/19 Güz',
-          user_id: 1,
-          date: '06/11/2018',
-        }
-      ]
+      terms: [],
+      courses: [],
+      notes: [],
+      deleteNote: false,
+      editNote: false
     },
     // dispatch
     actions: {
@@ -114,10 +61,82 @@ const storeOptions = {
       },
       setError({commit}, payload){
         commit('setError', payload)
+      },
+
+      // Create Note
+      createNote({commit}, payload){
+        Note.create(payload).then(result => {
+          console.log("Added note is: " + result.data);
+        }).catch(error => {
+          commit('setError', ['yüklenemedi']);
+        })
+      },
+
+      getNotes({commit}, payload){
+        Note.getNotes().then(result => {
+          console.log(result.data.notes)
+          commit('setNotes', result.data.notes)
+        }).catch(error => {
+          console.log(error)
+          commit('setError', ['An error has occured']);
+        })
+      },
+      getNote({commit}, payload){
+        Note.getNote(payload).then(result => {
+          commit('setNote', result.data.note)
+        }).catch(error => {
+          commit('setError', error.errors)
+        })
+      },
+      getTerms({commit}, payload){
+        Term.getTerms().then(result => {
+          commit('setTerms', result.data.terms)
+        }).catch(error => {
+          commit('setError', ['An error has occured'])
+        })
+      },
+      getCourses({commit}, payload){
+        Course.getCourses().then(result => {
+          commit('setCourses', result.data.courses)
+        }).catch(error => {
+          commit('setError', ['An error has occured'])
+        })
+      },
+      deleteNote({commit}, payload){
+        Note.deleteNote(payload).then(result => {
+          commit('deleteNote', true)
+        }).catch(error => {
+          commit('setError', error.errors)
+        })
+      },
+      editNote({commit}, payload){
+        Note.editNote(payload).then(result => {
+          commit('editNote', true)
+        }).catch(error => {
+          commit('setError', error.errors)
+        })
       }
     },
     // commit
     mutations: {
+      deleteNote(state, payload){
+        state.deleteNote = payload;
+      },
+      editNote(state, payload){
+        state.editNote = payload;
+      },
+      setCourses(state, payload){
+        state.courses = payload
+      },
+      setTerms(state, payload){
+        state.terms = payload
+      },
+      setNotes(state, payload){
+        state.notes = payload;
+      },
+      setNote(state, payload){
+        state.note = payload;
+      },
       setUser(state, payload){
         state.user = payload;
         localStorage.setItem('user', JSON.stringify(state.user));
@@ -140,6 +159,12 @@ const storeOptions = {
 		  }
     },
     getters: {
+      deleteNote(state){
+        return state.deleteNote
+      },
+      editNote(state){
+        return state.editNote
+      },
       user(state){
         return state.user
       },
@@ -151,6 +176,15 @@ const storeOptions = {
       },
       notes(state){
         return state.notes
+      },
+      note(state){
+        return state.note
+      },
+      terms(state){
+        return state.terms
+      },
+      courses(state){
+        return state.courses
       }
     }
 }
