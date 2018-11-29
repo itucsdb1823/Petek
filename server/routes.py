@@ -1,6 +1,5 @@
 from flask import render_template, url_for, redirect, flash, request, abort, jsonify
 from server import server#, bcrypt, db
-from random import *
 from flask_restful import Api
 from flask_cors import CORS
 from server.resources.auth import *
