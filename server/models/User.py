@@ -89,6 +89,20 @@ class User(Base):
         # check uniqueness of the user, create slug from name and check its uniqueness
 
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM users WHERE email=%s LIMIT 1", (self.email,))
+        user = cur.fetchone()
+        if user is not None:
+            print("There is already a user with this email")
+            return "There is already a user with this email"
+
+        cur.execute("SELECT * FROM users WHERE name=%s LIMIT 1", (self.name,))
+        user = cur.fetchone()
+        if user is not None:
+            print("There is already a user with this username")
+            return "There is already a user with this username"
+
+        # End checking
+
         cur.execute(
             "INSERT INTO users(name, email, password, slug, created_at) VALUES(%s, %s, %s, %s, %s) returning id",
             (self.name, self.email, hashed_password, self.slug, str(created_at)))
@@ -106,3 +120,10 @@ class User(Base):
         conn.commit()
         cur.close()
         return token['jwt']
+
+    def delete(self, id):
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("DELETE FROM users WHERE users.id == id")
+        conn.commit()
+        cur.close()

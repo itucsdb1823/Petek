@@ -4,6 +4,7 @@ from random import *
 from flask_restful import Api
 from flask_cors import CORS
 from server.resources.auth import *
+from server.resources.lecturers import *
 from server.resources.notes import *
 from server.resources.courses import *
 from server.resources.terms import *
@@ -15,6 +16,9 @@ api = Api(server)
 api.add_resource(Register, '/api/register')
 api.add_resource(Login, '/api/login')
 api.add_resource(Account, '/api/account')
+api.add_resource(AddLecturer, '/api/add-lecturer')
+api.add_resource(GetLecturer, '/api/get-lecturer/<string:slug>')
+api.add_resource(DeleteLecturer, '/api/delete-lecturer')
 api.add_resource(Notes, '/api/notes')
 api.add_resource(NoteCreate, '/api/notes/store')
 api.add_resource(NoteUpdate, '/api/notes/update')
