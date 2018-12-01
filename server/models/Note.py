@@ -1,14 +1,12 @@
 from server.models.Base import Base
 import psycopg2.extras
-from server import conn, server, jwt, bcrypt
-from slugify import slugify
 import datetime
 import time
+from server import conn
 
 
 class Note(Base):
     id = 0
-    errors = []
     title = ''
     content = ''
     lecturer = 'Unknown'
@@ -26,6 +24,7 @@ class Note(Base):
             term_id=0,
             user_id=0
     ):
+        self.errors = []
         self.title = title
         self.content = content
         self.lecturer = lecturer
@@ -36,9 +35,6 @@ class Note(Base):
         self.term_id = int(term_id)
         self.id = int(_id)
         self.user_id = int(user_id)
-
-    def create(self, note):
-        pass
 
     def delete(self):
         cur = conn.cursor()
@@ -66,34 +62,18 @@ class Note(Base):
         note = cur.fetchone()
 
         if note is None:
-            self.errors.append("This note doesn't belong to your user id")
-            self.errors.append("Or this note doesn't exist in the database")
+            self.errors.append("This note doesn't exist in the database")
             return False
 
-        if title:
-            cur.execute("UPDATE notes SET title=%s WHERE id=%s", (title, note.id))
-            slug = self.generate_slug(name=title)
-            cur.execute("UPDATE notes SET slug=%s WHERE id=%s", slug, note.id)
-        if content:
-            cur.execute("UPDATE notes SET content=%s WHERE id=%s", content, note.id)
-        if lecturer:
-            cur.execute("UPDATE notes SET lecturer=%s WHERE id=%s", lecturer, note.id)
-        if link:
-            cur.execute("UPDATE notes SET link=%s WHERE id=%s", link, note.id)
-        if english:
-            cur.execute("UPDATE notes SET english=TRUE WHERE id=%s", note.id)
-        else:
-            cur.execute("UPDATE notes SET english=FALSE WHERE id=%s", note.id)
-        if course_id:
-            cur.execute("UPDATE notes SET course_id=%s WHERE id=%s", str(course_id), note.id)
-        if course_code:
-            cur.execute("UPDATE notes SET course_code=%s WHERE id=%s", str(course_code), note.id)
-        if term_id:
-            cur.execute("UPDATE notes SET term_id=%s WHERE id=%s", str(term_id), note.id)
-
-        ts = time.time()
-        created_at = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        cur.execute("UPDATE notes SET created_at=%s WHERE id=%s", (str(created_at), note.id))
+        cur.execute("UPDATE notes SET "
+                    "title=%s, "
+                    "content=%s, "
+                    "lecturer=%s, "
+                    "link=%s, "
+                    "english=%s, "
+                    "course_id=%s, course_code=%s, term_id=%s WHERE id=%s",
+                    (title, content, lecturer, link, english, course_id,
+                     course_code, term_id, note['id']))
 
         conn.commit()
         cur.close()
@@ -130,19 +110,22 @@ class Note(Base):
         if user is None:
             self.errors.append("User could not found!")
 
+        if self.title == "" or self.title is None:
+            self.errors.append("Title field is required")
+
+        if self.link == "" or self.link is None:
+            self.errors.append("Link field is required")
+
         if self.errors:
             return False
 
         return True
 
-    def getErrors(self):
-        return self.errors
-
     def save(self):
         if self.validate() is False:
             return False
 
-        self.slug = self.generate_slug(name=self.title)
+        self.slug = self.generate_slug(name=self.title, table_name='notes')
         ts = time.time()
         created_at = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
 
@@ -159,22 +142,6 @@ class Note(Base):
         conn.commit()
         cur.close()
         return True
-
-    def generate_slug(self, name):
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        slug = slugify(name)
-        slug_is_not_unique = True
-        i = 2
-        tslug = slug
-        while slug_is_not_unique:
-            cur.execute("SELECT * FROM notes WHERE slug=%s LIMIT 1", (slug,))
-            found = cur.fetchone()
-            if found is not None:
-                slug = tslug + str(i)
-                i += 1
-            else:
-                slug_is_not_unique = False
-        return slug
 
     def all(self):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)

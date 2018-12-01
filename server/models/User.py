@@ -1,5 +1,5 @@
 from server.models.Base import Base
-from server import conn, server, jwt, bcrypt
+from server import conn, bcrypt
 import datetime
 import string
 import random
@@ -8,12 +8,6 @@ from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 import psycopg2.extras
 from validate_email import validate_email
 from slugify import slugify
-
-#import string
-#invalidChars = set(string.punctuation.replace("ç", "c"))
-
-#import re
-#if re.findall('[^A-Za-z0-9]',s):print True
 
 
 def id_generator(size=6, chars=string.ascii_uppercase + string.digits):

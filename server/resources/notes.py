@@ -46,7 +46,7 @@ class NoteCreate(Resource):
 
 class NoteUpdate(Resource):
     @jwt_required
-    def post(self):
+    def post(self, note_id):
         args = parser.parse_args()
         title = args['title']
         content = args['content']
@@ -59,8 +59,9 @@ class NoteUpdate(Resource):
         user_id = get_jwt_identity()['id']
 
         new_note = Note(title=title, content=content,
-                    lecturer=lecturer, link=link, course_id=course_id, course_code=course_code,
-                    english=english, term_id=term_id, user_id=user_id)
+                        lecturer=lecturer, link=link, course_id=course_id, course_code=course_code,
+                        english=english, term_id=term_id, user_id=user_id, _id=note_id
+                        )
 
         if new_note.update():
             return response({
