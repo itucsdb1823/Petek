@@ -1,0 +1,5 @@
+from seeders.CoursesTableSeeder import courses_table_seeder
+from seeders.LecturersTableSeeder import lecturers_table_seeder
+from seeders.NotesTableSeeder import notes_table_seeder
+from seeders.TermsTableSeeder import terms_table_seeder
+from seeders.UsersTableSeeder import users_table_seeder

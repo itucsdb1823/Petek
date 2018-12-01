@@ -10,11 +10,7 @@ from migrations.create_tokens_table import create_tokens_table
 from migrations.create_terms_table import create_terms_table
 from migrations.create_courses_table import create_courses_table
 from migrations.create_lecturers_table import create_lecturers_table
-from seeders.UsersTableSeeder import users_table_seeder
-from seeders.CoursesTableSeeder import courses_table_seeder
-from seeders.TermsTableSeeder import terms_table_seeder
-from seeders.NotesTableSeeder import notes_table_seeder
-from seeders.LecturersTableSeeder import lecturers_table_seeder
+import seeders
 
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
@@ -68,23 +64,23 @@ def update_all():
     initialize(INIT_STATEMENTS)
 
 
-def generate_random_data(seeders):
+def generate_random_data(seeders_list):
     fake = Faker('tr_TR')
     fake_hash = bcrypt.generate_password_hash('secret').decode('utf-8')
     cur = conn.cursor()
 
-    for i in seeders:
+    for i in seeders_list:
         i = int(i)
         if i == 1:
-            users_table_seeder(cur=cur, fake=fake, fake_hash=fake_hash)
+            seeders.users_table_seeder(cur=cur, fake=fake, fake_hash=fake_hash)
         if i == 2:
-            courses_table_seeder(cur=cur, fake=fake)
+            seeders.courses_table_seeder(cur=cur, fake=fake)
         if i == 3:
-            terms_table_seeder(cur=cur)
+            seeders.terms_table_seeder(cur=cur)
         if i == 4:
-            notes_table_seeder(cur=cur, fake=fake)
+            seeders.notes_table_seeder(cur=cur, fake=fake)
         if i == 5:
-            lecturers_table_seeder(cur=cur, fake=fake)
+            seeders.lecturers_table_seeder(cur=cur, fake=fake)
     
     conn.commit()
     cur.close()
