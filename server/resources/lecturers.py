@@ -32,12 +32,22 @@ class AddLecturer(Resource):
             }, 400)
         return result
 
+
 class GetLecturer(Resource):
     def get(self, slug):
-        lecturer = Lecturer.get(slug)
+        lecturer = Lecturer().get(slug)
         return response({
             'lecturer': lecturer
         })
+
+
+class GetLecturers(Resource):
+    def get(self):
+        lecturers = Lecturer().all()
+        return response({
+            'lecturers': lecturers
+        })
+
 
 class DeleteLecturer(Resource):
     def post(self):

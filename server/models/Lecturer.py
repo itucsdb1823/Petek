@@ -34,12 +34,19 @@ class Lecturer:
                 slug_is_not_unique = False
         return slug
 
-    def get(slug):
+    def get(self, slug):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("SELECT * FROM lecturers WHERE slug=%s LIMIT 1", (slug,))
         lecturer = cur.fetchone()
         cur.close()
         return lecturer
+
+    def all(self):
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM lecturers ORDER BY name ASC")
+        lecturers = cur.fetchall()
+        cur.close()
+        return lecturers
 
     def create(self):
         ts = time.time()

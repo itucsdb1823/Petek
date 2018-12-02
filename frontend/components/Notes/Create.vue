@@ -151,11 +151,7 @@
           url: this.url,
           english: this.english,
         }
-        this.$store.dispatch('createNote', note).then(() => {
-          if(this.$store.getters.error !== null){
-            this.$router.push('/notes');
-          }
-        })
+        this.$store.dispatch('createNote', note)
       },
       formIsValid() {
         return this.title !== '' && this.course_id !== ''
@@ -170,6 +166,9 @@
       },
       courses(){
         return this.$store.getters.courses;
+      },
+      noteUploaded(){
+        return this.$store.getters.createNote
       }
     },
     created(){
@@ -179,6 +178,14 @@
     updated(){
       if(this.$store.getters.user === null){
         this.$store.commit('setError', ['Please login to create note!'])
+      }
+    },
+    watch: {
+      noteUploaded(value){
+        if(value === true){
+          this.$store.commit('createNote', false)
+          this.$router.push('/notes');
+        }
       }
     }
   }
