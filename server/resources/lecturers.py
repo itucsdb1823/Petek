@@ -37,8 +37,8 @@ class AddLecturer(Resource):
 
 
 class GetLecturer(Resource):
-    def get(self, lecturer_slug):
-        lecturer = Lecturer().get(slug=lecturer_slug)
+    def get(self, slug):
+        lecturer = Lecturer().get(slug=slug)
         return response({
             'lecturer': lecturer
         })

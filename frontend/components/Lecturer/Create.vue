@@ -87,7 +87,7 @@
     },
     updated(){
       if(this.$store.getters.user === null){
-        this.$store.commit('setError', ['Please login to create note!'])
+        this.$store.commit('setError', ['Please login to add lecturer!'])
       }
     },
     watch: {
