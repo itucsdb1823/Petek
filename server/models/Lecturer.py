@@ -42,6 +42,13 @@ class Lecturer:
         cur.close()
         return lecturer
 
+    def all(self):
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM lecturers ORDER BY name ASC")
+        lecturers = cur.fetchall()
+        cur.close()
+        return lecturers
+
     def create(self):
         ts = time.time()
         created_at = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')

@@ -35,12 +35,22 @@ class AddLecturer(Resource):
             'lecturer': lecturer.name
         })
 
+
 class GetLecturer(Resource):
     def get(self, lecturer_slug):
         lecturer = Lecturer().get(slug=lecturer_slug)
         return response({
             'lecturer': lecturer
         })
+
+
+class GetLecturers(Resource):
+    def get(self):
+        lecturers = Lecturer().all()
+        return response({
+            'lecturers': lecturers
+        })
+
 
 class DeleteLecturer(Resource):
     @jwt_required

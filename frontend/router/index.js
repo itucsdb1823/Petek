@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Login from '../components/User/Login.vue'
 import Register from '../components/User/Register.vue'
 import Notes from '../components/Notes/Notes.vue'
+import Lecturers from '../components/Lecturer/Lecturers.vue'
+import Lecturer from '../components/Lecturer/Lecturer.vue'
 import Note from '../components/Notes/Note.vue'
 import NoteCreate from '../components/Notes/Create.vue'
 
@@ -56,6 +58,16 @@ export function createRouter () {
           name: 'Note',
           component: Note
         },
+        {
+          path: '/lecturers',
+          name: 'Lecturers',
+          component: Lecturers
+        },
+        {
+          path: '/lecturers/:lecturer_slug',
+          name: 'Lecturer',
+          component: Lecturer
+        }
       ]
     })
 

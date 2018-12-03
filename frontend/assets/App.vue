@@ -133,15 +133,17 @@
       menuItems(){
         let menuItems = [
           { icon: 'apps', title: 'Home', to: '/' },
+          { icon: 'reorder', title: 'Notes', to: '/notes' },
+          { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
           { icon: 'face', title: 'Register', to: '/register' },
           { icon: 'lock_open', title: 'Login', to: '/login' },
-          { icon: 'reorder', title: 'Notes', to: '/notes' },
         ];
         if(this.userIsAuthenticated){
             menuItems = [
                 { icon: 'apps', title: 'Home', to: '/' },
-                { icon: 'person', title: 'Profile', link: '/profile'},
                 { icon: 'reorder', title: 'Notes', to: '/notes' },
+              { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
+              { icon: 'person', title: 'Profile', link: '/profile'},
             ]
         }
         return menuItems;

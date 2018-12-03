@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import Auth from '../services/Auth'
 import Note from '../services/Note'
+import Lecturer from '../services/Lecturer'
 import Term from '../services/Term'
 import Course from '../services/Course'
 
@@ -18,7 +19,13 @@ const storeOptions = {
       courses: [],
       notes: [],
       deleteNote: false,
-      editNote: false
+      editNote: false,
+      createNote: false,
+      createLecturer: false,
+      deleteLecturer: false,
+      editLecturer: false,
+      lecturer: {},
+      lecturers: []
     },
     // dispatch
     actions: {
@@ -63,18 +70,45 @@ const storeOptions = {
         commit('setError', payload)
       },
 
+      createLecturer({commit}, payload){
+        Lecturer.create(payload).then(result => {
+          commit('createLecturer', true)
+        }).catch(error => {
+          commit('setError', ['yüklenemedi!'])
+          console.log(error)
+        })
+      },
+
+      getLecturers({commit}, payload){
+        Lecturer.getLecturers().then(result => {
+          console.log(result)
+          commit('setLecturers', result.data.lecturers)
+        }).catch(error => {
+          console.log(error)
+          commit('setError', ['could not get the lecturers.'])
+        })
+      },
+
+      getLecturer({commit}, payload){
+        Lecturer.getLecturer(payload).then(result => {
+          commit('setLecturer', result.data.lecturer)
+        }).catch(error => {
+          commit('setError', error.errors)
+        })
+      },
+
       // Create Note
       createNote({commit}, payload){
         Note.create(payload).then(result => {
-          console.log("Added note is: " + result.data);
+          commit('createNote', true)
         }).catch(error => {
-          commit('setError', ['yüklenemedi']);
+          commit('setError', ['yüklenemedi'])
+          console.log(error)
         })
       },
 
       getNotes({commit}, payload){
         Note.getNotes().then(result => {
-          console.log(result.data.notes)
           commit('setNotes', result.data.notes)
         }).catch(error => {
           console.log(error)
@@ -119,6 +153,18 @@ const storeOptions = {
     },
     // commit
     mutations: {
+      createLecturer(state, payload){
+        state.createLecturer = payload;
+      },
+      deleteLecturer(state, payload){
+        state.deleteLecturer = payload;
+      },
+      editLecturer(state, payload){
+        state.editLecturer = payload;
+      },
+      createNote(state, payload){
+        state.createNote = payload;
+      },
       deleteNote(state, payload){
         state.deleteNote = payload;
       },
@@ -136,6 +182,12 @@ const storeOptions = {
       },
       setNote(state, payload){
         state.note = payload;
+      },
+      setLecturers(state, payload){
+        state.lecturers = payload;
+      },
+      setLecturer(state, payload){
+        state.lecturer = payload;
       },
       setUser(state, payload){
         state.user = payload;
@@ -159,6 +211,18 @@ const storeOptions = {
 		  }
     },
     getters: {
+      createLecturer(state){
+        return state.createLecturer
+      },
+      deleteLecturer(state){
+        return state.deleteLecturer
+      },
+      editLecturer(state){
+        return state.editLecturer
+      },
+      createNote(state){
+        return state.createNote
+      },
       deleteNote(state){
         return state.deleteNote
       },
@@ -185,6 +249,12 @@ const storeOptions = {
       },
       courses(state){
         return state.courses
+      },
+      lecturers(state){
+        return state.lecturers
+      },
+      lecturer(state){
+        return state.lecturer
       }
     }
 }
