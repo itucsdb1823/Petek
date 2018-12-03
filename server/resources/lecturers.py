@@ -16,11 +16,12 @@ parser.add_argument('user_id', type=int, help='User Id must be a string')
 
 
 class AddLecturer(Resource):
+    @jwt_required
     def post(self):
         args = parser.parse_args()
         name = args['name']
         email = args['email']
-        user_id = args['user_id']
+        user_id = get_jwt_identity()['id']
 
         lecturer = Lecturer(name, email, user_id)
         result = lecturer.create()
