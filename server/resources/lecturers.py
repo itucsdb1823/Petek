@@ -31,12 +31,14 @@ class AddLecturer(Resource):
                     "There is already a lecturer with this email"
                 ]
             }, 400)
-        return result
+        return response({
+            'lecturer': lecturer.name
+        })
 
 
 class GetLecturer(Resource):
-    def get(self, slug):
-        lecturer = Lecturer().get(slug)
+    def get(self, lecturer_slug):
+        lecturer = Lecturer().get(slug=lecturer_slug)
         return response({
             'lecturer': lecturer
         })
@@ -51,12 +53,37 @@ class GetLecturers(Resource):
 
 
 class DeleteLecturer(Resource):
-    def post(self):
-        args = parser.parse_args()
-        slug = args['slug']
-        user_id = args['user_id']
-        print(slug)
+    @jwt_required
+    def post(self, lecturer_id):
+        user_id = get_jwt_identity()['id']
+        print(lecturer_id)
         print(user_id)
-        Lecturer().delete(slug=slug, user_id=user_id)
+        lect = Lecturer()
+        result = lect.delete(lecturer_id=lecturer_id, user_id=user_id)
+        if result is False:
+            return response({
+                'errors': lect.GetErrors()
+            })
+        return response({
+            "Success: Lecturer deleted"
+        })
+
+class UpdateLecturer(Resource):
+    @jwt_required
+    def post(self, lecturer_id):
+        args = parser.parse_args()
+        name = args['name']
+        email = args['email']
+        user_id = get_jwt_identity()['id']
+        lecturer = Lecturer(name=name, email=email, user_id=user_id)
+        lecturer.id = lecturer_id
+        result = lecturer.update()
+        if result is False:
+            return response({
+                'errors': lecturer.GetErrors()
+            })
+        return response({
+            'lecturer': lecturer
+        })
 
 
