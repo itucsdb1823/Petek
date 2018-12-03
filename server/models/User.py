@@ -22,10 +22,11 @@ class User(Base):
     slug = ''
     id = ''
 
-    def __init__(self, name, password, email):
+    def __init__(self, name='', password='', email='', _id=''):
         self.name = name
         self.password = password
         self.email = email
+        self.id = _id
 
     def email_is_valid(self, email):
         is_valid = validate_email(email)
@@ -74,6 +75,13 @@ class User(Base):
             return user
         return None
 
+    def all(self):
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * FROM users ORDER BY created_at DESC")
+        users = cur.fetchall()
+        cur.close()
+        return users
+
     def create(self):
         hashed_password = bcrypt.generate_password_hash(self.password).decode('utf-8')
         ts = time.time()
@@ -121,3 +129,22 @@ class User(Base):
         cur.execute("DELETE FROM users WHERE users.id == id")
         conn.commit()
         cur.close()
+
+    def hasRole(self, roles):
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        if isinstance(roles, list):
+            cur.execute("SELECT id FROM roles WHERE name IN roles")
+            role_ids = cur.fetchall()
+            for role_id in role_ids:
+                cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.id, role_id))
+                exist = cur.fetchone()
+                if exist is None:
+                    return False
+        else:
+            cur.execute("SELECT id FROM roles WHERE name=%s", (roles,))
+            role_id = cur.fetchone()['id']
+            cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.id, role_id))
+            exist = cur.fetchone()
+            if exist is None:
+                return False
+        return True
