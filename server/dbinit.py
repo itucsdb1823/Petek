@@ -12,6 +12,7 @@ from migrations.create_courses_table import create_courses_table
 from migrations.create_lecturers_table import create_lecturers_table
 from migrations.create_roles_table import create_roles_table
 from migrations.create_user_roles_table import create_user_roles_table
+from migrations.create_grade_distributions_table import create_grade_distributions_table
 import seeders
 
 
@@ -28,6 +29,7 @@ no = {'no', 'n', 'N', 'No'}
 
 DROP_STATEMENTS = [
     "DROP TABLE IF EXISTS notes",
+    "DROP TABLE IF EXISTS grade_distributions",
     "DROP TABLE IF EXISTS courses",
     "DROP TABLE IF EXISTS terms",
     "DROP TABLE IF EXISTS tokens",
@@ -43,7 +45,8 @@ INIT_STATEMENTS = [
     create_notes_table,
     create_lecturers_table,
     create_roles_table,
-    create_user_roles_table
+    create_user_roles_table,
+    create_grade_distributions_table,
 ]
 
 

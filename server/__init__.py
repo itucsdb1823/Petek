@@ -10,6 +10,7 @@ server = Flask(__name__, template_folder='../dist', static_folder="../dist/stati
 
 server.config['SECRET_KEY'] = '5ea8e7ed82a4e1fd0cca8d08a003344c'
 server.config['JWT_SECRET_KEY'] = 'fjsalkd131j31k3l3k1c4e1fd0cca8d08a0'
+server.config['UPLOAD_FOLDER'] = 'images'
 jwt = JWTManager(server)
 
 setEnv()

@@ -28,6 +28,8 @@ api.add_resource(r.NoteSingle, '/api/notes/<string:note_slug>')
 api.add_resource(r.NoteDelete, '/api/notes/<int:note_id>/delete')
 api.add_resource(r.Courses, '/api/courses')
 api.add_resource(r.Terms, '/api/terms')
+api.add_resource(r.AddGradeDistribution, '/api/add-grade-distribution')
+api.add_resource(r.DeleteGradeDistribution, '/api/delete-grade-distribution')
 
 # Admin Routes
 api.add_resource(r.GetAllUsers, '/admin/users')
