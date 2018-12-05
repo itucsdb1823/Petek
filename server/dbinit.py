@@ -10,7 +10,9 @@ from migrations.create_tokens_table import create_tokens_table
 from migrations.create_terms_table import create_terms_table
 from migrations.create_courses_table import create_courses_table
 from migrations.create_lecturers_table import create_lecturers_table
+from migrations.create_comments_table import create_comments_table
 import seeders
+from seeders.CommentsTableSeeder import comments_table_seeder
 
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
@@ -39,7 +41,8 @@ INIT_STATEMENTS = [
     create_terms_table,
     create_courses_table,
     create_notes_table,
-    create_lecturers_table
+    create_lecturers_table,
+    create_comments_table
 ]
 
 
@@ -81,6 +84,8 @@ def generate_random_data(seeders_list):
             seeders.notes_table_seeder(cur=cur, fake=fake)
         if i == 5:
             seeders.lecturers_table_seeder(cur=cur, fake=fake)
+        if i == 6:
+            comments_table_seeder(cur=cur, fake=fake)
     
     conn.commit()
     cur.close()
@@ -105,6 +110,7 @@ if __name__ == "__main__":
             print("3) Terms Table Seeder")
             print("4) Notes Table Seeder")
             print("5) Lecturers Table Seeder")
+            print("6) Comments Table Seeder")
             choices = input().split(' ')
             generate_random_data(choices)
         if choice == 4:
