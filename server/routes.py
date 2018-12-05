@@ -22,6 +22,12 @@ api.add_resource(r.NoteSingle, '/api/notes/<string:note_slug>')
 api.add_resource(r.NoteDelete, '/api/notes/<int:note_id>/delete')
 api.add_resource(r.Courses, '/api/courses')
 api.add_resource(r.Terms, '/api/terms')
+api.add_resource(r.Comments, '/api/comments/<int:comment_id>')
+api.add_resource(r.CreateLecturerComment, '/api/lecturers/<int:type_id>/store')
+api.add_resource(r.CreateNoteComment, '/api/notes/<int:type_id>/store')
+api.add_resource(r.DeleteComment, '/api/comments/<int:comment_id>/delete')
+api.add_resource(r.UpdateComment, '/api/comments/<int:comment_id>/update')
+
 
 
 @server.route('/', defaults={'path': ''})

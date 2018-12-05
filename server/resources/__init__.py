@@ -3,3 +3,4 @@ from server.resources.lecturers import *
 from server.resources.notes import *
 from server.resources.courses import *
 from server.resources.terms import *
+from server.resources.comments import *
