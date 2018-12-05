@@ -11,6 +11,9 @@ from migrations.create_terms_table import create_terms_table
 from migrations.create_courses_table import create_courses_table
 from migrations.create_lecturers_table import create_lecturers_table
 from migrations.create_comments_table import create_comments_table
+from migrations.create_roles_table import create_roles_table
+from migrations.create_user_roles_table import create_user_roles_table
+from migrations.create_grade_distributions_table import create_grade_distributions_table
 import seeders
 from seeders.CommentsTableSeeder import comments_table_seeder
 
@@ -28,6 +31,7 @@ no = {'no', 'n', 'N', 'No'}
 
 DROP_STATEMENTS = [
     "DROP TABLE IF EXISTS notes",
+    "DROP TABLE IF EXISTS grade_distributions",
     "DROP TABLE IF EXISTS courses",
     "DROP TABLE IF EXISTS terms",
     "DROP TABLE IF EXISTS tokens",
@@ -42,7 +46,13 @@ INIT_STATEMENTS = [
     create_courses_table,
     create_notes_table,
     create_lecturers_table,
+<<<<<<< HEAD
     create_comments_table
+=======
+    create_roles_table,
+    create_user_roles_table,
+    create_grade_distributions_table,
+>>>>>>> 6cd2763d995f90509a5a67293ce70d6e33bdc1bd
 ]
 
 
@@ -85,7 +95,11 @@ def generate_random_data(seeders_list):
         if i == 5:
             seeders.lecturers_table_seeder(cur=cur, fake=fake)
         if i == 6:
+<<<<<<< HEAD
             comments_table_seeder(cur=cur, fake=fake)
+=======
+            seeders.roles_table_seeder(cur=cur, fake=fake)
+>>>>>>> 6cd2763d995f90509a5a67293ce70d6e33bdc1bd
     
     conn.commit()
     cur.close()
@@ -110,7 +124,11 @@ if __name__ == "__main__":
             print("3) Terms Table Seeder")
             print("4) Notes Table Seeder")
             print("5) Lecturers Table Seeder")
+<<<<<<< HEAD
             print("6) Comments Table Seeder")
+=======
+            print("6) Roles Table Seeder")
+>>>>>>> 6cd2763d995f90509a5a67293ce70d6e33bdc1bd
             choices = input().split(' ')
             generate_random_data(choices)
         if choice == 4:

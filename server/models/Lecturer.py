@@ -13,6 +13,7 @@ class Lecturer:
     id = ''
     slug = ''
     errors = []
+    grade_distributions: []
 
     def __init__(self, name='', email='', user_id=0):
         self.name = name
@@ -39,6 +40,23 @@ class Lecturer:
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("SELECT * FROM lecturers WHERE slug = %s LIMIT 1", (str(slug),))
         lecturer = cur.fetchone()
+
+        cur.execute("SELECT * FROM grade_distributions WHERE lecturer_id=%s", (lecturer['id'],))
+        self.grade_distributions = cur.fetchall()
+        for grade_distribution in self.grade_distributions:
+            cur.execute("SELECT * FROM terms WHERE id = %s LIMIT 1", (grade_distribution['term_id'],))
+            term = cur.fetchone()
+            grade_distribution['term'] = term
+
+            cur.execute("SELECT * FROM courses WHERE id = %s LIMIT 1", (grade_distribution['course_id'],))
+            course = cur.fetchone()
+            grade_distribution['course'] = course
+
+            cur.execute("SELECT name, slug FROM users WHERE id = %s LIMIT 1", (grade_distribution['user_id'],))
+            user = cur.fetchone()
+            grade_distribution['user'] = user
+
+        lecturer['grade_distributions'] = self.grade_distributions
         cur.close()
         return lecturer
 

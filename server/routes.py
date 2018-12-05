@@ -1,7 +1,13 @@
-from server import server
-from flask_restful import Api
+import sys
+
+from flask_jwt_simple import get_jwt_identity, jwt_required, jwt_optional
+
+from server import server, bcrypt
+from flask_restful import Api, request, abort
 from flask_cors import CORS
 import server.resources as r
+from server.helpers import response
+from server.models.User import User
 
 cors = CORS(server, resources={r"/api/*": {"origins": "*"}})
 
@@ -27,7 +33,21 @@ api.add_resource(r.CreateLecturerComment, '/api/lecturers/<int:type_id>/store')
 api.add_resource(r.CreateNoteComment, '/api/notes/<int:type_id>/store')
 api.add_resource(r.DeleteComment, '/api/comments/<int:comment_id>/delete')
 api.add_resource(r.UpdateComment, '/api/comments/<int:comment_id>/update')
+api.add_resource(r.AddGradeDistribution, '/api/add-grade-distribution')
+api.add_resource(r.DeleteGradeDistribution, '/api/delete-grade-distribution')
 
+# Admin Routes
+api.add_resource(r.GetAllUsers, '/admin/users')
+
+
+@server.before_request
+@jwt_optional
+def before_request():
+    path = request.path.split(sep='/')
+    if path[1] == 'admin':
+        current_user = get_jwt_identity()
+        if current_user is None or User(_id=current_user['id']).hasRole('admin') is False:
+            abort(401)
 
 
 @server.route('/', defaults={'path': ''})
