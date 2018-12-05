@@ -4,3 +4,4 @@ from server.resources.notes import *
 from server.resources.courses import *
 from server.resources.terms import *
 from server.resources.admin import *
+from server.resources.grade_distributions import *
