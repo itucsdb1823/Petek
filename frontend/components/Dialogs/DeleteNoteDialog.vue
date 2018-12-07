@@ -52,19 +52,23 @@
         return this.$store.getters.user
       },
       noteDeleted(){
-        return this.$store.getters.deleteNote
+        return this.$store.getters.postRequest
       }
     },
     methods: {
       onAgree(){
         this.$store.dispatch('deleteNote', this.note.id)
+        this.$router.push('/notes')
       }
     },
     watch: {
       noteDeleted(value){
         if(value === true){
-          this.$store.commit('deleteNote', false)
-          this.$router.push('/notes');
+          this.deleteNoteDialog = false
+          this.$router.push('/notes')
+          this.$store.commit('postRequest', null)
+        }else if(value === false){
+          this.$store.commit('postRequest', null)
         }
       }
     }

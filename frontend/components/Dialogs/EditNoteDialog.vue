@@ -153,7 +153,7 @@
         return this.$store.getters.user
       },
       noteEdited(){
-        return this.$store.getters.editNote
+        return this.$store.getters.postRequest
       },
       terms(){
         return this.$store.getters.terms;
@@ -170,8 +170,11 @@
     watch: {
       noteEdited(value){
         if(value === true){
-          this.$store.commit('editNote', false)
-          this.$router.push('/notes/' + this.note.slug);
+          this.editNoteDialog = false
+          this.$router.push('/notes/' + this.note.slug)
+          this.$store.commit('postRequest', null)
+        }else if(value === false){
+          this.$store.commit('postRequest', null)
         }
       }
     },
