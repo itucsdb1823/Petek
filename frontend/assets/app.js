@@ -10,7 +10,8 @@ import {
   VGrid,
   VToolbar,
   VCard,
-  transitions, VTextField, VAlert, VDataTable, VSelect, VCheckbox, VDivider, VDialog
+  transitions, VTextField, VAlert, VDataTable, VSelect, VCheckbox, VDivider, VDialog, VImg,
+  VProgressCircular
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
 import App from './App.vue'
@@ -41,7 +42,9 @@ Vue.use(Vuetify, {
     VSelect,
     VCheckbox,
     VDivider,
-    VDialog
+    VDialog,
+    VImg,
+    VProgressCircular
   },
   theme: {
     primary: '#ee44aa',
