@@ -19,9 +19,9 @@ api.add_resource(r.Account, '/api/account')
 
 # -------- Lecturers ------
 
+api.add_resource(r.GetLecturers, '/api/lecturers')
 api.add_resource(r.AddLecturer, '/api/lecturers/store')
-api.add_resource(r.GetLecturer, '/api/lecturers/<int:lecturer_id>')
-api.add_resource(r.GetLecturers, '/api/lecturers/*')
+api.add_resource(r.GetLecturer, '/api/lecturers/<string:slug>')
 api.add_resource(r.DeleteLecturer, '/api/lecturers/<int:lecturer_id>/delete')
 api.add_resource(r.UpdateLecturer, '/api/lecturers/<int:lecturer_id>/update')
 
