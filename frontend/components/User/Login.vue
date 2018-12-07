@@ -78,7 +78,10 @@
         computed: {
             user(){
                 return this.$store.getters.user;
-            }
+            },
+          loading () {
+            return this.$store.getters.loading
+          }
         },
         watch: {
             user(value){
