@@ -27,7 +27,7 @@ class CreateLecturerComment(Resource):
             }, 401)
 
         return response({
-            'message': 'Comment successfully created!'
+            'comment': args['comment']
         })
 
 
@@ -49,7 +49,7 @@ class CreateNoteComment(Resource):
             }, 401)
 
         return response({
-            'message': 'Comment successfully created!'
+            'comment': args['comment']
         })
 
 

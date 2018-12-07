@@ -2,13 +2,13 @@ import Api from '../Api'
 
 export default {
   create(data) {
-    return Api().post('add-lecturer', data)
+    return Api().post('lecturers/store', data)
   },
   getLecturers(){
-    return Api().get('get-lecturers')
+    return Api().get('lecturers')
   },
-  getLecturer(slug){
-    return Api().get('get-lecturer/' + slug)
+  getLecturer(id){
+    return Api().get('lecturers/' + id)
   },
   deleteLecturer(lecturer_id){
     return Api().post('delete-lecturer/')

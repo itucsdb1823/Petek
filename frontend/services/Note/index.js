@@ -14,7 +14,6 @@ export default {
     return Api().post('notes/' + note_id + '/delete')
   },
   editNote(note){
-    return true;
-    // return Api().post('notes/')
+    return Api().post('notes/' + note.id + '/update', note)
   }
 }
