@@ -89,10 +89,10 @@
                   <v-layout row>
                     <v-flex xs12>
                       <v-text-field
-                        name="url"
-                        label="Course URL"
-                        id="url"
-                        v-model="url"
+                        name="link"
+                        label="Course Link"
+                        id="link"
+                        v-model="link"
                         type="text"
                         placeholder="ex: Google Drive Link"
                         required
@@ -130,7 +130,7 @@
         content: 'A',
         lecturer: '',
         term_id: '',
-        url: '',
+        link: '',
         english: false,
       }
     },
@@ -148,7 +148,7 @@
           course_code: this.course_code,
           lecturer: this.lecturer,
           term_id: this.term_id,
-          url: this.url,
+          link: this.link,
           english: this.english,
         }
         this.$store.dispatch('createNote', note)
@@ -157,7 +157,7 @@
         return this.title !== '' && this.course_id !== ''
           && this.course_code !== '' && this.lecturer !== ''
           && this.english !== ''
-          && this.term_id !== '' && this.url !== '';
+          && this.term_id !== '' && this.link !== '';
       },
     },
     computed: {
@@ -168,7 +168,7 @@
         return this.$store.getters.courses;
       },
       noteUploaded(){
-        return this.$store.getters.createNote
+        return this.$store.getters.postRequest
       }
     },
     created(){
@@ -183,8 +183,10 @@
     watch: {
       noteUploaded(value){
         if(value === true){
-          this.$store.commit('createNote', false)
+          this.$store.commit('postRequest', null)
           this.$router.push('/notes');
+        }else if(value === false){
+          this.$store.commit('postRequest', null)
         }
       }
     }
