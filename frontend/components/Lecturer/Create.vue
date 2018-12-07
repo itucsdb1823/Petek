@@ -82,7 +82,7 @@
     },
     computed: {
       lecturerUploaded(){
-        return this.$store.getters.createLecturer
+        return this.$store.getters.postRequest
       }
     },
     updated(){
@@ -93,8 +93,10 @@
     watch: {
       lecturerUploaded(value){
         if(value === true){
-          this.$store.commit('createLecturer', false)
+          this.$store.commit('postRequest', null)
           this.$router.push('/lecturers');
+        }else if(value === false){
+          this.$store.commit('postRequest', null)
         }
       }
     }
