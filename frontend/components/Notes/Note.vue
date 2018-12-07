@@ -12,7 +12,37 @@
             </v-flex>
           </v-layout>
           <div class="grey--text">{{ note.content }}</div>
+          <v-layout row>
+            <v-flex xs12>
+              <v-toolbar-title style="color: aquamarine; margin-top: 50px;">Comments</v-toolbar-title>
+              <v-list two-line>
+                <template v-for="(item, index) in note.comments.slice(0, limit)">
+                  <v-list-tile :key="index" avatar ripple>
+                    <v-list-tile-content>
+                      <v-list-tile-title><b style="color: #1E90FF;">{{ item.user.name}}:</b> {{ item.comment }}</v-list-tile-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action v-if="userIsAuthenticated && user.id === item.user.id">
+                      <v-icon color="red lighten-1" @click="deleteComment(item.id, index)">delete</v-icon>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                  <v-divider v-if="index + 1 < note.comments.length" :key="`divider-${index}`"></v-divider>
+                </template>
+              </v-list>
+              <v-layout row justify-left v-if="limit < note.comments.length">
+                <v-flex xs6>
+                  <v-btn color="orange" @click="limit += 3">Load More</v-btn>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
         </v-container>
+
+        <v-layout row fill-width>
+          <note-comment
+            :note="note"
+            :disabled="!userIsAuthenticated"
+          ></note-comment>
+        </v-layout>
         <v-card-actions>
           <v-btn flat color="green" :href="note.link" target="_blank">Go To Link</v-btn>
           <v-btn flat color="red">Report</v-btn>
@@ -34,17 +64,18 @@
 <script>
   import DeleteNoteDialog from "../Dialogs/DeleteNoteDialog";
   import EditNoteDialog from "../Dialogs/EditNoteDialog";
+  import NoteComment from "../Comment/NoteComment";
 
   export default {
     name: "Note",
-    components: {EditNoteDialog, DeleteNoteDialog},
+    components: {EditNoteDialog, DeleteNoteDialog, NoteComment},
     metaInfo: {
       // title will be injected into parent titleTemplate
       title: "Note"
     },
     data() {
       return {
-
+        limit: 3
       }
     },
     beforeCreate(){
@@ -65,6 +96,16 @@
         return this.user !== null && this.user !== undefined;
       },
     },
+    methods: {
+      deleteComment(comment_id, index){
+        const deleteComment = {
+          comment_id: comment_id,
+          note_id: this.note.id,
+          comment_index: index
+        }
+        this.$store.dispatch('deleteNoteComment', deleteComment)
+      }
+    }
   }
 </script>
 
