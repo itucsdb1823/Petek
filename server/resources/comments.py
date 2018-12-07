@@ -53,13 +53,33 @@ class CreateNoteComment(Resource):
         })
 
 
-class UpdateComment(Resource):
+class UpdateLecturerComment(Resource):
     @jwt_required
-    def post(self, comment_id):
+    def post(self, comment_id, type_id):
         args = parser.parse_args()
         commentText = args['comment']
         user_id = get_jwt_identity()['id']
-        comment = Comment(_id=comment_id, _user_id=user_id, _comment=commentText, _type='lecturers')
+        comment = Comment(_id=comment_id, _user_id=user_id,
+                          _comment=commentText, _type='lecturers', _type_id=type_id)
+        result = comment.Update()
+
+        if result is False:
+            return response({
+                'errors': comment.getErrors()
+            }, 401)
+        return response({
+            'message': 'Comment successfully updated!'
+        })
+
+
+class UpdateNoteComment(Resource):
+    @jwt_required
+    def post(self, comment_id, type_id):
+        args = parser.parse_args()
+        commentText = args['comment']
+        user_id = get_jwt_identity()['id']
+        comment = Comment(_id=comment_id, _user_id=user_id,
+                          _comment=commentText, _type='notes', _type_id=type_id)
         result = comment.Update()
 
         if result is False:

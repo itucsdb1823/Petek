@@ -46,13 +46,10 @@ INIT_STATEMENTS = [
     create_courses_table,
     create_notes_table,
     create_lecturers_table,
-<<<<<<< HEAD
-    create_comments_table
-=======
+    create_comments_table,
     create_roles_table,
     create_user_roles_table,
-    create_grade_distributions_table,
->>>>>>> 6cd2763d995f90509a5a67293ce70d6e33bdc1bd
+    create_grade_distributions_table
 ]
 
 
@@ -95,11 +92,9 @@ def generate_random_data(seeders_list):
         if i == 5:
             seeders.lecturers_table_seeder(cur=cur, fake=fake)
         if i == 6:
-<<<<<<< HEAD
             comments_table_seeder(cur=cur, fake=fake)
-=======
+        if i == 7:
             seeders.roles_table_seeder(cur=cur, fake=fake)
->>>>>>> 6cd2763d995f90509a5a67293ce70d6e33bdc1bd
     
     conn.commit()
     cur.close()
@@ -124,11 +119,8 @@ if __name__ == "__main__":
             print("3) Terms Table Seeder")
             print("4) Notes Table Seeder")
             print("5) Lecturers Table Seeder")
-<<<<<<< HEAD
             print("6) Comments Table Seeder")
-=======
-            print("6) Roles Table Seeder")
->>>>>>> 6cd2763d995f90509a5a67293ce70d6e33bdc1bd
+            print("7) Roles Table Seeder")
             choices = input().split(' ')
             generate_random_data(choices)
         if choice == 4:
