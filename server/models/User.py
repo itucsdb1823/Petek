@@ -138,13 +138,13 @@ class User(Base):
             for role_id in role_ids:
                 cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.id, role_id))
                 exist = cur.fetchone()
-                if exist is None:
-                    return False
+                if exist:
+                    return True
         else:
             cur.execute("SELECT id FROM roles WHERE name=%s", (roles,))
             role_id = cur.fetchone()['id']
             cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.id, role_id))
             exist = cur.fetchone()
-            if exist is None:
-                return False
-        return True
+            if exist:
+                return True
+        return False

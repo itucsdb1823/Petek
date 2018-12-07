@@ -4,3 +4,5 @@ from seeders.NotesTableSeeder import notes_table_seeder
 from seeders.TermsTableSeeder import terms_table_seeder
 from seeders.UsersTableSeeder import users_table_seeder
 from seeders.RolesTableSeeder import roles_table_seeder
+from seeders.CommentsTableSeeder import comments_table_seeder
+from seeders.EventsTableSeeder import events_table_seeder

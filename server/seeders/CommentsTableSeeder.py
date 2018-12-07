@@ -1,6 +1,5 @@
 import random
 
-
 def comments_table_seeder(cur, fake, num=10):
     types = ['lecturers', 'notes']
     cur.execute("SELECT id FROM users")

@@ -67,7 +67,7 @@ class Comment(Base):
         cur.close()
         return comment
 
-    def Update(self):
+    def update(self):
         if self.validate() is False:
             return False
         commentText = self.comment

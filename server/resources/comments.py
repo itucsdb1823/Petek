@@ -61,7 +61,7 @@ class UpdateLecturerComment(Resource):
         user_id = get_jwt_identity()['id']
         comment = Comment(_id=comment_id, _user_id=user_id,
                           _comment=commentText, _type='lecturers', _type_id=type_id)
-        result = comment.Update()
+        result = comment.update()
 
         if result is False:
             return response({
@@ -80,7 +80,7 @@ class UpdateNoteComment(Resource):
         user_id = get_jwt_identity()['id']
         comment = Comment(_id=comment_id, _user_id=user_id,
                           _comment=commentText, _type='notes', _type_id=type_id)
-        result = comment.Update()
+        result = comment.update()
 
         if result is False:
             return response({
@@ -102,10 +102,19 @@ class DeleteComment(Resource):
         })
 
 
-class Comments(Resource):
+class GetComment(Resource):
     def get(self, comment_id):
         comment = Comment().get(id=comment_id)
 
         return response({
             'Comment': comment
+        })
+
+
+class GetComments(Resource):
+    def get(self):
+        comments = Comment().all()
+
+        return response({
+            'Comments': comments
         })

@@ -6,3 +6,4 @@ from server.resources.terms import *
 from server.resources.comments import *
 from server.resources.admin import *
 from server.resources.grade_distributions import *
+from server.resources.events import *

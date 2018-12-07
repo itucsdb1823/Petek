@@ -37,8 +37,8 @@ class AddLecturer(Resource):
 
 
 class GetLecturer(Resource):
-    def get(self, slug):
-        lecturer = Lecturer().get(slug=slug)
+    def get(self, lecturer_id):
+        lecturer = Lecturer(_id=lecturer_id).get()
         return response({
             'lecturer': lecturer
         })
@@ -63,9 +63,9 @@ class DeleteLecturer(Resource):
         if result is False:
             return response({
                 'errors': lect.GetErrors()
-            })
+            }, 401)
         return response({
-            "Success: Lecturer deleted"
+            'message': 'Lecturer deleted'
         })
 
 class UpdateLecturer(Resource):
@@ -75,15 +75,14 @@ class UpdateLecturer(Resource):
         name = args['name']
         email = args['email']
         user_id = get_jwt_identity()['id']
-        lecturer = Lecturer(name=name, email=email, user_id=user_id)
-        lecturer.id = lecturer_id
-        result = lecturer.update()
+        lecturer = Lecturer(_id=lecturer_id, name=name, email=email, user_id=user_id)
+        result = lecturer.update(user_id=user_id)
         if result is False:
             return response({
                 'errors': lecturer.GetErrors()
             })
         return response({
-            'lecturer': lecturer
+            'message': 'lecturer updated'
         })
 
 

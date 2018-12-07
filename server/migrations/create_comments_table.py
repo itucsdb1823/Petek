@@ -5,7 +5,7 @@ create_comments_table = """
         WHEN duplicate_object THEN null;
     END $$;
     CREATE TABLE IF NOT EXISTS comments (
-        id SERIAL PRIMARY KEY UNIQUE,
+        id SERIAL PRIMARY KEY,
         comment TEXT NOT NULL,
         user_id INTEGER NOT NULL REFERENCES users(id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

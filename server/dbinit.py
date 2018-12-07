@@ -14,8 +14,8 @@ from migrations.create_comments_table import create_comments_table
 from migrations.create_roles_table import create_roles_table
 from migrations.create_user_roles_table import create_user_roles_table
 from migrations.create_grade_distributions_table import create_grade_distributions_table
+from migrations.create_events_table import create_events_table
 import seeders
-from seeders.CommentsTableSeeder import comments_table_seeder
 
 
 server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
@@ -49,7 +49,8 @@ INIT_STATEMENTS = [
     create_comments_table,
     create_roles_table,
     create_user_roles_table,
-    create_grade_distributions_table
+    create_grade_distributions_table,
+    create_events_table
 ]
 
 
@@ -92,9 +93,11 @@ def generate_random_data(seeders_list):
         if i == 5:
             seeders.lecturers_table_seeder(cur=cur, fake=fake)
         if i == 6:
-            comments_table_seeder(cur=cur, fake=fake)
+            seeders.comments_table_seeder(cur=cur, fake=fake)
         if i == 7:
             seeders.roles_table_seeder(cur=cur, fake=fake)
+        if i == 8:
+            seeders.events_table_seeder(cur=cur, fake=fake)
     
     conn.commit()
     cur.close()
@@ -121,6 +124,7 @@ if __name__ == "__main__":
             print("5) Lecturers Table Seeder")
             print("6) Comments Table Seeder")
             print("7) Roles Table Seeder")
+            print("8) Events Table Seeder")
             choices = input().split(' ')
             generate_random_data(choices)
         if choice == 4:

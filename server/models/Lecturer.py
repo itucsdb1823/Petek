@@ -10,15 +10,18 @@ class Lecturer:
     name = ''
     email = ''
     user_id = ''
-    id = ''
+    id = 0
     slug = ''
     errors = []
     grade_distributions: []
 
-    def __init__(self, name='', email='', user_id=0):
+    def __init__(self, _id=0, name='', email='', user_id=0):
+        self.id = int(_id)
         self.name = name
         self.email = email
-        self.user_id = user_id
+        self.user_id = int(user_id)
+        self.errors = []
+        self.grade_distributions = []
 
     def generate_slug(self, name):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -36,9 +39,9 @@ class Lecturer:
                 slug_is_not_unique = False
         return slug
 
-    def get(self, slug):
+    def get(self):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("SELECT * FROM lecturers WHERE slug = %s LIMIT 1", (str(slug),))
+        cur.execute("SELECT * FROM lecturers WHERE id=%s LIMIT 1", (self.id,))
         lecturer = cur.fetchone()
 
         cur.execute("SELECT * FROM grade_distributions WHERE lecturer_id=%s", (lecturer['id'],))
@@ -94,8 +97,9 @@ class Lecturer:
     def delete(self, lecturer_id, user_id):
 
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        lecturer = cur.execute("""SELECT FROM lecturers 
-                    WHERE id = %s AND user_id = %s""", (lecturer_id, user_id))
+        cur.execute("""SELECT * FROM lecturers 
+            WHERE id = %s AND user_id = %s LIMIT 1""", (lecturer_id, user_id))
+        lecturer = cur.fetchone()
         if lecturer is None:
             self.errors.append("No lecturer with that id and user id is found.")
             return False
@@ -108,19 +112,10 @@ class Lecturer:
         return True
 
 
-    def update(self):
-        oldLecturer = self.get(slug=self.slug)
-        print(oldLecturer.slug)
-        print(oldLecturer.name)
-        if self.name != oldLecturer.name:
-            self.slug = self.generate_slug(name=self.name)
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    def update(self, user_id):
 
-        lecturer = cur.execute("""SELECT FROM lecturers 
-            WHERE id = %s AND user_id = %s""", (self.id, self.user_id))
-        if lecturer is None:
-            self.errors.append("You can't update, that lecturer is not registered in your user_id")
-            return False
+        self.slug = self.generate_slug(name=self.name)
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
         cur.execute("""UPDATE lecturers SET name = %s, slug = %s, 
             email = %s WHERE id = %s AND user_id = %s""", (self.name,
