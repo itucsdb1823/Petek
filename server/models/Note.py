@@ -82,33 +82,51 @@ class Note(Base):
     def get(self, slug):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("SELECT * FROM notes WHERE slug=%s LIMIT 1", (slug,))
+
         note = cur.fetchone()
-        cur.execute("SELECT name, slug, email FROM users WHERE id=%s LIMIT 1", (note['user_id'],))
+        cur.execute("SELECT id, name, slug, email FROM users WHERE id=%s LIMIT 1", (note['user_id'],))
         note['user'] = cur.fetchone()
+
+        cur.execute("SELECT * FROM comments WHERE type_id=%s AND type='notes' ORDER BY created_at DESC", (note['id'],))
+        comments = cur.fetchall()
+        for comment in comments:
+            cur.execute("SELECT id, name, slug FROM users WHERE id=%s LIMIT 1", (comment['user_id'],))
+            comment['user'] = cur.fetchone()
+
         cur.close()
+        note['comments'] = comments
         return note
 
     def validate(self):
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM terms WHERE id=%s LIMIT 1", (self.term_id,))
-        term = cur.fetchone()
-        cur.close()
-        if term is None:
-            self.errors.append("Term could not found!")
+        if self.term_id == "" or self.term_id is None:
+            self.errors.append("Term field is required")
+        else:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM terms WHERE id=%s LIMIT 1", (self.term_id,))
+            term = cur.fetchone()
+            cur.close()
+            if term is None:
+                self.errors.append("Term could not found!")
 
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM courses WHERE id=%s LIMIT 1", (self.course_id,))
-        course = cur.fetchone()
-        cur.close()
-        if course is None:
-            self.errors.append("Course could not found!")
+        if self.course_id == "" or self.course_id is None:
+            self.errors.append("Course field is required")
+        else:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM courses WHERE id=%s LIMIT 1", (self.course_id,))
+            course = cur.fetchone()
+            cur.close()
+            if course is None:
+                self.errors.append("Course could not found!")
 
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE id=%s LIMIT 1", (self.user_id,))
-        user = cur.fetchone()
-        cur.close()
-        if user is None:
-            self.errors.append("User could not found!")
+        if self.user_id == "" or self.user_id is None:
+            self.errors.append("Please login to proceed")
+        else:
+            cur = conn.cursor()
+            cur.execute("SELECT * FROM users WHERE id=%s LIMIT 1", (self.user_id,))
+            user = cur.fetchone()
+            cur.close()
+            if user is None:
+                self.errors.append("User could not found!")
 
         if self.title == "" or self.title is None:
             self.errors.append("Title field is required")

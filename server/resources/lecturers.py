@@ -23,7 +23,7 @@ class AddLecturer(Resource):
         email = args['email']
         user_id = get_jwt_identity()['id']
 
-        lecturer = Lecturer(name, email, user_id)
+        lecturer = Lecturer(name=name, email=email, user_id=user_id)
         result = lecturer.create()
         if result is False:
             return response({
@@ -37,8 +37,8 @@ class AddLecturer(Resource):
 
 
 class GetLecturer(Resource):
-    def get(self, lecturer_id):
-        lecturer = Lecturer(_id=lecturer_id).get()
+    def get(self, slug):
+        lecturer = Lecturer(slug=slug).get()
         return response({
             'lecturer': lecturer
         })

@@ -15,13 +15,14 @@ class Lecturer:
     errors = []
     grade_distributions: []
 
-    def __init__(self, _id=0, name='', email='', user_id=0):
+    def __init__(self, _id=0, name='', email='', user_id=0, slug=''):
         self.id = int(_id)
         self.name = name
         self.email = email
         self.user_id = int(user_id)
         self.errors = []
         self.grade_distributions = []
+        self.slug = slug
 
     def generate_slug(self, name):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -41,8 +42,16 @@ class Lecturer:
 
     def get(self):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("SELECT * FROM lecturers WHERE id=%s LIMIT 1", (self.id,))
+        cur.execute("SELECT * FROM lecturers WHERE slug=%s LIMIT 1", (self.slug,))
         lecturer = cur.fetchone()
+
+        cur.execute("SELECT * FROM comments WHERE type_id=%s AND type='lecturers' ORDER BY created_at DESC", (lecturer['id'],))
+        comments = cur.fetchall()
+        for comment in comments:
+            cur.execute("SELECT id, name, slug FROM users WHERE id=%s LIMIT 1", (comment['user_id'],))
+            comment['user'] = cur.fetchone()
+
+        lecturer['comments'] = comments
 
         cur.execute("SELECT * FROM grade_distributions WHERE lecturer_id=%s", (lecturer['id'],))
         self.grade_distributions = cur.fetchall()
