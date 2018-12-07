@@ -5,8 +5,20 @@ import Note from '../services/Note'
 import Lecturer from '../services/Lecturer'
 import Term from '../services/Term'
 import Course from '../services/Course'
+import GradeDistribution from '../services/GradeDistribution'
+import LecturerComment from '../services/LecturerComment'
+import NoteComment from '../services/NoteComment'
 
 Vue.use(Vuex)
+
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
 
 const storeOptions = {
     state: {
@@ -18,15 +30,19 @@ const storeOptions = {
       terms: [],
       courses: [],
       notes: [],
-      deleteNote: false,
-      editNote: false,
-      createNote: false,
-      createLecturer: false,
-      deleteLecturer: false,
-      editLecturer: false,
       lecturer: {},
-      lecturers: []
+      lecturers: [],
+      gradeDistributions: [],
+      gradeDistribution: {},
+      /*
+      If request is null, no request is sent recently.
+      If request is true, post request sent and returned success recently.
+      If request is false, post request sent and returned error recently.
+       */
+      getRequest: null,
+      postRequest: null,
     },
+
     // dispatch
     actions: {
       register({commit}, payload){
@@ -40,8 +56,10 @@ const storeOptions = {
         Auth.register(user)
           .then((result) => {
             commit('setUser', result.data)
+            commit('postRequest', true)
         }).catch((error) => {
           commit('setError', error.response.data.errors)
+          commit('postRequest', false)
         })
       },
 
@@ -54,10 +72,15 @@ const storeOptions = {
 
         Auth.login(user).then(result => {
           commit('setUser', result.data)
+          commit('postRequest', true)
+          console.log('as')
         }).catch(error => {
+          console.log(error.response.data.errors)
           commit('setError', error.response.data.errors)
+          commit('postRequest', false)
         })
       },
+
       // Logout
       logout({commit}){
         commit('setUser', null)
@@ -72,20 +95,21 @@ const storeOptions = {
 
       createLecturer({commit}, payload){
         Lecturer.create(payload).then(result => {
-          commit('createLecturer', true)
+          commit('postRequest', true)
         }).catch(error => {
-          commit('setError', ['yüklenemedi!'])
+          commit('setError', error.response.data.errors)
           console.log(error)
+          commit('postRequest', false)
         })
       },
 
       getLecturers({commit}, payload){
         Lecturer.getLecturers().then(result => {
-          console.log(result)
           commit('setLecturers', result.data.lecturers)
+          commit('getRequest', true)
         }).catch(error => {
-          console.log(error)
           commit('setError', ['could not get the lecturers.'])
+          commit('getRequest', false)
         })
       },
 
@@ -93,83 +117,183 @@ const storeOptions = {
         Lecturer.getLecturer(payload).then(result => {
           commit('setLecturer', result.data.lecturer)
         }).catch(error => {
-          commit('setError', error.errors)
+          commit('setError', error.response.data.errors)
+        })
+      },
+
+      createGradeDistribution({commit}, payload){
+        let file = payload.image;
+        getBase64(file).then(
+          data => {
+            payload.image = data;
+            console.log(payload.image)
+            GradeDistribution.createGradeDistribution(payload)
+              .then(result => {
+                commit('postRequest', true)
+              }).catch(error => {
+                commit('postRequest', false)
+                commit('setError', error.response.data.errors)
+            });
+          }
+        )
+          .catch(error => {
+            commit('setError', ['Could not encode the image!'])
+          });
+      },
+
+      addLecturerComment({commit}, payload){
+        if(payload.comment === ''){
+          commit('setError', ['Please fill all fields!'])
+          return;
+        }
+
+        LecturerComment.create(payload.type_id, payload)
+          .then(result => {
+            let comment = {
+              comment: result.data.comment,
+              user: {
+                id: this.getters.user.id
+              }
+            }
+            console.log(comment)
+            commit('postRequest', true)
+            commit('appendLecturerComment', comment)
+          })
+          .catch(error => {
+            commit('postRequest', false)
+            commit('setError', error.response.data.errors)
+          })
+      },
+
+      addNoteComment({commit}, payload){
+        if(payload.comment === ''){
+          commit('setError', ['Please fill all fields!'])
+          return;
+        }
+
+        NoteComment.create(payload.type_id, payload)
+          .then(result => {
+            let comment = {
+              comment: result.data.comment,
+              user: {
+                name: this.getters.user.name,
+                slug: this.getters.user.slug,
+                id: this.getters.user.id
+              }
+            }
+            console.log(comment)
+            commit('postRequest', true)
+            commit('appendNoteComment', comment)
+          })
+          .catch(error => {
+            commit('postRequest', false)
+            commit('setError', error.response.data.errors)
+          })
+      },
+
+      deleteNoteComment({commit}, payload){
+        NoteComment.delete(payload.note_id, payload.comment_id)
+          .then(result => {
+            commit('postRequest', true)
+            commit('deleteNoteComment', payload.comment_index)
+          }).catch(error => {
+            commit('postRequest', false)
+            commit('setError', error.response.data.errors)
+        })
+      },
+
+      deleteLecturerComment({commit}, payload){
+        LecturerComment.delete(payload.lecturer_id, payload.comment_id)
+          .then(result => {
+            commit('postRequest', true)
+            commit('deleteLecturerComment', payload.comment_index)
+          }).catch(error => {
+            commit('postRequest', false)
+            commit('setError', error.response.data.errors)
         })
       },
 
       // Create Note
       createNote({commit}, payload){
+        if(payload.course_id === '' || payload.term_id === ''){
+          commit('setError', ['Please fill all fields!'])
+          return;
+        }
+
         Note.create(payload).then(result => {
-          commit('createNote', true)
+          commit('postRequest', true)
         }).catch(error => {
-          commit('setError', ['yüklenemedi'])
-          console.log(error)
+          commit('setError', error.response.data.errors)
+          commit('postRequest', false)
         })
       },
 
       getNotes({commit}, payload){
         Note.getNotes().then(result => {
           commit('setNotes', result.data.notes)
+          commit('getRequest', true)
         }).catch(error => {
-          console.log(error)
-          commit('setError', ['An error has occured']);
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors);
         })
       },
       getNote({commit}, payload){
         Note.getNote(payload).then(result => {
           commit('setNote', result.data.note)
+          commit('getRequest', true)
         }).catch(error => {
-          commit('setError', error.errors)
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
         })
       },
       getTerms({commit}, payload){
         Term.getTerms().then(result => {
           commit('setTerms', result.data.terms)
+          commit('getRequest', true)
         }).catch(error => {
-          commit('setError', ['An error has occured'])
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
         })
       },
       getCourses({commit}, payload){
         Course.getCourses().then(result => {
           commit('setCourses', result.data.courses)
+          commit('getRequest', true)
         }).catch(error => {
-          commit('setError', ['An error has occured'])
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
         })
       },
       deleteNote({commit}, payload){
         Note.deleteNote(payload).then(result => {
-          commit('deleteNote', true)
+          commit('postRequest', true)
         }).catch(error => {
-          commit('setError', error.errors)
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
         })
       },
       editNote({commit}, payload){
         Note.editNote(payload).then(result => {
-          commit('editNote', true)
+          commit('postRequest', true)
         }).catch(error => {
-          commit('setError', error.errors)
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
         })
       }
     },
     // commit
     mutations: {
-      createLecturer(state, payload){
-        state.createLecturer = payload;
+      appendNoteComment(state, payload){
+        state.note.comments.unshift(payload)
       },
-      deleteLecturer(state, payload){
-        state.deleteLecturer = payload;
+      deleteNoteComment(state, payload){
+        state.note.comments.splice(payload, 1)
       },
-      editLecturer(state, payload){
-        state.editLecturer = payload;
+      appendLecturerComment(state, payload){
+        state.lecturer.comments.unshift(payload)
       },
-      createNote(state, payload){
-        state.createNote = payload;
-      },
-      deleteNote(state, payload){
-        state.deleteNote = payload;
-      },
-      editNote(state, payload){
-        state.editNote = payload;
+      deleteLecturerComment(state, payload){
+        state.lecturer.comments.splice(payload, 1)
       },
       setCourses(state, payload){
         state.courses = payload
@@ -208,26 +332,20 @@ const storeOptions = {
             this.state.user = JSON.parse(localStorage.getItem('user'))
           }
         }
-		  }
+		  },
+      getRequest(state, payload){
+        state.getRequest = payload
+      },
+      postRequest(state, payload){
+        state.postRequest = payload
+      }
     },
     getters: {
-      createLecturer(state){
-        return state.createLecturer
+      getRequest(state){
+        return state.getRequest
       },
-      deleteLecturer(state){
-        return state.deleteLecturer
-      },
-      editLecturer(state){
-        return state.editLecturer
-      },
-      createNote(state){
-        return state.createNote
-      },
-      deleteNote(state){
-        return state.deleteNote
-      },
-      editNote(state){
-        return state.editNote
+      postRequest(state){
+        return state.postRequest
       },
       user(state){
         return state.user

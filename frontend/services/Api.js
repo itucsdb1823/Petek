@@ -4,12 +4,14 @@ import { clientStore } from "../store"
 export default () => {
   let user = clientStore.getters.user
   if(user !== undefined && user !== null) user = user.token
+  else user = '';
   let baseURL;
   if(process.env.BASEURL !== null && process.env.BASEURL !== undefined ){
     baseURL = 'https://dummy-server-08.herokuapp.com/api'
   }else{
     baseURL = 'http://localhost:5000/api'
   }
+
   return axios.create({
     baseURL: baseURL,
     headers: {
@@ -24,13 +26,22 @@ export default () => {
 
       clientStore.commit('setLoading', true)
       clientStore.commit('clearError')
+      clientStore.commit('postRequest', null)
+      clientStore.commit('getRequest', null)
 
       return str.join("&");
     }],
     transformResponse: [(data, headers) => {
       clientStore.commit('setLoading', false)
-
-      return JSON.parse(data)
+      try{
+        return JSON.parse(data)
+      } catch(e){
+        return JSON.parse('{\n' +
+          '\t\t\t"errors": [\n' +
+          '\t\t\t\t"An error has occurred!"\n' +
+          '\t\t\t]\n' +
+          '}')
+      }
     }],
   })
 }
