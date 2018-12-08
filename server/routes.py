@@ -37,8 +37,8 @@ api.add_resource(r.Terms, '/api/terms')
 
 # ------- Comments -------
 
-api.add_resource(r.GetComment, '/api/comments/<int:comment_id>')
-api.add_resource(r.GetComments, '/api/comments/*')
+api.add_resource(r.GetLecturerComments, '/api/lecturers/<int:type_id>')
+api.add_resource(r.GetNoteComments, '/api/notes/<int:type_id>')
 api.add_resource(r.CreateLecturerComment, '/api/lecturers/<int:type_id>/store')
 api.add_resource(r.CreateNoteComment, '/api/notes/<int:type_id>/store')
 api.add_resource(r.DeleteComment, '/api/comments/<int:comment_id>/delete')

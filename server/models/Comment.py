@@ -9,33 +9,38 @@ from server import conn
 
 
 class Comment(Base):
-    ATTRIBUTES = {
-        'comment': '',
-        'user_id': 0,
-        'type': '',
-        'type_id': 0,
-        'id': 0
-    }
-    COLUMNS = {
-        'comment',
-        'user_id',
-        'type',
-        'type_id'
-    }
+    ATTRIBUTES = {}
+    COLUMNS = {}
     TABLE = 'comments'
+
+    def __init__(self):
+        super().__init__()
+        self.ATTRIBUTES = {
+            'comment': '',
+            'user_id': 0,
+            'type': '',
+            'type_id': 0,
+            'id': 0
+        }
+        self.COLUMNS = {
+            'comment',
+            'user_id',
+            'type',
+            'type_id'
+        }
 
     def validate(self):
         user = User().where('id', self.ATTRIBUTES['user_id']).first()
-        if user is None:
+        if user.exists() is False:
             self.setError("User not found in the database!")
 
-        if self.type == 'lecturers':
+        if self.ATTRIBUTES['type'] == 'lecturers':
             lecturer = Lecturer().where('id', self.ATTRIBUTES['type_id']).first()
-            if lecturer is None:
+            if lecturer.exists() is False:
                 self.setError("Lecturer not found in the database!")
-        elif self.type == 'notes':
+        elif self.ATTRIBUTES['type'] == 'notes':
             note = Note().where('id', self.ATTRIBUTES['type_id']).first()
-            if note is None:
+            if note.exists() is False:
                 self.setError("Note not found in the database!")
         else:
             self.setError("Comment type is not valid")

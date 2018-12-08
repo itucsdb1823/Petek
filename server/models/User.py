@@ -12,21 +12,28 @@ from slugify import slugify
 
 
 class User(Base):
-    ATTRIBUTES = {
-        'name': '',
-        'email': '',
-        'slug': '',
-        'id': ''
-    }
-    COLUMNS = {
-        'name': '',
-        'email': '',
-        'password': ''
-    }
-    HIDDEN = {
-        'password': ''
-    }
+    ATTRIBUTES = {}
+    COLUMNS = {}
+    HIDDEN = {}
     TABLE = 'users'
+
+    def __init__(self):
+        super().__init__()
+        self.ATTRIBUTES = {
+            'name': '',
+            'email': '',
+            'slug': '',
+            'id': ''
+        }
+        self.COLUMNS = {
+            'name': '',
+            'email': '',
+            'password': ''
+        }
+        self.HIDDEN = {
+            'password': ''
+        }
+
 
     def email_is_valid(self, email):
         is_valid = validate_email(email)
