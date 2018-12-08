@@ -30,9 +30,10 @@ class NoteCreate(Resource):
         term_id = args['term_id']
         user_id = get_jwt_identity()['id']
 
-        note = Note(title=title, content=content,
-                    lecturer=lecturer, link=link, course_id=course_id, course_code=course_code,
-                    english=english, term_id=term_id, user_id=user_id)
+        note = Note()
+        note.create({
+            'slug': note.generateSlug(title)
+        })
 
         if note.save() is False:
             return response({

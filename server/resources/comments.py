@@ -104,10 +104,11 @@ class DeleteComment(Resource):
 
 class GetComment(Resource):
     def get(self, comment_id):
-        comment = Comment().get(id=comment_id)
+        comment = Comment().where('id', comment_id).first()
+        user = User().where('id', comment.ATTRIBUTES['user_id']).first()
 
         return response({
-            'Comment': comment
+            'Comment': comment.plus('user', user).data()
         })
 
 
