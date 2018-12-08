@@ -4,9 +4,13 @@ import psycopg2.extras
 
 
 class Term(Base):
-    def all(self):
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("SELECT * FROM terms ORDER BY term_year ASC")
-        terms = cur.fetchall()
-        cur.close()
-        return terms
+    ATTRIBUTES = {
+        'season': '',
+        'term_year': 0,
+        'id': 0
+    }
+    COLUMNS = {
+        'season',
+        'term_year'
+    }
+    TABLE = 'terms'

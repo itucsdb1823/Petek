@@ -56,7 +56,6 @@ class User(Base):
 
     def validate(self):
         user = User().where('email', self.ATTRIBUTES['email']).first().exists()
-
         if user:
             self.setError('There is already an email with this address')
 
