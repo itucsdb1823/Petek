@@ -78,5 +78,13 @@ class Account(Resource):
 
 class Test(Resource):
     def post(self):
-        return True
+        user = User().where('id', 21).first()
+        user.update({
+            'email': 'sa@gmail.com123',
+            'name': 'Yavuz Koca'
+        })
+
+        return response({
+            'user': user.data()
+        })
 

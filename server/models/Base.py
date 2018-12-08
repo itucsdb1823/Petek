@@ -12,6 +12,7 @@ class Base:
     ATTRIBUTES = {}
     HIDDEN = {}
     COLUMNS = {}
+    UPDATES = {}
     RESPONSE = []
     CONDITIONS = []
     TABLE = ''
@@ -184,10 +185,48 @@ class Base:
 
     def delete(self):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("DELETE FROM "+self.TABLE+" WHERE "+self.generateWhereCondition(), self.generateWhereValues())
+        cur.execute("DELETE FROM "+self.TABLE+" WHERE "+self.generateWhereCondition(),
+                    self.generateWhereValues())
         conn.commit()
 
         self.RESPONSE = {}
 
     def setError(self, error):
         self.ERRORS.append(error)
+
+    def update(self, *args):
+        for key, value in args[0].items():
+            self.UPDATES[key] = value
+
+        print("UPDATE " + self.TABLE + " SET " +
+                    self.generateUpdateColumns() + " WHERE " +
+                    self.generateWhereCondition()+" returning *", file=sys.stderr)
+        print(self.generateUpdateValues(), file=sys.stderr)
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("UPDATE " + self.TABLE + " SET " +
+                    self.generateUpdateColumns() + " WHERE " +
+                    self.generateWhereCondition()+" returning *",
+                    self.generateUpdateValues())
+        returnedValue = cur.fetchone()
+        self.setData(returnedValue)
+        conn.commit()
+
+    def generateUpdateColumns(self):
+        s = ''
+        i = 1
+        for column, value in self.UPDATES.items():
+            if i == 1:
+                s += column + '=' + '%s' % '%s'
+            else:
+                s += ', '+column + '=' + '%s' % '%s'
+            i += 1
+        return s
+
+    def generateUpdateValues(self):
+        values = ()
+        for column, value in self.UPDATES.items():
+            values = values + (value,)
+        for condition in self.CONDITIONS:
+            values = values + (condition[2],)
+        return values

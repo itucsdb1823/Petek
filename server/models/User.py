@@ -1,4 +1,5 @@
 import json
+import sys
 
 from server.models.Base import Base
 from server import conn, bcrypt
@@ -18,9 +19,9 @@ class User(Base):
         'id': ''
     }
     COLUMNS = {
-        'name',
-        'email',
-        'password'
+        'name': '',
+        'email': '',
+        'password': ''
     }
     HIDDEN = {
         'password': ''
@@ -67,4 +68,3 @@ class User(Base):
         return {'jwt': create_jwt(identity={
             'id': self.ATTRIBUTES['id']
         })}
-
