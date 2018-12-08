@@ -1,8 +1,8 @@
+import json
+
 from server.models.Base import Base
 from server import conn, bcrypt
 import datetime
-import string
-import random
 import time
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 import psycopg2.extras
@@ -10,11 +10,14 @@ from validate_email import validate_email
 from slugify import slugify
 
 
-def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
-
-
 class User(Base):
+    ATTRIBUTES = {
+        'name': '',
+        'email': '',
+        'slug': '',
+        'id': ''
+    }
+    TABLE = 'users'
     name = ''
     password = ''
     email = ''
@@ -43,37 +46,20 @@ class User(Base):
             return False
         return True
 
-    def generate_slug(self, name):
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        slug = slugify(name)
-        slug_is_not_unique = True
-        i = 2
-        tslug = slug
-        while slug_is_not_unique:
-            cur.execute("SELECT * FROM users WHERE slug=%s LIMIT 1", (slug,))
-            found = cur.fetchone()
-            if found is not None:
-                slug = tslug + str(i)
-                i += 1
-            else:
-                slug_is_not_unique = False
-        return slug
-
     def is_valid(self):
         if self.email_is_valid(email=self.email) and \
                 self.email_is_unique(email=self.email):
             return True
         return False
 
-    @staticmethod
-    def get(email, password):
-        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("SELECT * FROM users WHERE email=%s LIMIT 1", (email,))
-        user = cur.fetchone()
-        cur.close()
-        if user and bcrypt.check_password_hash(user['password'], password):
-            return user
-        return None
+    # def get(self):
+    #     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    #     cur.execute("SELECT * FROM users WHERE email=%s LIMIT 1", (email,))
+    #     user = cur.fetchone()
+    #     cur.close()
+    #     if user and bcrypt.check_password_hash(user['password'], password):
+    #         return user
+    #     return None
 
     def all(self):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -82,11 +68,23 @@ class User(Base):
         cur.close()
         return users
 
+    def a(self):
+        return {
+            'name': 'yavuz',
+            'lastname': 'koca'
+        }
+
+    def __repr__(self):
+        return {
+            'name': 'yavuz',
+            'lastname': 'koca'
+        }
+
     def create(self):
         hashed_password = bcrypt.generate_password_hash(self.password).decode('utf-8')
         ts = time.time()
         created_at = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        self.slug = self.generate_slug(name=self.name)
+        self.slug = self.generate_slug(name=self.name, table_name='users')
 
         # check uniqueness of the user, create slug from name and check its uniqueness
 

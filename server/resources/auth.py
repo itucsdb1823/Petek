@@ -1,3 +1,5 @@
+import sys
+
 from flask_restful import Resource, reqparse
 from flask import jsonify
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
@@ -84,3 +86,14 @@ class Account(Resource):
         return jsonify({
             'user': get_jwt_identity()
         })
+
+
+class Test(Resource):
+    def post(self):
+        user = User().where('id', '<>', 21).first()
+        user.ATTRIBUTES['email'] = 'sa'
+
+        return response({
+            'user': user.data()
+        })
+

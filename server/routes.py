@@ -1,12 +1,9 @@
-import sys
+from flask_jwt_simple import get_jwt_identity, jwt_optional
 
-from flask_jwt_simple import get_jwt_identity, jwt_required, jwt_optional
-
-from server import server, bcrypt
+from server import server
 from flask_restful import Api, request, abort
 from flask_cors import CORS
 import server.resources as r
-from server.helpers import response
 from server.models.User import User
 
 cors = CORS(server, resources={r"/api/*": {"origins": "*"}})
@@ -63,6 +60,8 @@ api.add_resource(r.GetEvents, '/api/events/*')
 
 # Admin Routes
 api.add_resource(r.GetAllUsers, '/admin/users')
+
+api.add_resource(r.Test, '/api/test')
 
 
 @server.before_request
