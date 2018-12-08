@@ -70,7 +70,7 @@ def before_request():
     path = request.path.split(sep='/')
     if path[1] == 'admin':
         current_user = get_jwt_identity()
-        if current_user is None or User(_id=current_user['id']).hasRole('admin') is False:
+        if current_user is None or User().where('id', current_user['id']).first().hasRole('admin') is False:
             abort(401)
 
 

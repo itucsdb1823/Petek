@@ -21,6 +21,14 @@ class Base:
 
     def __init__(self):
         self.ERRORS = []
+        self.ATTRIBUTES = {}
+        self.HIDDEN = {}
+        self.COLUMNS = {}
+        self.UPDATES = {}
+        self.RESPONSE = []
+        self.CONDITIONS = []
+        self.LIMIT = ''
+        self.TIMESTAMPS = True
 
     def getErrors(self):
         return self.ERRORS
