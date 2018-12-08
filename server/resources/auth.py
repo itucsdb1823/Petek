@@ -43,7 +43,7 @@ class Register(Resource):
 
         user.save()
         return response({
-            'user': user.plus('token', user.generateToken()['jwt']).data()
+            'user': user.plus('token', user.generateToken()['jwt']).plus('admin', user.hasRole('admin')).data()
         })
 
 
@@ -56,9 +56,10 @@ class Login(Resource):
         user = User().where([
             ['email', '=', email]
         ]).first()
+
         if user.exists() and bcrypt.check_password_hash(user.HIDDEN['password'], password):
             return response({
-                'user': user.plus('token', user.generateToken()['jwt']).data()
+                'user': user.plus('token', user.generateToken()['jwt']).plus('admin', user.hasRole('admin')).data()
             })
 
         return response({

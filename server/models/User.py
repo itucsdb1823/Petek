@@ -48,14 +48,14 @@ class User(Base):
             cur.execute("SELECT id FROM roles WHERE name IN roles")
             role_ids = cur.fetchall()
             for role_id in role_ids:
-                cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.id, role_id))
+                cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.ATTRIBUTES['id'], role_id))
                 exist = cur.fetchone()
                 if exist:
                     return True
         else:
             cur.execute("SELECT id FROM roles WHERE name=%s", (roles,))
             role_id = cur.fetchone()['id']
-            cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.id, role_id))
+            cur.execute("SELECT * FROM user_roles WHERE user_id=%s AND role_id=%s", (self.ATTRIBUTES['id'], role_id))
             exist = cur.fetchone()
             if exist:
                 return True
