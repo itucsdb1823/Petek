@@ -33,11 +33,16 @@ class Lecturer(Base):
 
     def validate(self):
         user = User().where('id', self.ATTRIBUTES['user_id']).first()
-        if user is None:
+        if user.exists() is False:
             self.setError("User not found in the database!")
+        else:
+            self.plus('user', user)
+
         lecturer = Lecturer().where('email', self.ATTRIBUTES['email']).first()
-        if lecturer is not None:
+        if lecturer.exists() is False:
             self.setError("There is already a lecturer added with this email.")
+        else:
+            self.plus('lecturer', lecturer)
 
         if self.getErrors():
             return False

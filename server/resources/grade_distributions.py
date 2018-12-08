@@ -33,37 +33,42 @@ class AddGradeDistribution(Resource):
     @jwt_required
     def post(self):
         args = parser.parse_args()
-        grade_distribution = GradeDistribution(
-            lecturer_id=args['lecturer_id'],
-            user_id=get_jwt_identity()['id'],
-            term_id=args['term_id'],
-            course_id=args['course_id'],
-            course_code=args['course_code'],
-            english=args['english'],
-        )
 
         file = args['image']
 
         if file:
-            filename = grade_distribution.image = grade_distribution.generateImageName()
+            grade_distribution = GradeDistribution()
+            filename = grade_distribution.generateImageName()
+            grade_distribution.create({
+                'lecturer_id': args['lecturer_id'],
+                'user_id': args['user_id'],
+                'term_id': args['term_id'],
+                'course_id': args['course_id'],
+                'course_code': args['course_code'],
+                'english': args['english'],
+                'image': filename
+            })
+
             imgdata = base64.b64decode(file)
 
             with open(server.config['UPLOAD_FOLDER'] + '/' + filename, 'wb') as f:
                 f.write(imgdata)
 
             file_size = os.stat(os.path.join(server.config['UPLOAD_FOLDER'], filename)).st_size
-            print('393343', file=sys.stderr)
+
             if file_size > 5000000:
                 os.remove(os.path.join(server.config['UPLOAD_FOLDER'], filename))
                 return response({
                     'errors': [
                         'File size must be lower than 5 MB'
                     ]
-                })
+                }, 400)
 
-            if grade_distribution.save() is True:
+            if grade_distribution.validate() is True:
+                grade_distribution.save()
+
                 return response({
-                    'message': 'Grade distribution saved successfully'
+                    'grade_distribution': grade_distribution.data()
                 })
 
             return response({
@@ -82,12 +87,17 @@ class DeleteGradeDistribution(Resource):
     @jwt_required
     def post(self):
         args = parser.parse_args()
-        grade_distribution = GradeDistribution(
-            _id=args['id'],
-            user_id=get_jwt_identity()['id'],
-        )
-        grade_distribution.delete()
+        user_id = get_jwt_identity()['id']
+        grade_distribution = GradeDistribution().where([['id', '=', args['id']],['user_id', '=', user_id]])
+
+        if grade_distribution.exists() is True:
+            grade_distribution.delete()
+            return response({
+                'message': 'Grade Distribution has deleted successfully'
+            })
 
         return response({
-            'message': 'Grade Distribution has deleted successfully'
-        })
+            'errors': [
+                'Grade distribution could not found'
+            ]
+        }, 404)
