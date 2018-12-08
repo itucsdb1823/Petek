@@ -9,32 +9,36 @@ from server import conn
 
 
 class Note(Base):
-    ATTRIBUTES = {
-        'id' : 0,
-        'title' : '',
-        'content' : '',
-        'lecturer' : 'Unknown',
-        'link' : '',
-        'course_id' : '',
-        'course_code' : 0,
-        'english' : False,
-        'term_id' : 0,
-        'slug' : '',
-        'user_id' : 0
-    }
-    COLUMNS = {
-        'title' : '',
-        'content' : '',
-        'lecturer' : 'Unknown',
-        'link' : '',
-        'course_id' : '',
-        'course_code' :0,
-        'english' : False,
-        'term_id' : 0,
-        'slug' : '',
-        'user_id' : 0
-    }
+    ATTRIBUTES = {}
+    COLUMNS = {}
     TABLE = 'notes'
+    def __init__(self):
+        super().__init__()
+        self.ATTRIBUTES = {
+            'id' : 0,
+            'title' : '',
+            'content' : '',
+            'lecturer' : 'Unknown',
+            'link' : '',
+            'course_id' : '',
+            'course_code' : 0,
+            'english' : False,
+            'term_id' : 0,
+            'slug' : '',
+            'user_id' : 0
+        }
+        self.COLUMNS = {
+            'title' : '',
+            'content' : '',
+            'lecturer' : 'Unknown',
+            'link' : '',
+            'course_id' : '',
+            'course_code' :0,
+            'english' : False,
+            'term_id' : 0,
+            'slug' : '',
+            'user_id' : 0
+        }
 
     def validate(self):
         # term id exist

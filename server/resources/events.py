@@ -4,6 +4,7 @@ from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 from server.models.Event import Event
 from server.helpers import response
 from server import cur, conn
+from server.models.User import User
 
 parser = reqparse.RequestParser()
 parser.add_argument('title', type=str, help='Title must be a string')
@@ -21,18 +22,25 @@ class CreateEvent(Resource):
         started_at = args['started_at']
         user_id = get_jwt_identity()['id']
 
-        event = Event(_title=title, _description=description,
-            _max_participant=max_participant, _started_at=started_at, _user_id=user_id)
-        result = event.save()
+        event = Event()
+        event.create({
+            'title': title,
+            'description': description,
+            'max_participant': max_participant,
+            'started_at': started_at,
+            'user_id': user_id
+        })
 
-        if result is False:
+        if event.validate() is False:
             return response({
                 'errors': event.getErrors()
             }, 401)
 
+        user = User().where('id', user_id).first()
+        event.save()
         return response({
-            'message': 'Event successfully created!'
-        })
+            'event': event.plus('user', user.data()).data()
+        }, 200)
 
 
 class UpdateEvent(Resource):
@@ -45,9 +53,8 @@ class UpdateEvent(Resource):
         started_at = args['started_at']
         user_id = get_jwt_identity()['id']
 
-        event = Event(_id=event_id, _title=title, _description=description,
-            _max_participant=max_participant, _started_at=started_at, _user_id=user_id)
-        result = event.update()
+        event = Event().where([])
+        event.update()
 
         if result is False:
             return response({

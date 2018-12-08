@@ -35,7 +35,6 @@ class CreateLecturerComment(Resource):
             }, 401)
 
         user = User().where('id', user_id).first()
-        print(user)
         comment.save()
         return response({
             'comment': comment.plus('user', user.data()).data()
@@ -67,13 +66,13 @@ class CreateNoteComment(Resource):
         user = User().where('id', user_id).first()
         comment.save()
         return response({
-            'comment': comment.plus('user', user).data()
+            'comment': comment.plus('user', user.data()).data()
         }, 200)
 
 
 class UpdateLecturerComment(Resource):
     @jwt_required
-    def post(self, comment_id):
+    def post(self, type_id, comment_id):
         args = parser.parse_args()
         commentText = args['comment']
         user_id = get_jwt_identity()['id']
@@ -94,7 +93,7 @@ class UpdateLecturerComment(Resource):
 
 class UpdateNoteComment(Resource):
     @jwt_required
-    def post(self, comment_id):
+    def post(self, type_id, comment_id):
         args = parser.parse_args()
         commentText = args['comment']
         user_id = get_jwt_identity()['id']
@@ -120,6 +119,7 @@ class DeleteComment(Resource):
         comment = Comment().where([['id', '=', comment_id],
                                    ['user_id', '=', user_id]]).first()
         if comment.exists():
+            comment.delete()
             return response({
                 'message': 'Comment deleted successfully'
             }, 202)
@@ -141,26 +141,26 @@ class DeleteComment(Resource):
 class GetLecturerComments(Resource):
     def get(self, type_id):
         comments = Comment().where([['type', '=', 'lecturers'],
-                                   ['type_id', '=', type_id]]).get()
+                                   ['type_id', '=', type_id]]).get().data()
         for comment in comments:
-            user = User().where(['id', comment.ATTRIBUTES['user_id']]).first()
+            user = User().where('id', comment['user_id']).first()
             comment['user'] = {
                 'id': user.ATTRIBUTES['id']
             }
 
         return response({
-            'comments': comments.data()
+            'comments': comments
         }, 200)
 
 
 class GetNoteComments(Resource):
     def get(self, type_id):
         comments = Comment().where([['type', '=', 'notes'],
-                                   ['type_id', '=', type_id]]).get()
+                                   ['type_id', '=', type_id]]).get().data()
         for comment in comments:
-            user = User().where(['id', comment.ATTRIBUTES['user_id']]).first()
-            comment['user'] = user
+            user = User().where('id', comment['user_id']).first()
+            comment['user'] = user.data()
 
         return response({
-            'comments': comments.data()
+            'comments': comments
         }, 200)
