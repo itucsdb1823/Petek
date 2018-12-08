@@ -5,6 +5,7 @@ from flask import jsonify
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 from server.models.User import User
 from server.helpers import response
+from server import bcrypt
 
 
 parser = reqparse.RequestParser()
@@ -17,14 +18,9 @@ parser.add_argument('email', type=str, help='Email must be a string')
 class Register(Resource):
     def post(self):
         args = parser.parse_args()
-        name = args['name']
         password = args['password']
         password_confirm = args['passwordConfirm']
-        email = args['email']
 
-        # Validation rules start
-
-        # Rule 1
         if password != password_confirm:
             return response({
                 'errors': [
@@ -33,23 +29,21 @@ class Register(Resource):
             }, 401)
 
         # Rule 2
-        user = User(name, password, email)
-        if user.is_valid() is False:
+        user = User()
+        user.create({
+            'name': args['name'],
+            'email': args['email'],
+            'password': bcrypt.generate_password_hash(args['password']).decode('utf-8'),
+            'slug': user.generateSlug(args['name'])
+        })
+        if user.validate() is False:
             return response({
-                'errors': [
-                    'This email has taken'
-                ]
+                'errors': user.getErrors()
             }, 401)
 
-        # Validation rules end
-        token = user.create()
-
+        user.save()
         return response({
-            'name': user.name,
-            'email': user.email,
-            'slug': user.slug,
-            'id': user.id,
-            'token': token
+            'user': user.plus('token', user.generateToken()['jwt']).data()
         })
 
 
@@ -59,18 +53,12 @@ class Login(Resource):
         email = args['email']
         password = args['password']
 
-        user = User.get(email, password)
-
-        if user is not None:
-            token = {'jwt': create_jwt(identity={
-                'id': user['id']
-            })}
+        user = User().where([
+            ['email', '=', email]
+        ]).first()
+        if user.exists() and bcrypt.check_password_hash(user.HIDDEN['password'], password):
             return response({
-                'name': user['name'],
-                'email': user['email'],
-                'token': token['jwt'],
-                'id': user['id'],
-                'slug': user['slug']
+                'user': user.plus('token', user.generateToken()['jwt']).data()
             })
 
         return response({
@@ -90,10 +78,5 @@ class Account(Resource):
 
 class Test(Resource):
     def post(self):
-        user = User().where('id', '<>', 21).first()
-        user.ATTRIBUTES['email'] = 'sa'
-
-        return response({
-            'user': user.data()
-        })
+        return True
 

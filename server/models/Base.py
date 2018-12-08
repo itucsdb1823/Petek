@@ -1,4 +1,6 @@
+import datetime
 import sys
+import time
 
 from slugify import slugify
 from server import conn
@@ -8,25 +10,28 @@ import psycopg2.extras
 class Base:
     ERRORS = []
     ATTRIBUTES = {}
+    HIDDEN = {}
+    COLUMNS = {}
     RESPONSE = []
     CONDITIONS = []
     TABLE = ''
     LIMIT = ''
+    TIMESTAMPS = True
 
-    def save(self):
-        print('yey')
+    def __init__(self):
+        self.ERRORS = []
 
     def getErrors(self):
         return self.ERRORS
 
-    def generate_slug(self, name, table_name):
+    def generateSlug(self, name):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         slug = slugify(name)
         slug_is_not_unique = True
         i = 2
         tslug = slug
         while slug_is_not_unique:
-            cur.execute("SELECT * FROM "+table_name+" WHERE slug=%s LIMIT 1", (slug,))
+            cur.execute("SELECT * FROM "+self.TABLE+" WHERE slug=%s LIMIT 1", (slug,))
             found = cur.fetchone()
             if found is not None:
                 slug = tslug + str(i)
@@ -49,18 +54,22 @@ class Base:
 
     def get(self, one=False):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        print("SELECT * FROM " + self.TABLE + " WHERE "+self.generateWhereCondition()+self.LIMIT, file=sys.stderr)
         cur.execute("SELECT * FROM " + self.TABLE + " WHERE "+self.generateWhereCondition()+self.LIMIT,
                     self.generateWhereValues())
         if one:
             row = cur.fetchone()
-            for column, value in row.items():
-                if column in self.ATTRIBUTES:
-                    self.ATTRIBUTES[column] = value
-            self.RESPONSE = self.ATTRIBUTES
+            if row is not None:
+                for column, value in row.items():
+                    if column in self.ATTRIBUTES:
+                        self.ATTRIBUTES[column] = value
+                    elif column in self.HIDDEN:
+                        self.HIDDEN[column] = value
+                self.RESPONSE = self.ATTRIBUTES
             return self
 
         rows = cur.fetchall()
+        if rows is None:
+            return self
         self.RESPONSE = []
         for row in rows:
             data = {}
@@ -85,7 +94,7 @@ class Base:
         return self
 
     def plus(self, column, value):
-        self.ATTRIBUTES[column] = value
+        self.RESPONSE[column] = value
         return self
 
     def first(self):
@@ -94,3 +103,91 @@ class Base:
 
     def data(self):
         return self.RESPONSE
+
+    def create(self, *args):
+        self.COLUMNS = args[0]
+        self.setData(self.COLUMNS, False)
+        return self
+
+    def save(self):
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute(
+                "INSERT INTO "+self.TABLE+self.generateInsertIntoColumns() +
+                "VALUES"+self.generateInsertIntoValueStrings()+" returning *",
+                self.generateInsertIntoValues())
+
+        returnedValue = cur.fetchone()
+        self.setData(returnedValue)
+
+        conn.commit()
+        return self
+
+    def generateInsertIntoColumns(self):
+        s = '('
+        i = 1
+        for column, value in self.COLUMNS.items():
+            if i == 1:
+                s += column
+                if self.TIMESTAMPS:
+                    s += ', created_at'
+            else:
+                s += ', '+column
+            i += 1
+        s += ' ) '
+        return s
+
+    def generateInsertIntoValueStrings(self):
+        s = '('
+        i = 1
+        for _ in self.COLUMNS.items():
+            if i == 1:
+                s += '%s' % '%s'
+                if self.TIMESTAMPS:
+                    s += ', ' + '%s' % '%s'
+            else:
+                s += ', %s' % '%s'
+            i += 1
+        s += ' ) '
+        return s
+
+    def generateInsertIntoValues(self):
+        values = ()
+        i = 1
+        for column, value in self.COLUMNS.items():
+            if i == 1:
+                values = values + (value,)
+                if self.TIMESTAMPS:
+                    values = values + (self.generateCreatedAt(),)
+            else:
+                values = values + (value,)
+            i += 1
+
+        return values
+
+    def generateCreatedAt(self):
+        ts = time.time()
+        return datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+
+    def setData(self, d, writeToResponse=True):
+        for column, value in d.items():
+            if column in self.ATTRIBUTES:
+                self.ATTRIBUTES[column] = value
+        if writeToResponse:
+            self.RESPONSE = self.ATTRIBUTES
+        else:
+            self.RESPONSE = {}
+
+    def exists(self):
+        if self.RESPONSE == [] or self.RESPONSE == {} or self.RESPONSE is None:
+            return False
+        return True
+
+    def delete(self):
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("DELETE FROM "+self.TABLE+" WHERE "+self.generateWhereCondition(), self.generateWhereValues())
+        conn.commit()
+
+        self.RESPONSE = {}
+
+    def setError(self, error):
+        self.ERRORS.append(error)
