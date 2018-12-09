@@ -1,6 +1,9 @@
+import os
+import sys
+
 from flask_jwt_simple import get_jwt_identity, jwt_optional
 
-from server import server
+from server import server, send_from_directory
 from flask_restful import Api, request, abort
 from flask_cors import CORS
 import server.resources as r
@@ -65,13 +68,23 @@ api.add_resource(r.Test, '/api/test')
 
 
 @server.before_request
-@jwt_optional
 def before_request():
     path = request.path.split(sep='/')
     if path[1] == 'admin':
-        current_user = get_jwt_identity()
-        if current_user is None or User().where('id', current_user['id']).first().hasRole('admin') is False:
-            abort(401)
+        adminAuthority()
+
+
+@jwt_optional
+def adminAuthority():
+    current_user = get_jwt_identity()
+    if current_user is None or User().where('id', current_user['id']).first().hasRole('admin') is False:
+        abort(401)
+
+
+@server.route('/images/<path:path>')
+def sendImage(path):
+    path = 'a.jpg'
+    return send_from_directory(os.path.join('../images').replace('\\', '/'), path)
 
 
 @server.route('/', defaults={'path': ''})
