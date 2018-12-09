@@ -1,6 +1,8 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
+
+from server.models.Comment import Comment
 from server.models.Note import Note
 from server.models.User import User
 from server.helpers import response
@@ -117,6 +119,8 @@ class NoteSingle(Resource):
         note = Note().where('slug', note_slug).first().data()
         user = User().where('id', note['user_id']).first()
         note['user'] = user.data()
+        comments = Comment().where([['type', '=', 'notes'], ['type_id', '=', note['id']]]).get()
+        note['comments'] = comments.data()
         return response({
             'notes': note
         }, 200)
