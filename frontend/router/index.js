@@ -73,6 +73,9 @@ export function createRouter () {
           path: '/lecturers/:lecturer_slug',
           name: 'Lecturer',
           component: Lecturer
+        },
+        {
+          path: '/admin/notes'
         }
       ]
     })

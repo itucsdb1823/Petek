@@ -55,7 +55,7 @@ const storeOptions = {
 
         Auth.register(user)
           .then((result) => {
-            commit('setUser', result.data)
+            commit('setUser', result.data.user)
             commit('postRequest', true)
         }).catch((error) => {
           commit('setError', error.response.data.errors)
@@ -71,7 +71,7 @@ const storeOptions = {
         }
 
         Auth.login(user).then(result => {
-          commit('setUser', result.data)
+          commit('setUser', result.data.user)
           commit('postRequest', true)
           console.log('as')
         }).catch(error => {
@@ -239,7 +239,7 @@ const storeOptions = {
       },
       getNote({commit}, payload){
         Note.getNote(payload).then(result => {
-          commit('setNote', result.data.note)
+          commit('setNote', result.data.notes)
           commit('getRequest', true)
         }).catch(error => {
           commit('getRequest', false)

@@ -65,6 +65,7 @@
       <v-btn
         icon
         @click.native.stop="rightDrawer = !rightDrawer"
+        v-if="userIsAuthenticated && user.admin === true"
       >
         <v-icon>menu</v-icon>
       </v-btn>
@@ -86,13 +87,14 @@
       :right="right"
       v-model="rightDrawer"
       fixed
+      v-if="userIsAuthenticated && user.admin === true"
     >
       <v-list>
-        <v-list-tile @click.native="right = !right">
+        <v-list-tile v-for="(item, i) in adminItems" :to="item.to">
           <v-list-tile-action>
-            <v-icon light>compare_arrows</v-icon>
+            <v-icon light>{{ item.icon }}</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
+          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
@@ -127,8 +129,15 @@
     },
     computed: {
       userIsAuthenticated(){
-        const user = this.$store.getters.user;
-        return user !== null && user !== undefined;
+        return this.user !== null && this.user !== undefined;
+      },
+      user(){
+        return this.$store.getters.user;
+      },
+      adminItems(){
+        return [
+          { icon: 'reorder', title: 'Notes', to:'/admin/notes' },
+        ]
       },
       menuItems(){
         let menuItems = [

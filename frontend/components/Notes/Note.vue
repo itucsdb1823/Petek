@@ -19,10 +19,10 @@
                 <template v-for="(item, index) in note.comments.slice(0, limit)">
                   <v-list-tile :key="index" avatar ripple>
                     <v-list-tile-content>
-                      <v-list-tile-title><b style="color: #1E90FF;">{{ item.user.name}}:</b> {{ item.comment }}</v-list-tile-title>
+                      <v-list-tile-title><b style="color: #1E90FF;">{{ item.user.name}}:</b> {{ item.comment.comment }}</v-list-tile-title>
                     </v-list-tile-content>
                     <v-list-tile-action v-if="userIsAuthenticated && user.id === item.user.id">
-                      <v-icon color="red lighten-1" @click="deleteComment(item.id, index)">delete</v-icon>
+                      <v-icon color="red lighten-1" @click="deleteComment(item.comment.id, index)">delete</v-icon>
                     </v-list-tile-action>
                   </v-list-tile>
                   <v-divider v-if="index + 1 < note.comments.length" :key="`divider-${index}`"></v-divider>

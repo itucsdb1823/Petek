@@ -165,6 +165,7 @@
     methods: {
       onAgree(){
         this.$store.dispatch('editNote', this.note)
+        this.editNoteDialog = false
       }
     },
     watch: {
