@@ -26,17 +26,20 @@ class AddLecturer(Resource):
         email = args['email']
         user_id = get_jwt_identity()['id']
 
-        lecturer = Lecturer().create({
+        lecturer = Lecturer()
+        lecturer.create({
             'name': name,
             'email': email,
+            'slug': lecturer.generateSlug(name=name),
             'user_id': user_id
         })
+
 
         if lecturer.validate() is True:
             lecturer.save()
             return response({
                 'lecturer': lecturer.data()
-            })
+            }, 200)
 
         return response({
             'errors': lecturer.getErrors()
@@ -97,7 +100,8 @@ class UpdateLecturer(Resource):
         if lecturer.exists() is True:
             lecturer.update({
                 'name': args['name'],
-                'email': args['email']
+                'email': args['email'],
+                'slug': lecturer.generateSlug(name=args['name'])
             })
             return response({
                 'lecturer': lecturer.data()

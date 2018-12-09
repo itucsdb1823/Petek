@@ -6,8 +6,7 @@ from server.models.Term import Term
 
 class Terms(Resource):
     def get(self):
-        terms = Term().all()
-
+        terms = Term().where().get()
         return response({
-            'terms': terms
-        })
+            'terms': terms.data()
+        }, 200)

@@ -79,7 +79,7 @@ class UpdateLecturerComment(Resource):
 
         comment = Comment().where([['id', '=', comment_id],
                                    ['user_id', '=', user_id]]).first()
-        if comment is None or comment.validate() is False:
+        if comment.exists() is False or comment.validate() is False:
             return response({
                 'message': 'That comment does not exist or it does not belong to you'
             }, 401)
@@ -100,7 +100,7 @@ class UpdateNoteComment(Resource):
 
         comment = Comment().where([['id', '=', comment_id],
                                    ['user_id', '=', user_id]]).first()
-        if comment is None or comment.validate() is False:
+        if comment.exists() is False or comment.validate() is False:
             return response({
                 'message': 'That comment does not exist or it does not belong to you'
             }, 401)

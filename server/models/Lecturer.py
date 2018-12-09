@@ -39,7 +39,7 @@ class Lecturer(Base):
             self.plus('user', user)
 
         lecturer = Lecturer().where('email', self.ATTRIBUTES['email']).first()
-        if lecturer.exists() is False:
+        if lecturer.exists() is True:
             self.setError("There is already a lecturer added with this email.")
         else:
             self.plus('lecturer', lecturer)

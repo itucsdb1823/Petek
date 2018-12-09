@@ -7,4 +7,4 @@ class Courses(Resource):
         courses = Course().where().get()
         return response({
             'courses': courses.data()
-        })
+        }, 200)

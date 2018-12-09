@@ -42,16 +42,16 @@ class Note(Base):
 
     def validate(self):
         # term id exist
-        term = Term().where('id', self.ATTRIBUTES['term_id']).first().exists()
-        if term is None:
+        term = Term().where('id', self.ATTRIBUTES['term_id']).first()
+        if term.exists() is False:
             self.setError("Term not found")
 
-        course = Course().where('id', self.ATTRIBUTES['course_id']).first().exists()
-        if course is None:
+        course = Course().where('id', self.ATTRIBUTES['course_id']).first()
+        if course.exists() is False:
             self.setError("Course not found")
 
-        user = User().where('id', self.ATTRIBUTES['user_id']).first().exists()
-        if user is None:
+        user = User().where('id', self.ATTRIBUTES['user_id']).first()
+        if user.exists() is False:
             self.setError("You are not the owner of this note")
 
         if self.getErrors():

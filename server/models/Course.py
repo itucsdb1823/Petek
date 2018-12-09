@@ -4,12 +4,17 @@ import psycopg2.extras
 
 
 class Course(Base):
-    ATTRIBUTES = {
-        'name': '',
-        'id': 0
-    }
-    COLUMNS = {
-        'name'
-    }
+    ATTRIBUTES = {}
+    COLUMNS = {}
     TABLE = 'courses'
     TIMESTAMPS = False
+    def __init__(self):
+        super().__init__()
+        self.ATTRIBUTES = {
+            'name': '',
+            'id': 0
+        }
+        self.COLUMNS = {
+            'name'
+        }
+        self.TIMESTAMPS = False

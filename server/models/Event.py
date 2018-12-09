@@ -7,22 +7,28 @@ from server import conn
 
 
 class Event(Base):
-    ATTRIBUTES = {
-        'title': '',
-        'description': '',
-        'user_id': 0,
-        'started_at': '',
-        'max_participant': 0,
-        'id': 0
-    }
-    COLUMNS = {
-        'title',
-        'description',
-        'user_id',
-        'started_at',
-        'max_participant'
-    }
+    ATTRIBUTES = {}
+    COLUMNS = {}
     TABLE = 'events'
+
+    def __init__(self):
+        super().__init__()
+        self.ATTRIBUTES = {
+            'title': '',
+            'description': '',
+            'user_id': 0,
+            'started_at': '',
+            'max_participant': 0,
+            'id': 0
+        }
+        self.COLUMNS = {
+            'title',
+            'description',
+            'user_id',
+            'started_at',
+            'max_participant'
+        }
+
 
     def validate(self):
         user = User().where('id', self.ATTRIBUTES['user_id']).first()

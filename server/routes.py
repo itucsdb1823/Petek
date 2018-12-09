@@ -48,7 +48,7 @@ api.add_resource(r.UpdateNoteComment, '/api/notes/<int:type_id>/comments/<int:co
 # ------ Grade Distributions ------
 
 api.add_resource(r.AddGradeDistribution, '/api/add-grade-distribution')
-api.add_resource(r.DeleteGradeDistribution, '/api/delete-grade-distribution')
+api.add_resource(r.DeleteGradeDistribution, '/api/delete-grade-distribution/<int:dist_id>')
 
 # ------ Events -------
 
@@ -56,7 +56,7 @@ api.add_resource(r.CreateEvent, '/api/events/store')
 api.add_resource(r.UpdateEvent, '/api/events/<int:event_id>/update')
 api.add_resource(r.DeleteEvent, '/api/events/<int:event_id>/delete')
 api.add_resource(r.GetEvent, '/api/events/<int:event_id>')
-api.add_resource(r.GetEvents, '/api/events/*')
+api.add_resource(r.GetEvents, '/api/events')
 
 # Admin Routes
 api.add_resource(r.GetAllUsers, '/admin/users')

@@ -10,6 +10,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('title', type=str, help='Title must be a string')
 parser.add_argument('description', type=str, help='Description must be a string')
 parser.add_argument('max_participant', type=int, help='Max participant must be a number')
+parser.add_argument('started_at', type=str, help='Start date must be a string')
 
 
 class CreateEvent(Resource):
@@ -53,41 +54,57 @@ class UpdateEvent(Resource):
         started_at = args['started_at']
         user_id = get_jwt_identity()['id']
 
-        event = Event().where([])
-        event.update()
+        event = Event().where([['id', '=', event_id],
+                                   ['user_id', '=', user_id]]).first()
 
-        if result is False:
+        if event.exists() is False or event.validate() is False:
             return response({
-                'errors': event.getErrors()
+                'message': 'That event does not exist or it does not belong to you'
             }, 401)
+        event.update({
+            'title': title,
+            'description': description,
+            'max_participant': max_participant,
+            'started_at': started_at
+        })
         return response({
             'message': 'Event successfully updated!'
-        })
+        }, 200)
 
 
 class DeleteEvent(Resource):
     @jwt_required
     def post(self, event_id):
-        event = Event(_id=event_id, _user_id=get_jwt_identity()['id'])
-        event.delete()
-
+        user_id = get_jwt_identity()['id']
+        event = Event().where([['id', '=', event_id],
+                                   ['user_id', '=', user_id]]).first()
+        if event.exists():
+            event.delete()
+            return response({
+                'message': 'Event deleted successfully'
+            }, 202)
         return response({
-            'message': "Comment deleted successfully"
-        })
+            'message': 'Event does not exist or it is not yours to delete'
+        }, 404)
 
 
 class GetEvent(Resource):
     def get(self, event_id):
-        event = Event().get(id=event_id)
+        event = Event().where('id', event_id).first().data()
+        user = User().where('id', event['user_id']).first()
+        event['user'] = user.data()
         return response({
-            'Event': event
-        })
+            'event': event
+        }, 200)
 
 
 class GetEvents(Resource):
     def get(self):
-        events = Event().all()
+        events = Event().where().get().data()
+        for event in events:
+            user = User().where('id', event['user_id']).first()
+            event['user'] = user.data()
+
         return response({
             'events': events
-        })
-
+        }, 200)

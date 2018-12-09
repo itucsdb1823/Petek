@@ -33,7 +33,7 @@ class AddGradeDistribution(Resource):
     @jwt_required
     def post(self):
         args = parser.parse_args()
-
+        user_id = get_jwt_identity()['id']
         file = args['image']
 
         if file:
@@ -41,7 +41,7 @@ class AddGradeDistribution(Resource):
             filename = grade_distribution.generateImageName()
             grade_distribution.create({
                 'lecturer_id': args['lecturer_id'],
-                'user_id': args['user_id'],
+                'user_id': user_id,
                 'term_id': args['term_id'],
                 'course_id': args['course_id'],
                 'course_code': args['course_code'],
@@ -85,16 +85,17 @@ class AddGradeDistribution(Resource):
 
 class DeleteGradeDistribution(Resource):
     @jwt_required
-    def post(self):
-        args = parser.parse_args()
+    def post(self, dist_id):
+        #args = parser.parse_args()
         user_id = get_jwt_identity()['id']
-        grade_distribution = GradeDistribution().where([['id', '=', args['id']],['user_id', '=', user_id]])
+        grade_distribution = GradeDistribution().where([['id', '=', dist_id],
+                                            ['user_id', '=', user_id]]).first()
 
         if grade_distribution.exists() is True:
             grade_distribution.delete()
             return response({
                 'message': 'Grade Distribution has deleted successfully'
-            })
+            }, 202)
 
         return response({
             'errors': [
