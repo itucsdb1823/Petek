@@ -17,6 +17,7 @@ class Base:
     CONDITIONS = []
     TABLE = ''
     LIMIT = ''
+    ORDERBY = ''
     TIMESTAMPS = True
 
     def __init__(self):
@@ -28,6 +29,7 @@ class Base:
         self.RESPONSE = []
         self.CONDITIONS = []
         self.LIMIT = ''
+        self.ORDERBY = ''
         self.TIMESTAMPS = True
 
     def getErrors(self):
@@ -97,6 +99,12 @@ class Base:
             for condition in args[0]:
                 self.CONDITIONS.append([condition[0], condition[1], condition[2]])
         return self
+
+    def orderBy(self, column, desc=True):
+        if desc:
+            self.ORDERBY = ' ORDER BY ' + str(column) + ' DESC '
+        else:
+            self.ORDERBY = ' ORDER BY ' + str(column) + ' ASC '
 
     def limit(self, count):
         self.LIMIT = ' LIMIT ' + str(count)
