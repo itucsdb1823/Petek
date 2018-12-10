@@ -8,6 +8,7 @@ class Term(Base):
     COLUMNS = {}
     TABLE = 'terms'
     TIMESTAMPS = False
+
     def __init__(self):
         super().__init__()
         self.ATTRIBUTES = {
@@ -20,4 +21,14 @@ class Term(Base):
             'term_year'
         }
         self.TIMESTAMPS = False
+
+    def validate(self):
+        term = Term().where([['season', '=', self.ATTRIBUTES['season']],
+                    ['term_year', '=', self.ATTRIBUTES['term_year']]]).first()
+        if term.exists():
+            self.setError('Term already exists')
+
+        if self.getErrors():
+            return False
+        return True
 

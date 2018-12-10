@@ -78,7 +78,7 @@ class NoteUpdate(Resource):
 
         if note.exists() is False or note.validate() is False:
             return response({
-                'message': 'That event does not exist or it does not belong to you'
+                'message': 'That note does not exist or it does not belong to you'
             }, 401)
 
         note.update({

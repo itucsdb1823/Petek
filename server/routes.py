@@ -62,7 +62,19 @@ api.add_resource(r.GetEvent, '/api/events/<int:event_id>')
 api.add_resource(r.GetEvents, '/api/events')
 
 # Admin Routes
-api.add_resource(r.GetAllUsers, '/admin/users')
+api.add_resource(r.GetAllUsers, '/api/admin/users')
+api.add_resource(r.LecturerDeleteAdmin, '/api/admin/lecturers/<int:lecturer_id>/delete')
+api.add_resource(r.LecturerUpdateAdmin, '/api/admin/lecturers/<int:lecturer_id>/update')
+api.add_resource(r.NoteDeleteAdmin, '/api/admin/notes/<int:note_id>/delete')
+api.add_resource(r.NoteUpdateAdmin, '/api/admin/notes/<int:note_id>/update')
+api.add_resource(r.CourseAddAdmin, '/api/admin/courses/store')
+api.add_resource(r.CourseDeleteAdmin, '/api/admin/courses/<int:course_id>/delete')
+api.add_resource(r.TermAddAdmin, '/api/admin/terms/store')
+api.add_resource(r.TermDeleteAdmin, '/api/admin/terms/<int:term_id>/delete')
+api.add_resource(r.CommentDeleteAdmin, '/api/admin/comments/<int:comment_id>/delete')
+api.add_resource(r.CommentUpdateAdmin, '/api/admin/comments/<int:comment_id>/update')
+api.add_resource(r.EventDeleteAdmin, '/api/admin/events/<int:event_id>/delete')
+api.add_resource(r.EventUpdateAdmin, '/api/admin/events/<int:event_id>/update')
 
 api.add_resource(r.Test, '/api/test')
 
@@ -70,7 +82,7 @@ api.add_resource(r.Test, '/api/test')
 @server.before_request
 def before_request():
     path = request.path.split(sep='/')
-    if path[1] == 'admin':
+    if path[2] == 'admin':
         adminAuthority()
 
 
@@ -85,6 +97,7 @@ def adminAuthority():
 def sendImage(path):
     path = 'a.jpg'
     return send_from_directory(os.path.join('../images').replace('\\', '/'), path)
+
 
 
 @server.route('/', defaults={'path': ''})

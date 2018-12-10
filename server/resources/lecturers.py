@@ -77,7 +77,9 @@ class GetLecturers(Resource):
 class DeleteLecturer(Resource):
     @jwt_required
     def post(self, lecturer_id):
-        lecturer = Lecturer().where('id', lecturer_id).first()
+        user_id = get_jwt_identity()['id']
+        lecturer = Lecturer().where([['id', '=', lecturer_id],
+                                     ['user_id', '=', user_id]]).first()
         if lecturer.exists() is True:
             lecturer.delete()
             return response({
@@ -95,8 +97,9 @@ class UpdateLecturer(Resource):
     @jwt_required
     def post(self, lecturer_id):
         args = parser.parse_args()
-
-        lecturer = Lecturer().where('id', lecturer_id).first()
+        user_id = get_jwt_identity()['id']
+        lecturer = Lecturer().where([['id', '=', lecturer_id],
+                                     ['user_id', '=', user_id]]).first()
         if lecturer.exists() is True:
             lecturer.update({
                 'name': args['name'],
