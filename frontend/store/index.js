@@ -8,6 +8,8 @@ import Course from '../services/Course'
 import GradeDistribution from '../services/GradeDistribution'
 import LecturerComment from '../services/LecturerComment'
 import NoteComment from '../services/NoteComment'
+import Admin from '../services/Admin'
+import User from '../services/User'
 
 Vue.use(Vuex)
 
@@ -22,7 +24,9 @@ function getBase64(file) {
 
 const storeOptions = {
     state: {
+      users: [],
       user: null,
+      _user: null,
       note: null,
       loading: false,
       error: null,
@@ -44,6 +48,30 @@ const storeOptions = {
     },
     // dispatch
     actions: {
+      editUser({commit}, payload){
+        User.editUser(payload.id, {
+          'name': payload.name,
+          'password': payload.password
+        }).then((result) => {
+          commit('set_user', result.data.user)
+          commit('postRequest', true)
+        }).catch((error) => {
+          commit('setError', error.response.data.errors)
+          commit('postRequest', false)
+        })
+      },
+      adminEditUser({commit}, payload){
+        Admin.editUser(payload.id, {
+          'name': payload.name,
+          'password': payload.password
+        }).then((result) => {
+          commit('set_user', result.data.user)
+          commit('postRequest', true)
+        }).catch((error) => {
+          commit('setError', error.response.data.errors)
+          commit('postRequest', false)
+        })
+      },
       register({commit}, payload){
         const user = {
           email: payload.email,
@@ -102,6 +130,15 @@ const storeOptions = {
           commit('getRequest', true)
         }).catch(error => {
           commit('setError', ['could not get the lecturers.'])
+          commit('getRequest', false)
+        })
+      },
+      getUsers({commit}, payload){
+        User.getUsers().then(result => {
+          commit('setUsers', result.data.users)
+          commit('getRequest', true)
+        }).catch(error => {
+          commit('setError', ['could not get the users.'])
           commit('getRequest', false)
         })
       },
@@ -189,8 +226,28 @@ const storeOptions = {
             commit('setError', error.response.data.errors)
         })
       },
+      adminDeleteNoteComment({commit}, payload){
+        Admin.deleteComment(payload.note_id, payload.comment_id)
+          .then(result => {
+            commit('postRequest', true)
+            commit('deleteNoteComment', payload.comment_index)
+          }).catch(error => {
+            commit('postRequest', false)
+            commit('setError', error.response.data.errors)
+        })
+      },
       deleteLecturerComment({commit}, payload){
         LecturerComment.delete(payload.lecturer_id, payload.comment_id)
+          .then(result => {
+            commit('postRequest', true)
+            commit('deleteLecturerComment', payload.comment_index)
+          }).catch(error => {
+            commit('postRequest', false)
+            commit('setError', error.response.data.errors)
+        })
+      },
+      adminDeleteLecturerComment({commit}, payload){
+        Admin.deleteComment(payload.lecturer_id, payload.comment_id)
           .then(result => {
             commit('postRequest', true)
             commit('deleteLecturerComment', payload.comment_index)
@@ -230,6 +287,17 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
+      get_user({commit}, payload){
+        User.getUser(payload).then(result => {
+          console.log(result)
+          commit('set_user', result.data.user)
+          commit('getRequest', true)
+        }).catch(error => {
+          console.log(error)
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       getTerms({commit}, payload){
         Term.getTerms().then(result => {
           commit('setTerms', result.data.terms)
@@ -256,6 +324,14 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
+      adminDeleteNote({commit}, payload){
+        Admin.deleteNote(payload).then(result => {
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       editNote({commit}, payload){
         Note.editNote(payload).then(result => {
           commit('postRequest', true)
@@ -263,7 +339,15 @@ const storeOptions = {
           commit('postRequest', false)
           commit('setError', error.response.data.errors)
         })
-      }
+      },
+      adminEditNote({commit}, payload){
+        Admin.editNote(payload).then(result => {
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
     },
     // commit
     mutations: {
@@ -301,6 +385,12 @@ const storeOptions = {
         state.user = payload;
         localStorage.setItem('user', JSON.stringify(state.user));
       },
+      set_user(state, payload){
+        state._user = payload
+      },
+      setUsers(state, payload){
+        state.users = payload;
+      },
       setLoading(state, payload){
         state.loading = payload
       },
@@ -325,6 +415,12 @@ const storeOptions = {
       }
     },
     getters: {
+      getUsers(state){
+        return state.users
+      },
+      get_user(state){
+        return state._user
+      },
       getRequest(state){
         return state.getRequest
       },

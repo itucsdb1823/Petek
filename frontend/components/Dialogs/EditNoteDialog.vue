@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="editNoteDialog" max-width="590">
-    <v-btn slot="activator" flat color="orange" align-end v-if="userIsOwner">
+    <v-btn slot="activator" flat color="orange" align-end v-if="userIsOwner || userIsAdmin">
       <v-icon right dark>edit</v-icon>
       Edit
     </v-btn>
@@ -143,6 +143,9 @@
       }
     },
     computed: {
+      userIsAdmin(){
+        return this.userIsAuthenticated && this.user.admin === true
+      },
       userIsOwner () {
         return this.userIsAuthenticated && this.note.user_id === this.user.id
       },
@@ -164,7 +167,11 @@
     },
     methods: {
       onAgree(){
-        this.$store.dispatch('editNote', this.note)
+        if(this.userIsAdmin){
+          this.$store.dispatch('adminEditNote', this.note)
+        }else{
+          this.$store.dispatch('editNote', this.note)
+        }
         this.editNoteDialog = false
       }
     },

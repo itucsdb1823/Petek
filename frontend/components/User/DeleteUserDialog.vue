@@ -1,5 +1,5 @@
 <template>
-  <v-dialog persistent v-model="deleteNoteDialog" max-width="290">
+  <v-dialog persistent v-model="deleteUserDialog" max-width="290">
     <v-btn slot="activator" flat color="red" align-end v-if="userIsOwner || userIsAdmin">
       <v-icon right dark>delete</v-icon>
       Delete
@@ -8,13 +8,13 @@
       <v-container>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-title>Delete Note</v-card-title>
+            <v-card-title>Delete User</v-card-title>
           </v-flex>
         </v-layout>
         <v-divider></v-divider>
         <v-layout row wrap>
           <v-flex xs12>
-            <v-card-text>Do you really want to delete this note?</v-card-text>
+            <v-card-text>Do you really want to delete this user?</v-card-text>
           </v-flex>
         </v-layout>
         <v-layout row wrap>
@@ -22,7 +22,7 @@
             <v-card-actions>
               <v-btn class="orange--text darken-1"
                      flat
-                     @click="deleteNoteDialog=false"
+                     @click="deleteUserDialog=false"
               >Cancel</v-btn>
               <v-btn class="red--text darken-1" flat @click="onAgree">Yes</v-btn>
             </v-card-actions>
@@ -35,15 +35,15 @@
 
 <script>
   export default {
-    props: ['note'],
+    props: ['_user'],
     data(){
       return {
-        deleteNoteDialog: false
+        deleteUserDialog: false
       }
     },
     computed: {
       userIsOwner () {
-        return this.userIsAuthenticated && this.note.user_id === this.user.id
+        return this.userIsAuthenticated && this._user.id === this.user.id
       },
       userIsAuthenticated(){
         return this.user !== null && this.user !== undefined;
@@ -51,7 +51,7 @@
       user(){
         return this.$store.getters.user
       },
-      noteDeleted(){
+      userDeleted(){
         return this.$store.getters.postRequest
       },
       userIsAdmin(){
@@ -61,24 +61,13 @@
     methods: {
       onAgree(){
         if(this.userIsAdmin){
-          this.$store.dispatch('adminDeleteNote', this.note.id)
+          this.$store.dispatch('adminDeleteUser', this._user.id)
         }else{
-          this.$store.dispatch('deleteNote', this.note.id)
+          this.$store.dispatch('deleteUser', this._user.id)
         }
-        this.$router.push('/notes')
+        this.$router.push('/')
       }
     },
-    watch: {
-      noteDeleted(value){
-        if(value === true){
-          this.deleteNoteDialog = false
-          this.$router.push('/notes')
-          this.$store.commit('postRequest', null)
-        }else if(value === false){
-          this.$store.commit('postRequest', null)
-        }
-      }
-    }
   }
 </script>
 

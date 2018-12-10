@@ -19,10 +19,10 @@
                 <template v-for="(item, index) in note.comments.slice(0, limit)">
                   <v-list-tile :key="index" avatar ripple>
                     <v-list-tile-content>
-                      <v-list-tile-title><b style="color: #1E90FF;">{{ item.user.name}}:</b> {{ item.comment.comment }}</v-list-tile-title>
+                      <v-list-tile-title><b style="color: #1E90FF;">{{ item.user.name}}:</b> {{ (item.comment.comment === undefined || item.comment.comment === null) ? item.comment : item.comment.comment }}</v-list-tile-title>
                     </v-list-tile-content>
-                    <v-list-tile-action v-if="userIsAuthenticated && user.id === item.user.id">
-                      <v-icon color="red lighten-1" @click="deleteComment(item.comment.id, index)">delete</v-icon>
+                    <v-list-tile-action v-if="(userIsAuthenticated && user.id === item.user.id) || userIsAdmin">
+                      <v-icon color="red lighten-1" @click="deleteComment(item.id, index)">delete</v-icon>
                     </v-list-tile-action>
                   </v-list-tile>
                   <v-divider v-if="index + 1 < note.comments.length" :key="`divider-${index}`"></v-divider>
@@ -46,14 +46,14 @@
         <v-card-actions>
           <v-btn flat color="green" :href="note.link" target="_blank">Go To Link</v-btn>
           <v-btn flat color="red">Report</v-btn>
-          <v-spacer v-if="userIsOwner"></v-spacer>
+          <v-spacer v-if="userIsOwner || userIsAdmin"></v-spacer>
           <edit-note-dialog
             :note="note"
-            v-if="userIsAuthenticated && userIsOwner"
+            v-if="(userIsAuthenticated && userIsOwner) || userIsAdmin"
           ></edit-note-dialog>
           <delete-note-dialog
             :note="note"
-            v-if="userIsAuthenticated && userIsOwner"
+            v-if="(userIsAuthenticated && userIsOwner) || userIsAdmin"
           ></delete-note-dialog>
         </v-card-actions>
       </v-card>
@@ -95,6 +95,9 @@
       userIsAuthenticated(){
         return this.user !== null && this.user !== undefined;
       },
+      userIsAdmin(){
+        return this.userIsAuthenticated && this.user.admin === true
+      }
     },
     methods: {
       deleteComment(comment_id, index){
@@ -103,7 +106,11 @@
           note_id: this.note.id,
           comment_index: index
         }
-        this.$store.dispatch('deleteNoteComment', deleteComment)
+        if(this.userIsAdmin){
+          this.$store.dispatch('adminDeleteNoteComment', deleteComment)
+        }else{
+          this.$store.dispatch('deleteNoteComment', deleteComment)
+        }
       }
     }
   }

@@ -34,10 +34,10 @@
                     <template v-for="(item, index) in lecturer.comments.slice(0, commentLimit)">
                       <v-list-tile :key="index" avatar ripple>
                         <v-list-tile-content>
-                          <v-list-tile-title>{{ item.comment.comment }}</v-list-tile-title>
+                          <v-list-tile-title>{{ (item.comment.comment === undefined || item.comment.comment === null) ? item.comment : item.comment.comment  }}</v-list-tile-title>
                         </v-list-tile-content>
-                        <v-list-tile-action v-if="userIsAuthenticated && user.id === item.user.id">
-                          <v-icon color="red lighten-1" @click="deleteComment(item.comment.id, index)">delete</v-icon>
+                        <v-list-tile-action v-if="(userIsAuthenticated && user.id === item.user_id) || userIsAdmin">
+                          <v-icon color="red lighten-1" @click="deleteComment(item.id, index)">delete</v-icon>
                         </v-list-tile-action>
                       </v-list-tile>
                       <v-divider v-if="index + 1 < lecturer.comments.length" :key="`divider-${index}`"></v-divider>
@@ -116,18 +116,25 @@
       user(){
         return this.$store.getters.user
       },
+      userIsAdmin(){
+        return this.userIsAuthenticated && this.user.admin === true;
+      }
     },
     methods: {
-      openImage(imageURL){
-
-      },
       deleteComment(comment_id, index){
         const deleteComment = {
           comment_id: comment_id,
           lecturer_id: this.lecturer.id,
           comment_index: index
         }
-        this.$store.dispatch('deleteLecturerComment', deleteComment)
+
+        console.log(deleteComment)
+
+        if(this.userIsAdmin){
+          this.$store.dispatch('adminDeleteLecturerComment', deleteComment)
+        }else{
+          this.$store.dispatch('deleteLecturerComment', deleteComment)
+        }
       }
     }
   }
