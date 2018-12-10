@@ -120,6 +120,8 @@ class NoteSingle(Resource):
         user = User().where('id', note['user_id']).first()
         note['user'] = user.data()
         comments = Comment().where([['type', '=', 'notes'], ['type_id', '=', note['id']]]).get()
+        for comment in comments.data():
+            comment['user'] = User().where('id', comment['user_id']).first().data()
         note['comments'] = comments.data()
         return response({
             'notes': note
