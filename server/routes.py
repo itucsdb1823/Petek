@@ -7,6 +7,7 @@ from server import server, send_from_directory
 from flask_restful import Api, request, abort
 from flask_cors import CORS
 import server.resources as r
+from server.helpers import response
 from server.models.User import User
 
 cors = CORS(server, resources={r"/api/*": {"origins": "*"}})
@@ -16,6 +17,7 @@ api = Api(server)
 api.add_resource(r.Register, '/api/register')
 api.add_resource(r.Login, '/api/login')
 api.add_resource(r.Account, '/api/account')
+api.add_resource(r.GetUser, '/api/users/<string:slug>')
 
 # -------- Lecturers ------
 
@@ -80,24 +82,20 @@ api.add_resource(r.Test, '/api/test')
 
 
 @server.before_request
+@jwt_optional
 def before_request():
     path = request.path.split(sep='/')
     if path[2] == 'admin':
-        adminAuthority()
-
-
-@jwt_optional
-def adminAuthority():
-    current_user = get_jwt_identity()
-    if current_user is None or User().where('id', current_user['id']).first().hasRole('admin') is False:
-        abort(401)
+        if request.method != "OPTIONS":
+            current_user = get_jwt_identity()
+            if current_user is None or User().where('id', current_user['id']).first().hasRole('admin') is False:
+                return response({'errors': ['Please login']}, 401)
 
 
 @server.route('/images/<path:path>')
 def sendImage(path):
     path = 'a.jpg'
     return send_from_directory(os.path.join('../images').replace('\\', '/'), path)
-
 
 
 @server.route('/', defaults={'path': ''})
