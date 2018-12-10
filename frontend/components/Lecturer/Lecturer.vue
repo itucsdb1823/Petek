@@ -54,33 +54,20 @@
                   <v-container grid-list-sm fluid>
                     <v-layout row wrap>
                       <v-flex
-                        v-for="n in gradeDistributions.slice(0,gradeDistributionLimit)"
-                        :key="n"
+                        v-for="(n, i) in lecturer.grade_distributions.slice(0,gradeDistributionLimit)"
+                        :key="i"
                         xs12
                         d-flex
                       >
                         <v-card flat tile class="d-flex">
-                          <v-img
-                            :src="`https://picsum.photos/500/300?image=1`"
-                            :lazy-src="`https://picsum.photos/500/300?image=1`"
-                            aspect-ratio="2"
-                            class="grey lighten-2"
-                          >
-                            <v-layout
-                              slot="placeholder"
-                              fill-height
-                              align-center
-                              justify-center
-                              ma-0
-                            >
-                              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                            </v-layout>
-                          </v-img>
+                          <grade-distribution-dialog
+                            :n="n"
+                          ></grade-distribution-dialog>
                         </v-card>
                       </v-flex>
                     </v-layout>
                     </v-container>
-                  <v-layout row justify-center v-if="gradeDistributionLimit < gradeDistributions.length">
+                  <v-layout row justify-center v-if="gradeDistributionLimit < lecturer.grade_distributions.length">
                     <v-flex xs6 offset-xs3>
                       <v-btn color="orange" @click="gradeDistributionLimit += 2">Load More</v-btn>
                     </v-flex>
@@ -100,10 +87,11 @@
 <script>
   import AddGradeDistributionDialog from "../GradeDistribution/Create";
   import AddCommentDialog from "../Comment/LecturerComment";
+  import GradeDistributionDialog from '../Dialogs/GradeDistribution'
 
   export default {
     name: "Lecturer",
-    components: {AddGradeDistributionDialog, AddCommentDialog},
+    components: {AddGradeDistributionDialog, AddCommentDialog, GradeDistributionDialog},
     metaInfo: {
       // title will be injected into parent titleTemplate
       title: "Lecturer"
@@ -112,13 +100,6 @@
       return {
         commentLimit: 3,
         gradeDistributionLimit: 2,
-        gradeDistributions: [
-          'asdfa',
-          'asdfsda',
-          'asdfas',
-          'asdfas',
-          'dsafasd'
-        ]
       }
     },
     beforeCreate(){
@@ -137,6 +118,9 @@
       },
     },
     methods: {
+      openImage(imageURL){
+
+      },
       deleteComment(comment_id, index){
         const deleteComment = {
           comment_id: comment_id,

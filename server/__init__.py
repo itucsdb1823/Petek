@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_jwt_simple import JWTManager
@@ -6,7 +6,7 @@ import psycopg2.extras
 from server.config import config
 from server.helpers import setEnv
 
-server = Flask(__name__, template_folder='../dist', static_folder="../dist/static")
+server = Flask(__name__, static_url_path='')
 
 server.config['SECRET_KEY'] = '5ea8e7ed82a4e1fd0cca8d08a003344c'
 server.config['JWT_SECRET_KEY'] = 'fjsalkd131j31k3l3k1c4e1fd0cca8d08a0'

@@ -105,6 +105,7 @@ class Base:
             self.ORDERBY = ' ORDER BY ' + str(column) + ' DESC '
         else:
             self.ORDERBY = ' ORDER BY ' + str(column) + ' ASC '
+        return self
 
     def limit(self, count):
         self.LIMIT = ' LIMIT ' + str(count)

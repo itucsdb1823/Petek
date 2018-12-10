@@ -42,7 +42,6 @@ const storeOptions = {
       getRequest: null,
       postRequest: null,
     },
-
     // dispatch
     actions: {
       register({commit}, payload){
@@ -62,8 +61,6 @@ const storeOptions = {
           commit('postRequest', false)
         })
       },
-
-      // Login user
       login({commit}, payload){
         const user = {
           email: payload.email,
@@ -80,8 +77,6 @@ const storeOptions = {
           commit('postRequest', false)
         })
       },
-
-      // Logout
       logout({commit}){
         commit('setUser', null)
         localStorage.setItem('user', null);
@@ -92,7 +87,6 @@ const storeOptions = {
       setError({commit}, payload){
         commit('setError', payload)
       },
-
       createLecturer({commit}, payload){
         Lecturer.create(payload).then(result => {
           commit('postRequest', true)
@@ -102,7 +96,6 @@ const storeOptions = {
           commit('postRequest', false)
         })
       },
-
       getLecturers({commit}, payload){
         Lecturer.getLecturers().then(result => {
           commit('setLecturers', result.data.lecturers)
@@ -112,7 +105,6 @@ const storeOptions = {
           commit('getRequest', false)
         })
       },
-
       getLecturer({commit}, payload){
         Lecturer.getLecturer(payload).then(result => {
           commit('setLecturer', result.data.lecturer)
@@ -120,7 +112,6 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
-
       createGradeDistribution({commit}, payload){
         let file = payload.image;
         getBase64(file).then(
@@ -140,7 +131,6 @@ const storeOptions = {
             commit('setError', ['Could not encode the image!'])
           });
       },
-
       addLecturerComment({commit}, payload){
         if(payload.comment === ''){
           commit('setError', ['Please fill all fields!'])
@@ -164,7 +154,6 @@ const storeOptions = {
             commit('setError', error.response.data.errors)
           })
       },
-
       addNoteComment({commit}, payload){
         if(payload.comment === ''){
           commit('setError', ['Please fill all fields!'])
@@ -190,7 +179,6 @@ const storeOptions = {
             commit('setError', error.response.data.errors)
           })
       },
-
       deleteNoteComment({commit}, payload){
         NoteComment.delete(payload.note_id, payload.comment_id)
           .then(result => {
@@ -201,7 +189,6 @@ const storeOptions = {
             commit('setError', error.response.data.errors)
         })
       },
-
       deleteLecturerComment({commit}, payload){
         LecturerComment.delete(payload.lecturer_id, payload.comment_id)
           .then(result => {
@@ -212,8 +199,6 @@ const storeOptions = {
             commit('setError', error.response.data.errors)
         })
       },
-
-      // Create Note
       createNote({commit}, payload){
         if(payload.course_id === '' || payload.term_id === ''){
           commit('setError', ['Please fill all fields!'])
@@ -227,7 +212,6 @@ const storeOptions = {
           commit('postRequest', false)
         })
       },
-
       getNotes({commit}, payload){
         Note.getNotes().then(result => {
           commit('setNotes', result.data.notes)
