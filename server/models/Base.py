@@ -65,8 +65,8 @@ class Base:
 
     def get(self, one=False):
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        cur.execute("SELECT * FROM " + self.TABLE + " WHERE "+self.generateWhereCondition()+self.LIMIT,
-                    self.generateWhereValues())
+        cur.execute("SELECT * FROM " + self.TABLE + " WHERE "+self.generateWhereCondition()+
+                    self.ORDERBY + self.LIMIT, self.generateWhereValues())
         if one:
             row = cur.fetchone()
             if row is not None:
@@ -100,7 +100,7 @@ class Base:
                 self.CONDITIONS.append([condition[0], condition[1], condition[2]])
         return self
 
-    def orderBy(self, column, desc=True):
+    def orderBy(self, column='created_at', desc=True):
         if desc:
             self.ORDERBY = ' ORDER BY ' + str(column) + ' DESC '
         else:

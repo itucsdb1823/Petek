@@ -130,7 +130,7 @@ class NoteSingle(Resource):
 
 class Notes(Resource):
     def get(self):
-        notes = Note().where().get().data()
+        notes = Note().where().orderBy().get().data()
         for note in notes:
             user = User().where('id', note['user_id']).first()
             note['user'] = user.data()

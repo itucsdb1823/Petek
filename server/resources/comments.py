@@ -141,7 +141,7 @@ class DeleteComment(Resource):
 class GetLecturerComments(Resource):
     def get(self, type_id):
         comments = Comment().where([['type', '=', 'lecturers'],
-                                   ['type_id', '=', type_id]]).get().data()
+                        ['type_id', '=', type_id]]).orderBy().get().data()
         for comment in comments:
             user = User().where('id', comment['user_id']).first()
             comment['user'] = {
@@ -156,7 +156,7 @@ class GetLecturerComments(Resource):
 class GetNoteComments(Resource):
     def get(self, type_id):
         comments = Comment().where([['type', '=', 'notes'],
-                                   ['type_id', '=', type_id]]).get().data()
+                        ['type_id', '=', type_id]]).orderBy().get().data()
         for comment in comments:
             user = User().where('id', comment['user_id']).first()
             comment['user'] = user.data()

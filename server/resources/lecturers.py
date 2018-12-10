@@ -68,7 +68,7 @@ class GetLecturer(Resource):
 
 class GetLecturers(Resource):
     def get(self):
-        lecturers = Lecturer().get()
+        lecturers = Lecturer().orderBy().get()
         return response({
             'lecturers': lecturers.data()
         })
