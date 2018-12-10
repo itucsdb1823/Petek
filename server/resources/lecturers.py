@@ -8,7 +8,6 @@ from server.models.Lecturer import Lecturer
 from server.helpers import response
 from server import cur, conn
 
-
 parser = reqparse.RequestParser()
 parser.add_argument('name', type=str, help='Name must be a string')
 parser.add_argument('password', type=str, help='Password must be a string')
