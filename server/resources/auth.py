@@ -77,6 +77,46 @@ class Account(Resource):
         })
 
 
+class UserUpdate(Resource):
+    @jwt_required
+    def post(self):
+        args = parser.parse_args()
+        user_id = get_jwt_identity()['id']
+
+        # Check if passwords are the same
+        if args['passwordConfirm'] != args['password']:
+            return response({
+                'errors': 'Password and Confirm Password must be same'
+            }, 400)
+
+        # Check if the email is already taken or not
+        email = args['email']
+        user = User().where('email', email).first()
+        if user.exists() and user.ATTRIBUTES['id'] != user_id:
+            return response({
+                'errors': 'This email is already taken'
+            }, 400)
+
+        # Update user
+        user = User().where('id', '=', user_id).first()
+        if user.exists() is True:
+            user.update({
+                'name': args['name'],
+                'email': args['email'],
+                'slug': user.generateSlug(name=args['name']),
+                'password': bcrypt.generate_password_hash(args['password']).decode('utf-8')
+            })
+            return response({
+                'user': user.data()
+            })
+
+        return response({
+            'errors': [
+                'User could not found'
+            ]
+        }, 404)
+
+
 class Test(Resource):
     def post(self):
         user = User().where('id', 21).first()

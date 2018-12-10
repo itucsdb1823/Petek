@@ -18,6 +18,7 @@ api.add_resource(r.Register, '/api/register')
 api.add_resource(r.Login, '/api/login')
 api.add_resource(r.Account, '/api/account')
 api.add_resource(r.GetUser, '/api/users/<string:slug>')
+api.add_resource(r.UserUpdate, '/api/update')
 
 # -------- Lecturers ------
 
@@ -65,6 +66,8 @@ api.add_resource(r.GetEvents, '/api/events')
 
 # Admin Routes
 api.add_resource(r.GetAllUsers, '/api/admin/users')
+api.add_resource(r.UserUpdateAdmin, '/api/admin/users/<int:user_id>/update')
+api.add_resource(r.UserDeleteAdmin, '/api/admin/users/<int:user_id>/delete')
 api.add_resource(r.LecturerDeleteAdmin, '/api/admin/lecturers/<int:lecturer_id>/delete')
 api.add_resource(r.LecturerUpdateAdmin, '/api/admin/lecturers/<int:lecturer_id>/update')
 api.add_resource(r.NoteDeleteAdmin, '/api/admin/notes/<int:note_id>/delete')
