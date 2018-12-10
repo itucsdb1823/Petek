@@ -12,19 +12,32 @@ from server.helpers import response
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', type=str, help='Name must be a string')
+parser.add_argument('comment', type=str, help='Comment must be a string')
+parser.add_argument('title', type=str, help='Title must be a string')
+parser.add_argument('description', type=str, help='Description must be a string')
+parser.add_argument('started_at', type=str, help='Started at must be a string')
+parser.add_argument('max_participant', type=int, help='Max participant must be a number')
 parser.add_argument('password', type=str, help='Password must be a string')
 parser.add_argument('passwordConfirm', type=str, help='Password must be a string')
 parser.add_argument('email', type=str, help='Email must be a string')
 parser.add_argument('slug', type=str, help='Slug must be a string')
-parser.add_argument('season', type=str, help='Slug must be a string')
-parser.add_argument('term_year', type=str, help='Slug must be a string')
-parser.add_argument('user_id', type=int, help='User Id must be a string')
+parser.add_argument('season', type=str, help='Season must be a string')
+parser.add_argument('term_year', type=str, help='Term year must be a string')
+parser.add_argument('user_id', type=int, help='User Id must be a number')
+parser.add_argument('course_id', type=int, help='Course Id must be a number')
+parser.add_argument('term_id', type=int, help='Term Id must be a number')
+parser.add_argument('english', type=bool, help='English must be a boolean')
+parser.add_argument('course_code', type=int, help='Course Code must be an int')
+parser.add_argument('content', type=str, help='Content must be a string')
+parser.add_argument('lecturer', type=str, help='Lecturer must be a string')
+parser.add_argument('link', type=str, help='Link must be a string')
+
 
 class GetAllUsers(Resource):
     def get(self):
-        users = User().all()
+        users = User().where().orderBy().get()
         return response({
-            'users': users
+            'users': users.data()
         })
 
 

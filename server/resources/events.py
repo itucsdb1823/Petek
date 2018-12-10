@@ -100,7 +100,7 @@ class GetEvent(Resource):
 
 class GetEvents(Resource):
     def get(self):
-        events = Event().where().get().data()
+        events = Event().where().orderBy().get().data()
         for event in events:
             user = User().where('id', event['user_id']).first()
             event['user'] = user.data()
