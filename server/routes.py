@@ -19,6 +19,7 @@ api.add_resource(r.Login, '/api/login')
 api.add_resource(r.Account, '/api/account')
 api.add_resource(r.GetUser, '/api/users/<string:slug>')
 api.add_resource(r.UserUpdate, '/api/update')
+api.add_resource(r.UserDelete, '/api/users/<int:user_id>/delete')
 
 # -------- Lecturers ------
 
