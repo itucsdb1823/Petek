@@ -79,6 +79,14 @@ class DeleteLecturer(Resource):
         user_id = get_jwt_identity()['id']
         lecturer = Lecturer().where([['id', '=', lecturer_id],
                                      ['user_id', '=', user_id]]).first()
+
+        comments = Comment().where([['type_id', '=', lecturer_id],
+                                     ['type', '=', 'lecturers']]).get()
+        for comment in comments:
+            comment.delete()
+
+        dists = GradeDistribution().where('lecturer_id', lecturer_id).get().delete()
+
         if lecturer.exists() is True:
             lecturer.delete()
             return response({
