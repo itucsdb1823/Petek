@@ -181,6 +181,16 @@ const storeOptions = {
             commit('setError', ['Could not encode the image!'])
           });
       },
+      deleteGradeDistribution({commit}, payload){
+        GradeDistribution.deleteGradeDistribution(payload.id)
+          .then(result => {
+            commit('postRequest', true)
+            commit('removeGradeDistributionByIndex', payload.index)
+        }).catch(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       addLecturerComment({commit}, payload){
         if(payload.comment === ''){
           commit('setError', ['Please fill all fields!'])
@@ -363,6 +373,9 @@ const storeOptions = {
     },
     // commit
     mutations: {
+      removeGradeDistributionByIndex(state, payload){
+        state.lecturer.grade_distributions.splice(payload, 1)
+      },
       appendNoteComment(state, payload){
         state.note.comments.unshift(payload)
       },
