@@ -49,7 +49,7 @@ class AddGradeDistribution(Resource):
                 'image': filename
             })
 
-            imgdata = base64.b64decode(file)
+            imgdata = base64.b64decode(file.split(';base64,', 1)[1])
 
             with open(server.config['UPLOAD_FOLDER'] + '/' + filename, 'wb') as f:
                 f.write(imgdata)
