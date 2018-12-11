@@ -3,6 +3,11 @@ import sys
 from flask_restful import Resource, reqparse
 from flask import jsonify
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
+
+from server.models.Comment import Comment
+from server.models.GradeDistribution import GradeDistribution
+from server.models.Lecturer import Lecturer
+from server.models.Note import Note
 from server.models.User import User
 from server.helpers import response
 from server import bcrypt
@@ -77,6 +82,26 @@ class Account(Resource):
         })
 
 
+class UserDelete(Resource):
+    @jwt_required
+    def post(self, user_id):
+        user_id = get_jwt_identity()['id']
+        user = User().where('id', user_id).first()
+        if user.exists() is True:
+            Comment().where('user_id', user_id).get().delete()
+            GradeDistribution().where('user_id', user_id).get().delete()
+            Lecturer().where('user_id', user_id).get().delete()
+            Note().where('user_id', user_id).get().delete()
+            user.delete()
+            return response({
+                'message': 'User deleted with success'
+            }, 200)
+
+        return response({
+            'errors': ['User could not found!']
+        }, 401)
+
+
 class UserUpdate(Resource):
     @jwt_required
     def post(self):
@@ -84,9 +109,9 @@ class UserUpdate(Resource):
         user_id = get_jwt_identity()['id']
 
         # Check if passwords are the same
-        if args['passwordConfirm'] != args['password']:
+        if args['password'] is not None and args['passwordConfirm'] != args['password']:
             return response({
-                'errors': 'Password and Confirm Password must be same'
+                'errors': ['Password and Confirm Password must be same']
             }, 400)
 
         # Check if the email is already taken or not
@@ -94,7 +119,7 @@ class UserUpdate(Resource):
         user = User().where('email', email).first()
         if user.exists() and user.ATTRIBUTES['id'] != user_id:
             return response({
-                'errors': 'This email is already taken'
+                'errors': ['This email is already taken']
             }, 400)
 
         # Update user
