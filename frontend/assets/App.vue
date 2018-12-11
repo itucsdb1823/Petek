@@ -136,8 +136,9 @@
       },
       adminItems(){
         return [
-          { icon: 'reorder', title: 'Notes', to:'/admin/notes' },
           { icon: 'face', title: 'Users', to:'/admin/users' },
+          { icon: 'description', title: 'Courses', to:'/admin/courses' },
+          { icon: 'calendar_today', title: 'Terms', to:'/admin/terms' },
         ]
       },
       menuItems(){

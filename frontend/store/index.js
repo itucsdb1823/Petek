@@ -338,6 +338,26 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
+      addCourse({commit}, payload){
+        Course.addCourse({
+          'name': payload
+        }).then(result => {
+          commit('setNewCourse', result.data.course)
+          commit('getRequest', true)
+        }).catch(error => {
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
+      editCourse({commit}, payload){
+        Course.editCourse({'id': payload.id, 'name': payload.name}).then(result => {
+          commit('setEditedCourse', result.data.course, payload.index)
+          commit('getRequest', true)
+        }).catch(error => {
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       deleteNote({commit}, payload){
         Note.deleteNote(payload).then(result => {
           commit('postRequest', true)
@@ -409,6 +429,9 @@ const storeOptions = {
       setUser(state, payload){
         state.user = payload;
         localStorage.setItem('user', JSON.stringify(state.user));
+      },
+      setNewCourse(state, payload){
+        state.courses.unshift(payload)
       },
       setUser2(state, payload){
         state.user.name = payload.name
