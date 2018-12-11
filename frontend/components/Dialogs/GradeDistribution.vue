@@ -44,6 +44,14 @@
                  flat
                  @click="gradeDistributionDialog=false"
                 >Close</v-btn>
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-if="userCanDelete"
+                  class="default--text darken-2"
+                  flat
+                  color="red"
+                  @click="deleteGradeDistribution(n)"
+                >Delete</v-btn>
               </v-card-actions>
             </v-flex>
           </v-layout>
@@ -54,13 +62,36 @@
 
 <script>
   export default {
-    props: ['n'],
+    props: ['n', 'index'],
     name: "GradeDistribution",
     data(){
       return {
         gradeDistributionDialog: false,
       }
     },
+    computed: {
+      userIsAuthenticated(){
+        return this.user !== null && this.user !== undefined;
+      },
+      user(){
+        return this.$store.getters.user
+      },
+      userIsAdmin(){
+        return this.userIsAuthenticated && this.user.admin === true;
+      },
+      userCanDelete(){
+        return this.userIsAdmin || (this.userIsAuthenticated && this.n.user_id === this.user.id)
+      }
+    },
+    methods:{
+      deleteGradeDistribution(grade){
+        this.$store.dispatch('deleteGradeDistribution', {
+          'id': grade.id,
+          'index': this.index
+        })
+        this.gradeDistributionDialog = false;
+      }
+    }
   }
 </script>
 

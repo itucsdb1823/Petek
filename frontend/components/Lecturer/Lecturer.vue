@@ -62,6 +62,7 @@
                         <v-card flat tile class="d-flex">
                           <grade-distribution-dialog
                             :n="n"
+                            :index="i"
                           ></grade-distribution-dialog>
                         </v-card>
                       </v-flex>
