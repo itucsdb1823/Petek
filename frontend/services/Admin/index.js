@@ -19,6 +19,8 @@ export default {
   },
   editUser(user_id, data){
     return Api().post('admin/users/' + user_id + '/update', data)
-  }
-
+  },
+  deleteUser(user_id){
+    return Api().post('admin/users/'+user_id+'/delete')
+  },
 }

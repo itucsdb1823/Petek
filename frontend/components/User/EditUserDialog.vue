@@ -27,7 +27,6 @@
                         id="title"
                         v-model="updatedUser.name"
                         type="text"
-                        :placeholder="_user.name"
                         required
                       >
                       </v-text-field>
@@ -36,16 +35,30 @@
                   <v-layout row>
                     <v-flex xs12>
                       <v-text-field
+                        name="email"
+                        label="Email"
+                        id="email"
+                        v-model="updatedUser.email"
+                        type="text"
+                        required
+                      >
+                      </v-text-field>
+                    </v-flex>
+                  </v-layout>
+                  <v-layout row v-if="!(userIsAdmin && !userIsOwner)">
+                    <v-flex xs12>
+                      <v-text-field
                         name="password"
                         label="Password"
                         id="password"
                         v-model="updatedUser.password"
                         type="password"
+                        required
                       >
                       </v-text-field>
                     </v-flex>
                   </v-layout>
-                  <v-layout row>
+                  <v-layout row v-if="!(userIsAdmin && !userIsOwner)">
                     <v-flex xs12>
                       <v-text-field
                         name="passwordConfirmation"
@@ -53,6 +66,7 @@
                         id="passwordConfirmation"
                         v-model="updatedUser.passwordConfirm"
                         type="password"
+                        required
                       >
                       </v-text-field>
                     </v-flex>
@@ -70,7 +84,7 @@
                      flat
                      @click="editUserDialog=false"
               >Cancel</v-btn>
-              <v-btn class="orange--text darken-1" flat @click="onAgree">Update</v-btn>
+              <v-btn class="orange--text darken-1" flat @click="edit__user">Update</v-btn>
             </v-card-actions>
           </v-flex>
         </v-layout>
@@ -88,16 +102,21 @@
         updatedUser: {
           'name': '',
           'password': '',
-          'passwordConfirm': ''
+          'passwordConfirm': '',
+          'email': ''
         }
       }
+    },
+    mounted(){
+      this.updatedUser.name = this._user.name;
+      this.updatedUser.email = this._user.email;
     },
     computed: {
       userIsAdmin(){
         return this.userIsAuthenticated && this.user.admin === true
       },
       userIsOwner () {
-        return this.userIsAuthenticated && this._user.id === this.user.id
+        return this._user &&  this.userIsAuthenticated && this._user.id === this.user.id
       },
       userIsAuthenticated(){
         return this.user !== null && this.user !== undefined;
@@ -107,18 +126,16 @@
       },
     },
     methods: {
-      onAgree(){
-
-        let updatedUser = {
-          id: this._user.id,
-          name: this.updatedUser.name === '' ? null : this.updatedUser.name,
-          password: this.updatedUser.password === '' ? null : this.updatedUser.password,
-        }
-
+      edit__user(){
         if(this.userIsAdmin){
-          this.$store.dispatch('adminEditUser', updatedUser)
+          this.$store.dispatch('adminEditUser', {
+            'id': this._user.id,
+            'name': this.updatedUser.name,
+            'email': this.updatedUser.email,
+          })
         }else{
-          this.$store.dispatch('editUser', updatedUser)
+          this.updatedUser.id = this._user.id
+          this.$store.dispatch('editUser', this.updatedUser)
         }
 
         this.editUserDialog = false

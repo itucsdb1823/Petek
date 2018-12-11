@@ -49,11 +49,9 @@ const storeOptions = {
     // dispatch
     actions: {
       editUser({commit}, payload){
-        User.editUser(payload.id, {
-          'name': payload.name,
-          'password': payload.password
-        }).then((result) => {
+        User.editUser(payload.id, payload).then((result) => {
           commit('set_user', result.data.user)
+          commit('setUser2', result.data.user)
           commit('postRequest', true)
         }).catch((error) => {
           commit('setError', error.response.data.errors)
@@ -61,10 +59,7 @@ const storeOptions = {
         })
       },
       adminEditUser({commit}, payload){
-        Admin.editUser(payload.id, {
-          'name': payload.name,
-          'password': payload.password
-        }).then((result) => {
+        Admin.editUser(payload.id, payload).then((result) => {
           commit('set_user', result.data.user)
           commit('postRequest', true)
         }).catch((error) => {
@@ -85,6 +80,24 @@ const storeOptions = {
             commit('setUser', result.data.user)
             commit('postRequest', true)
         }).catch((error) => {
+          commit('setError', error.response.data.errors)
+          commit('postRequest', false)
+        })
+      },
+      deleteUser({commit}, payload){
+        User.deleteUser(payload).then(result => {
+          commit('setUser', null)
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('setError', error.response.data.errors)
+          commit('postRequest', false)
+        })
+      },
+      adminDeleteUser({commit}, payload){
+        Admin.deleteUser(payload).then(result => {
+          commit('set_user', null)
+          commit('postRequest', true)
+        }).error(error => {
           commit('setError', error.response.data.errors)
           commit('postRequest', false)
         })
@@ -289,7 +302,6 @@ const storeOptions = {
       },
       get_user({commit}, payload){
         User.getUser(payload).then(result => {
-          console.log(result)
           commit('set_user', result.data.user)
           commit('getRequest', true)
         }).catch(error => {
@@ -384,6 +396,11 @@ const storeOptions = {
       setUser(state, payload){
         state.user = payload;
         localStorage.setItem('user', JSON.stringify(state.user));
+      },
+      setUser2(state, payload){
+        state.user.name = payload.name
+        state.user.email = payload.email
+        state.user.slug = payload.slug
       },
       set_user(state, payload){
         state._user = payload

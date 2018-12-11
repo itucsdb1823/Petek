@@ -8,9 +8,9 @@ export default {
     return Api().get('users/' + slug)
   },
   deleteUser(user_id){
-    return Api().post('admin/users/' + user_id + '/delete')
+    return Api().post('users/'+user_id+'/delete')
   },
   editUser(user_id, data){
-    return Api().post('users/' + user_id + '/update', data)
+    return Api().post('update', data)
   },
 }

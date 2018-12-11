@@ -43,7 +43,7 @@
     },
     computed: {
       userIsOwner () {
-        return this.userIsAuthenticated && this._user.id === this.user.id
+        return this._user && this.userIsAuthenticated && this._user.id === this.user.id
       },
       userIsAuthenticated(){
         return this.user !== null && this.user !== undefined;
@@ -61,11 +61,18 @@
     methods: {
       onAgree(){
         if(this.userIsAdmin){
+          if(this.user.id === this._user.id){
+            this.$store.commit('setError', ['Admin cannot delete himself'])
+            this.deleteUserDialog = false;
+            return;
+          }
+          this.deleteUserDialog = false
+          this.$router.push('/admin/users')
           this.$store.dispatch('adminDeleteUser', this._user.id)
         }else{
-          this.$store.dispatch('deleteUser', this._user.id)
+          this.$store.dispatch('deleteUser', this.user.id)
+          this.$router.push('/')
         }
-        this.$router.push('/')
       }
     },
   }
