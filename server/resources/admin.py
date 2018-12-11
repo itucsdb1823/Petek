@@ -1,8 +1,11 @@
+import sys
+
 from flask_restful import Resource, reqparse
 from flask import jsonify
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 
 from server import bcrypt
+from server.models.GradeDistribution import GradeDistribution
 from server.models.User import User
 from server.models.Lecturer import Lecturer
 from server.models.Note import Note
@@ -45,17 +48,10 @@ class GetAllUsers(Resource):
             'users': users.data()
         })
 
+
 class UserUpdateAdmin(Resource):
     def post(self, user_id):
         args = parser.parse_args()
-
-        # Check if passwords are the same
-        if args['confirm_password'] != args['password']:
-            return response({
-                'errors': [
-                    'Password and Confirm Password must be same'
-                ]
-            }, 400)
 
         # Check if the email is already taken or not
         email = args['email']
@@ -72,7 +68,6 @@ class UserUpdateAdmin(Resource):
                 'name': args['name'],
                 'email': args['email'],
                 'slug': user.generateSlug(name=args['name']),
-                'password': bcrypt.generate_password_hash(args['password']).decode('utf-8')
             })
             return response({
                 'user': user.data()
@@ -88,8 +83,19 @@ class UserUpdateAdmin(Resource):
 class UserDeleteAdmin(Resource):
     def post(self, user_id):
         user = User().where('id', '=', user_id).first()
-
+        print(user_id, file=sys.stderr)
         if user.exists():
+            Comment().where('user_id', user_id).get().delete()
+            GradeDistribution().where('user_id', user_id).get().delete()
+            lecturers = Lecturer().where('user_id', user_id).get()
+            for lecturer in lecturers.data():
+                Comment().where([['type', '=', 'lecturers'], ['type_id', '=', lecturer['id']]]).get().delete()
+                GradeDistribution().where('lecturer_id', '=', lecturer['id']).get().delete()
+            lecturers.delete()
+            notes = Note().where('user_id', user_id).get()
+            for note in notes.data():
+                Comment().where([['type', '=', 'notes'], ['type_id', '=', note['id']]]).get().delete()
+            notes.delete()
             user.delete()
             return response({
                 'message': 'User deleted successfully'
