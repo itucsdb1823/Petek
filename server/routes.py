@@ -98,7 +98,6 @@ def before_request():
 
 @server.route('/images/<path:path>')
 def sendImage(path):
-    path = 'a.jpg'
     return send_from_directory(os.path.join('../images').replace('\\', '/'), path)
 
 
