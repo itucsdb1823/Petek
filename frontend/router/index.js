@@ -10,6 +10,7 @@ import Note from '../components/Notes/Note.vue'
 import NoteCreate from '../components/Notes/Create.vue'
 import Users from '../components/User/Users'
 import User from '../components/User/User'
+import Courses from '../components/Course/Courses'
 
 // The meta data for your routes
 const meta = require('./meta.json')
@@ -85,6 +86,11 @@ export function createRouter () {
           path: '/users/:user_slug',
           name: 'User',
           component: User
+        },
+        {
+          path: '/admin/courses',
+          name: 'Courses',
+          component: Courses
         }
       ]
     })
