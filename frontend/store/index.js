@@ -358,6 +358,26 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
+      addTerm({commit}, payload){
+        Term.addTerm({
+          'name': payload
+        }).then(result => {
+          commit('setNewTerm', result.data.term)
+          commit('getRequest', true)
+        }).catch(error => {
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
+      editTerm({commit}, payload){
+        Course.editTerm({'id': payload.id, 'name': payload.name}).then(result => {
+          commit('setEditedTerm', result.data.term, payload.index)
+          commit('getRequest', true)
+        }).catch(error => {
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       deleteNote({commit}, payload){
         Note.deleteNote(payload).then(result => {
           commit('postRequest', true)
@@ -432,6 +452,9 @@ const storeOptions = {
       },
       setNewCourse(state, payload){
         state.courses.unshift(payload)
+      },
+      setNewTerm(state, payload){
+        state.terms.unshift(payload)
       },
       setUser2(state, payload){
         state.user.name = payload.name
