@@ -1,6 +1,6 @@
 <template>
   <v-dialog persistent v-model="deleteNoteDialog" max-width="290">
-    <v-btn slot="activator" flat color="red" align-end v-if="userIsOwner">
+    <v-btn slot="activator" flat color="red" align-end v-if="userIsOwner || userIsAdmin">
       <v-icon right dark>delete</v-icon>
       Delete
     </v-btn>
@@ -53,11 +53,18 @@
       },
       noteDeleted(){
         return this.$store.getters.postRequest
+      },
+      userIsAdmin(){
+        return this.userIsAuthenticated && this.user.admin === true
       }
     },
     methods: {
       onAgree(){
-        this.$store.dispatch('deleteNote', this.note.id)
+        if(this.userIsAdmin){
+          this.$store.dispatch('adminDeleteNote', this.note.id)
+        }else{
+          this.$store.dispatch('deleteNote', this.note.id)
+        }
         this.$router.push('/notes')
       }
     },

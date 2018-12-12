@@ -1,7 +1,10 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
+
+from server.models.Comment import Comment
 from server.models.Note import Note
+from server.models.User import User
 from server.helpers import response
 from server import cur, conn
 
@@ -30,18 +33,30 @@ class NoteCreate(Resource):
         term_id = args['term_id']
         user_id = get_jwt_identity()['id']
 
-        note = Note(title=title, content=content,
-                    lecturer=lecturer, link=link, course_id=course_id, course_code=course_code,
-                    english=english, term_id=term_id, user_id=user_id)
+        note = Note()
+        note.create({
+            'title': title,
+            'content': content,
+            'lecturer': lecturer,
+            'link': link,
+            'course_id': course_id,
+            'course_code': course_code,
+            'english': english,
+            'term_id': term_id,
+            'user_id': user_id,
+            'slug': note.generateSlug(name=title)
+        })
 
-        if note.save() is False:
+        if note.validate() is False:
             return response({
                 'errors': note.getErrors()
             }, 401)
 
+        user = User().where('id', user_id).first()
+        note.save()
         return response({
-            'message': 'Note successfully created!'
-        })
+            'note': note.plus('user', user.data()).data()
+        }, 200)
 
 
 class NoteUpdate(Resource):
@@ -58,45 +73,68 @@ class NoteUpdate(Resource):
         term_id = args['term_id']
         user_id = get_jwt_identity()['id']
 
-        new_note = Note(title=title, content=content,
-                        lecturer=lecturer, link=link, course_id=course_id, course_code=course_code,
-                        english=english, term_id=term_id, user_id=user_id, _id=note_id
-                        )
+        note = Note().where([['id', '=', note_id],
+                                   ['user_id', '=', user_id]]).first()
 
-        if new_note.update():
+        if note.exists() is False or note.validate() is False:
             return response({
-                'message': 'Note successfully updated!'
-            })
-        else:
-            return response({
-                'errors': new_note.getErrors()
+                'message': 'That note does not exist or it does not belong to you'
             }, 401)
+
+        note.update({
+            'title': title,
+            'content': content,
+            'lecturer': lecturer,
+            'link': link,
+            'course_id': course_id,
+            'course_code': course_code,
+            'english': english,
+            'term_id': term_id,
+            'slug': note.generateSlug(name=title)
+        })
+        return response({
+            'message': 'Note successfully updated!'
+        }, 200)
 
 
 class NoteDelete(Resource):
     @jwt_required
     def post(self, note_id):
-        note = Note(_id=note_id, user_id=get_jwt_identity()['id'])
-        note.delete()
+        user_id = get_jwt_identity()['id']
+        note = Note().where([['id', '=', note_id],
+                               ['user_id', '=', user_id]]).first()
 
+        if note.exists():
+            note.delete()
+            return response({
+                'message': 'Note deleted successfully'
+            }, 202)
         return response({
-            'message': "Note deleted successfully"
-        })
-
-
-class Notes(Resource):
-    def get(self):
-        notes = Note().all()
-
-        return response({
-            'notes': notes
-        })
+            'message': 'Note does not exist or it is not yours to delete'
+        }, 404)
 
 
 class NoteSingle(Resource):
     def get(self, note_slug):
-        note = Note().get(slug=note_slug)
+        note = Note().where('slug', note_slug).first().data()
+        user = User().where('id', note['user_id']).first()
+        note['user'] = user.data()
+        comments = Comment().where([['type', '=', 'notes'], ['type_id', '=', note['id']]]).get()
+        for comment in comments.data():
+            comment['user'] = User().where('id', comment['user_id']).first().data()
+        note['comments'] = comments.data()
+        return response({
+            'notes': note
+        }, 200)
+
+
+class Notes(Resource):
+    def get(self):
+        notes = Note().where().orderBy().get().data()
+        for note in notes:
+            user = User().where('id', note['user_id']).first()
+            note['user'] = user.data()
 
         return response({
-            'note': note
-        })
+            'notes': notes
+        }, 200)

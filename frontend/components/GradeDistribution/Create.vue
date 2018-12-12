@@ -165,6 +165,8 @@
           }
 
           this.$store.dispatch('createGradeDistribution', gradeDistribution)
+          this.addGradeDistributionDialog = false;
+          location.reload();
         }
       },
       formIsValid() {

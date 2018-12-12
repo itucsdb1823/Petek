@@ -1,10 +1,12 @@
 from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
+
+from server.models.Comment import Comment
+from server.models.GradeDistribution import GradeDistribution
 from server.models.Lecturer import Lecturer
 from server.helpers import response
 from server import cur, conn
-
 
 parser = reqparse.RequestParser()
 parser.add_argument('name', type=str, help='Name must be a string')
@@ -23,32 +25,51 @@ class AddLecturer(Resource):
         email = args['email']
         user_id = get_jwt_identity()['id']
 
-        lecturer = Lecturer(name=name, email=email, user_id=user_id)
-        result = lecturer.create()
-        if result is False:
-            return response({
-                'errors': [
-                    "There is already a lecturer with this email"
-                ]
-            }, 400)
-        return response({
-            'lecturer': lecturer.name
+        lecturer = Lecturer()
+        lecturer.create({
+            'name': name,
+            'email': email,
+            'slug': lecturer.generateSlug(name=name),
+            'user_id': user_id
         })
+
+
+        if lecturer.validate() is True:
+            lecturer.save()
+            return response({
+                'lecturer': lecturer.data()
+            }, 200)
+
+        return response({
+            'errors': lecturer.getErrors()
+        }, 400)
 
 
 class GetLecturer(Resource):
     def get(self, slug):
-        lecturer = Lecturer(slug=slug).get()
+        lecturer = Lecturer().where('slug', slug).first()
+
+        if lecturer.exists() is True:
+            comments = Comment().where([['type_id', '=', lecturer.ATTRIBUTES['id']], ['type', '=', 'lecturers']])\
+                .get().data()
+            grade_distributions = GradeDistribution().where('lecturer_id', lecturer.ATTRIBUTES['id']).get().data()
+
+            return response({
+                'lecturer': lecturer.plus('comments', comments).plus('grade_distributions', grade_distributions).data()
+            })
+
         return response({
-            'lecturer': lecturer
+            'errors': [
+                'Lecturer could not found!'
+            ]
         })
 
 
 class GetLecturers(Resource):
     def get(self):
-        lecturers = Lecturer().all()
+        lecturers = Lecturer().orderBy().get()
         return response({
-            'lecturers': lecturers
+            'lecturers': lecturers.data()
         })
 
 
@@ -56,33 +77,50 @@ class DeleteLecturer(Resource):
     @jwt_required
     def post(self, lecturer_id):
         user_id = get_jwt_identity()['id']
-        print(lecturer_id)
-        print(user_id)
-        lect = Lecturer()
-        result = lect.delete(lecturer_id=lecturer_id, user_id=user_id)
-        if result is False:
+        lecturer = Lecturer().where([['id', '=', lecturer_id],
+                                     ['user_id', '=', user_id]]).first()
+
+        comments = Comment().where([['type_id', '=', lecturer_id],
+                                     ['type', '=', 'lecturers']]).get()
+        for comment in comments:
+            comment.delete()
+
+        dists = GradeDistribution().where('lecturer_id', lecturer_id).get().delete()
+
+        if lecturer.exists() is True:
+            lecturer.delete()
             return response({
-                'errors': lect.GetErrors()
-            }, 401)
+                'message': 'Lecturer deleted'
+            })
+
         return response({
-            'message': 'Lecturer deleted'
-        })
+            'errors': [
+                'Lecturer could not found'
+            ]
+        }, 401)
+
 
 class UpdateLecturer(Resource):
     @jwt_required
     def post(self, lecturer_id):
         args = parser.parse_args()
-        name = args['name']
-        email = args['email']
         user_id = get_jwt_identity()['id']
-        lecturer = Lecturer(_id=lecturer_id, name=name, email=email, user_id=user_id)
-        result = lecturer.update(user_id=user_id)
-        if result is False:
-            return response({
-                'errors': lecturer.GetErrors()
+        lecturer = Lecturer().where([['id', '=', lecturer_id],
+                                     ['user_id', '=', user_id]]).first()
+        if lecturer.exists() is True:
+            lecturer.update({
+                'name': args['name'],
+                'email': args['email'],
+                'slug': lecturer.generateSlug(name=args['name'])
             })
+            return response({
+                'lecturer': lecturer.data()
+            })
+
         return response({
-            'message': 'lecturer updated'
-        })
+            'errors': [
+                'Lecturer could not found'
+            ]
+        }, 404)
 
 

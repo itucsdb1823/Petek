@@ -2,6 +2,9 @@ from flask_restful import Resource, reqparse
 from flask import jsonify, make_response
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
 from server.models.Comment import Comment
+from server.models.User import User
+from server.models.Lecturer import Lecturer
+from server.models.Note import Note
 from server.helpers import response
 from server import cur, conn
 
@@ -15,20 +18,27 @@ class CreateLecturerComment(Resource):
         args = parser.parse_args()
         type = 'lecturers'
         type_id = type_id
-        comment = args['comment']
+        commentText = args['comment']
         user_id = get_jwt_identity()['id']
 
-        comment = Comment(_type=type, _type_id=type_id, _comment=comment, _user_id=user_id)
-        result = comment.save()
+        comment = Comment()
+        comment.create({
+            'type': type,
+            'type_id': type_id,
+            'comment': commentText,
+            'user_id': user_id
+        })
 
-        if result is False:
+        if comment.validate() is False:
             return response({
                 'errors': comment.getErrors()
             }, 401)
 
+        user = User().where('id', user_id).first()
+        comment.save()
         return response({
-            'comment': args['comment']
-        })
+            'comment': comment.plus('user', user.data()).data()
+        }, 200)
 
 
 class CreateNoteComment(Resource):
@@ -37,84 +47,120 @@ class CreateNoteComment(Resource):
         args = parser.parse_args()
         type = 'notes'
         type_id = type_id
-        comment = args['comment']
+        commentText = args['comment']
         user_id = get_jwt_identity()['id']
 
-        comment = Comment(_type=type, _type_id=type_id, _comment=comment, _user_id=user_id)
-        result = comment.save()
+        comment = Comment()
+        comment.create({
+            'type': type,
+            'type_id': type_id,
+            'comment': commentText,
+            'user_id': user_id
+        })
 
-        if result is False:
+        if comment.validate() is False:
             return response({
                 'errors': comment.getErrors()
             }, 401)
 
+        user = User().where('id', user_id).first()
+        comment.save()
         return response({
-            'comment': args['comment']
-        })
+            'comment': comment.plus('user', user.data()).data()
+        }, 200)
 
 
 class UpdateLecturerComment(Resource):
     @jwt_required
-    def post(self, comment_id, type_id):
+    def post(self, type_id, comment_id):
         args = parser.parse_args()
         commentText = args['comment']
         user_id = get_jwt_identity()['id']
-        comment = Comment(_id=comment_id, _user_id=user_id,
-                          _comment=commentText, _type='lecturers', _type_id=type_id)
-        result = comment.update()
 
-        if result is False:
+        comment = Comment().where([['id', '=', comment_id],
+                                   ['user_id', '=', user_id]]).first()
+        if comment.exists() is False or comment.validate() is False:
             return response({
-                'errors': comment.getErrors()
+                'message': 'That comment does not exist or it does not belong to you'
             }, 401)
+        comment.update({
+            'comment': commentText,
+        })
         return response({
             'message': 'Comment successfully updated!'
-        })
+        }, 200)
 
 
 class UpdateNoteComment(Resource):
     @jwt_required
-    def post(self, comment_id, type_id):
+    def post(self, type_id, comment_id):
         args = parser.parse_args()
         commentText = args['comment']
         user_id = get_jwt_identity()['id']
-        comment = Comment(_id=comment_id, _user_id=user_id,
-                          _comment=commentText, _type='notes', _type_id=type_id)
-        result = comment.update()
 
-        if result is False:
+        comment = Comment().where([['id', '=', comment_id],
+                                   ['user_id', '=', user_id]]).first()
+        if comment.exists() is False or comment.validate() is False:
             return response({
-                'errors': comment.getErrors()
+                'message': 'That comment does not exist or it does not belong to you'
             }, 401)
+        comment.update({
+            'comment': commentText,
+        })
         return response({
             'message': 'Comment successfully updated!'
-        })
+        }, 200)
 
 
 class DeleteComment(Resource):
     @jwt_required
     def post(self, comment_id):
-        comment = Comment(_id=comment_id, _user_id=get_jwt_identity()['id'])
-        comment.delete()
+        user_id = get_jwt_identity()['id']
+        comment = Comment().where([['id', '=', comment_id],
+                                   ['user_id', '=', user_id]]).first()
+        if comment.exists():
+            comment.delete()
+            return response({
+                'message': 'Comment deleted successfully'
+            }, 202)
+        return response({
+            'message': 'Comment not found in the database'
+        }, 404)
+
+
+#class GetComment(Resource):
+#    def get(self, comment_id):
+#        comment = Comment().where('id', comment_id).first()
+#        user = User().where('id', comment.ATTRIBUTES['user_id']).first()
+#
+#        return response({
+#            'Comment': comment.plus('user', user).data()
+#        })
+
+
+class GetLecturerComments(Resource):
+    def get(self, type_id):
+        comments = Comment().where([['type', '=', 'lecturers'],
+                        ['type_id', '=', type_id]]).orderBy().get().data()
+        for comment in comments:
+            user = User().where('id', comment['user_id']).first()
+            comment['user'] = {
+                'id': user.ATTRIBUTES['id']
+            }
 
         return response({
-            'message': "Comment deleted successfully"
-        })
+            'comments': comments
+        }, 200)
 
 
-class GetComment(Resource):
-    def get(self, comment_id):
-        comment = Comment().get(id=comment_id)
-
-        return response({
-            'Comment': comment
-        })
-
-
-class GetComments(Resource):
-    def get(self):
-        comments = Comment().all()
+class GetNoteComments(Resource):
+    def get(self, type_id):
+        comments = Comment().where([['type', '=', 'notes'],
+                        ['type_id', '=', type_id]]).orderBy().get().data()
+        for comment in comments:
+            user = User().where('id', comment['user_id']).first()
+            comment['user'] = user.data()
 
         return response({
-            'Comments': comments
-        })
+            'comments': comments
+        }, 200)

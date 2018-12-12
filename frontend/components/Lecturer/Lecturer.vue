@@ -34,9 +34,9 @@
                     <template v-for="(item, index) in lecturer.comments.slice(0, commentLimit)">
                       <v-list-tile :key="index" avatar ripple>
                         <v-list-tile-content>
-                          <v-list-tile-title>{{ item.comment }}</v-list-tile-title>
+                          <v-list-tile-title>{{ (item.comment.comment === undefined || item.comment.comment === null) ? item.comment : item.comment.comment  }}</v-list-tile-title>
                         </v-list-tile-content>
-                        <v-list-tile-action v-if="userIsAuthenticated && user.id === item.user.id">
+                        <v-list-tile-action v-if="(userIsAuthenticated && user.id === item.user_id) || userIsAdmin">
                           <v-icon color="red lighten-1" @click="deleteComment(item.id, index)">delete</v-icon>
                         </v-list-tile-action>
                       </v-list-tile>
@@ -54,33 +54,21 @@
                   <v-container grid-list-sm fluid>
                     <v-layout row wrap>
                       <v-flex
-                        v-for="n in gradeDistributions.slice(0,gradeDistributionLimit)"
-                        :key="n"
+                        v-for="(n, i) in lecturer.grade_distributions.slice(0,gradeDistributionLimit)"
+                        :key="i"
                         xs12
                         d-flex
                       >
                         <v-card flat tile class="d-flex">
-                          <v-img
-                            :src="`https://picsum.photos/500/300?image=1`"
-                            :lazy-src="`https://picsum.photos/500/300?image=1`"
-                            aspect-ratio="2"
-                            class="grey lighten-2"
-                          >
-                            <v-layout
-                              slot="placeholder"
-                              fill-height
-                              align-center
-                              justify-center
-                              ma-0
-                            >
-                              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                            </v-layout>
-                          </v-img>
+                          <grade-distribution-dialog
+                            :n="n"
+                            :index="i"
+                          ></grade-distribution-dialog>
                         </v-card>
                       </v-flex>
                     </v-layout>
                     </v-container>
-                  <v-layout row justify-center v-if="gradeDistributionLimit < gradeDistributions.length">
+                  <v-layout row justify-center v-if="gradeDistributionLimit < lecturer.grade_distributions.length">
                     <v-flex xs6 offset-xs3>
                       <v-btn color="orange" @click="gradeDistributionLimit += 2">Load More</v-btn>
                     </v-flex>
@@ -90,6 +78,13 @@
             </v-container>
             <v-card-actions>
               <v-btn flat color="red">Report</v-btn>
+              <v-divider></v-divider>
+              <edit-lecturer-dialog
+                :lecturer="lecturer"
+              ></edit-lecturer-dialog>
+              <delete-lecturer-dialog
+                :lecturer="lecturer"
+              ></delete-lecturer-dialog>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -100,10 +95,15 @@
 <script>
   import AddGradeDistributionDialog from "../GradeDistribution/Create";
   import AddCommentDialog from "../Comment/LecturerComment";
+  import GradeDistributionDialog from '../Dialogs/GradeDistribution'
+  import EditLecturerDialog from './EditLecturerDialog'
+  import DeleteLecturerDialog from './DeleteLecturerDialog'
 
   export default {
     name: "Lecturer",
-    components: {AddGradeDistributionDialog, AddCommentDialog},
+    components: {
+      DeleteLecturerDialog,
+      AddGradeDistributionDialog, AddCommentDialog, GradeDistributionDialog, EditLecturerDialog},
     metaInfo: {
       // title will be injected into parent titleTemplate
       title: "Lecturer"
@@ -112,13 +112,6 @@
       return {
         commentLimit: 3,
         gradeDistributionLimit: 2,
-        gradeDistributions: [
-          'asdfa',
-          'asdfsda',
-          'asdfas',
-          'asdfas',
-          'dsafasd'
-        ]
       }
     },
     beforeCreate(){
@@ -135,6 +128,9 @@
       user(){
         return this.$store.getters.user
       },
+      userIsAdmin(){
+        return this.userIsAuthenticated && this.user.admin === true;
+      }
     },
     methods: {
       deleteComment(comment_id, index){
@@ -143,7 +139,14 @@
           lecturer_id: this.lecturer.id,
           comment_index: index
         }
-        this.$store.dispatch('deleteLecturerComment', deleteComment)
+
+        console.log(deleteComment)
+
+        if(this.userIsAdmin){
+          this.$store.dispatch('adminDeleteLecturerComment', deleteComment)
+        }else{
+          this.$store.dispatch('deleteLecturerComment', deleteComment)
+        }
       }
     }
   }

@@ -65,16 +65,17 @@
       <v-btn
         icon
         @click.native.stop="rightDrawer = !rightDrawer"
+        v-if="userIsAuthenticated && user.admin === true"
       >
         <v-icon>menu</v-icon>
       </v-btn>
     </v-toolbar>
     <v-content>
       <v-container fluid>
-        <v-layout row v-if="error">
-            <v-flex xs12 sm6 offset-sm3>
-                <app-alert v-for="err in error" @dismissed="onDismissed" :text="err"></app-alert>
-            </v-flex>
+        <v-layout row v-if="errors">
+          <v-flex xs12 sm6 offset-sm3>
+            <app-alert v-for="(err, index) in errors" :data="err" :key="index" @dismissed="onDismissed" :text="err"></app-alert>
+          </v-flex>
           </v-layout>
         <v-slide-y-transition mode="out-in">
           <router-view></router-view>
@@ -86,13 +87,14 @@
       :right="right"
       v-model="rightDrawer"
       fixed
+      v-if="userIsAuthenticated && user.admin === true"
     >
       <v-list>
-        <v-list-tile @click.native="right = !right">
+        <v-list-tile v-for="(item, i) in adminItems" :to="item.to" :data="item" :key="i">
           <v-list-tile-action>
-            <v-icon light>compare_arrows</v-icon>
+            <v-icon light>{{ item.icon }}</v-icon>
           </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
+          <v-list-tile-title>{{ item.title }}</v-list-tile-title>
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
@@ -127,28 +129,39 @@
     },
     computed: {
       userIsAuthenticated(){
-        const user = this.$store.getters.user;
-        return user !== null && user !== undefined;
+        return this.user !== null && this.user !== undefined;
+      },
+      user(){
+        return this.$store.getters.user;
+      },
+      adminItems(){
+        return [
+          { icon: 'face', title: 'Users', to:'/admin/users' },
+          { icon: 'description', title: 'Courses', to:'/admin/courses' },
+          { icon: 'calendar_today', title: 'Terms', to:'/admin/terms' },
+        ]
       },
       menuItems(){
         let menuItems = [
           { icon: 'apps', title: 'Home', to: '/' },
           { icon: 'reorder', title: 'Notes', to: '/notes' },
+          { icon: 'event', title: 'Events', to: '/events' },
           { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
           { icon: 'face', title: 'Register', to: '/register' },
           { icon: 'lock_open', title: 'Login', to: '/login' },
         ];
         if(this.userIsAuthenticated){
-            menuItems = [
-                { icon: 'apps', title: 'Home', to: '/' },
-                { icon: 'reorder', title: 'Notes', to: '/notes' },
-              { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
-              { icon: 'person', title: 'Profile', link: '/profile'},
-            ]
+          menuItems = [
+            { icon: 'apps', title: 'Home', to: '/' },
+            { icon: 'reorder', title: 'Notes', to: '/notes' },
+            { icon: 'event', title: 'Events', to: '/events' },
+            { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
+            { icon: 'person', title: 'Profile', to: `/users/${this.user.slug}`},
+          ]
         }
         return menuItems;
       },
-      error () {
+      errors () {
         return this.$store.getters.error
       },
     },

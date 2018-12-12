@@ -1,8 +1,16 @@
+import sys
+
 from flask_restful import Resource, reqparse
 from flask import jsonify
 from flask_jwt_simple import create_jwt, jwt_required, get_jwt_identity
+
+from server.models.Comment import Comment
+from server.models.GradeDistribution import GradeDistribution
+from server.models.Lecturer import Lecturer
+from server.models.Note import Note
 from server.models.User import User
 from server.helpers import response
+from server import bcrypt
 
 
 parser = reqparse.RequestParser()
@@ -15,14 +23,9 @@ parser.add_argument('email', type=str, help='Email must be a string')
 class Register(Resource):
     def post(self):
         args = parser.parse_args()
-        name = args['name']
         password = args['password']
         password_confirm = args['passwordConfirm']
-        email = args['email']
 
-        # Validation rules start
-
-        # Rule 1
         if password != password_confirm:
             return response({
                 'errors': [
@@ -31,23 +34,21 @@ class Register(Resource):
             }, 401)
 
         # Rule 2
-        user = User(name, password, email)
-        if user.is_valid() is False:
+        user = User()
+        user.create({
+            'name': args['name'],
+            'email': args['email'],
+            'password': bcrypt.generate_password_hash(args['password']).decode('utf-8'),
+            'slug': user.generateSlug(args['name'])
+        })
+        if user.validate() is False:
             return response({
-                'errors': [
-                    'This email has taken'
-                ]
+                'errors': user.getErrors()
             }, 401)
 
-        # Validation rules end
-        token = user.create()
-
+        user.save()
         return response({
-            'name': user.name,
-            'email': user.email,
-            'slug': user.slug,
-            'id': user.id,
-            'token': token
+            'user': user.plus('token', user.generateToken()['jwt']).plus('admin', user.hasRole('admin')).data()
         })
 
 
@@ -57,18 +58,13 @@ class Login(Resource):
         email = args['email']
         password = args['password']
 
-        user = User.get(email, password)
+        user = User().where([
+            ['email', '=', email]
+        ]).first()
 
-        if user is not None:
-            token = {'jwt': create_jwt(identity={
-                'id': user['id']
-            })}
+        if user.exists() and bcrypt.check_password_hash(user.HIDDEN['password'], password):
             return response({
-                'name': user['name'],
-                'email': user['email'],
-                'token': token['jwt'],
-                'id': user['id'],
-                'slug': user['slug']
+                'user': user.plus('token', user.generateToken()['jwt']).plus('admin', user.hasRole('admin')).data()
             })
 
         return response({
@@ -84,3 +80,77 @@ class Account(Resource):
         return jsonify({
             'user': get_jwt_identity()
         })
+
+
+class UserDelete(Resource):
+    @jwt_required
+    def post(self, user_id):
+        user_id = get_jwt_identity()['id']
+        user = User().where('id', user_id).first()
+        if user.exists() is True:
+            Comment().where('user_id', user_id).get().delete()
+            GradeDistribution().where('user_id', user_id).get().delete()
+            Lecturer().where('user_id', user_id).get().delete()
+            Note().where('user_id', user_id).get().delete()
+            user.delete()
+            return response({
+                'message': 'User deleted with success'
+            }, 200)
+
+        return response({
+            'errors': ['User could not found!']
+        }, 401)
+
+
+class UserUpdate(Resource):
+    @jwt_required
+    def post(self):
+        args = parser.parse_args()
+        user_id = get_jwt_identity()['id']
+
+        # Check if passwords are the same
+        if args['password'] is not None and args['passwordConfirm'] != args['password']:
+            return response({
+                'errors': ['Password and Confirm Password must be same']
+            }, 400)
+
+        # Check if the email is already taken or not
+        email = args['email']
+        user = User().where('email', email).first()
+        if user.exists() and user.ATTRIBUTES['id'] != user_id:
+            return response({
+                'errors': ['This email is already taken']
+            }, 400)
+
+        # Update user
+        user = User().where('id', '=', user_id).first()
+        if user.exists() is True:
+            user.update({
+                'name': args['name'],
+                'email': args['email'],
+                'slug': user.generateSlug(name=args['name']),
+                'password': bcrypt.generate_password_hash(args['password']).decode('utf-8')
+            })
+            return response({
+                'user': user.data()
+            })
+
+        return response({
+            'errors': [
+                'User could not found'
+            ]
+        }, 404)
+
+
+class Test(Resource):
+    def post(self):
+        user = User().where('id', 21).first()
+        user.update({
+            'email': 'sa@gmail.com123',
+            'name': 'Yavuz Koca'
+        })
+
+        return response({
+            'user': user.data()
+        })
+

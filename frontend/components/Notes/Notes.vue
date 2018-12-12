@@ -1,30 +1,30 @@
 <template>
-    <v-container>
+  <v-container>
+    <v-layout row>
+      <v-flex xs12 sm12>
+        <v-btn color="success" to="notes/create">Create Note</v-btn>
+      </v-flex>
+    </v-layout>
       <v-layout row>
-        <v-flex xs12 sm12>
-          <v-btn color="success" to="notes/create">Create Note</v-btn>
-        </v-flex>
+          <v-flex xs12 sm12>
+              <v-data-table
+                :headers="headers"
+                :items="notes"
+                class="elevation-1"
+              >
+                <template slot="items" slot-scope="props">
+                  <td @click="note(props.item.slug)"><v-icon>visibility</v-icon></td>
+                  <td @click="note(props.item.slug)">{{ props.item.title }}</td>
+                  <td class="text-xs-left">{{ props.item.course }}</td>
+                  <td class="text-xs-left">{{ props.item.lecturer }}</td>
+                  <td class="text-xs-left">{{ props.item.term }}</td>
+                  <td class="text-xs-left">{{ props.item.date }}</td>
+                  <td @click="user(props.item.user.slug)" class="text-xs-left">{{ props.item.user.name }}</td>
+                </template>
+              </v-data-table>
+          </v-flex>
       </v-layout>
-        <v-layout row>
-            <v-flex xs12 sm12>
-                <v-data-table
-                  :headers="headers"
-                  :items="notes"
-                  class="elevation-1"
-                >
-                  <template slot="items" slot-scope="props">
-                    <td @click="note(props.item.slug)"><v-icon>visibility</v-icon></td>
-                    <td @click="note(props.item.slug)">{{ props.item.title }}</td>
-                    <td class="text-xs-left">{{ props.item.course }}</td>
-                    <td class="text-xs-left">{{ props.item.lecturer }}</td>
-                    <td class="text-xs-left">{{ props.item.term }}</td>
-                    <td class="text-xs-left">{{ props.item.date }}</td>
-                    <td class="text-xs-left">{{ props.item.user.name }}</td>
-                  </template>
-                </v-data-table>
-            </v-flex>
-        </v-layout>
-    </v-container>
+  </v-container>
 </template>
 
 <script>
@@ -56,6 +56,9 @@
       note(note_slug){
         console.log(note_slug)
         let go = this.$router.push(`notes/${note_slug}`)
+      },
+      user(slug){
+        let go = this.$router.push(`users/${slug}`)
       }
     },
     computed: {
