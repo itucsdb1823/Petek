@@ -78,6 +78,13 @@
             </v-container>
             <v-card-actions>
               <v-btn flat color="red">Report</v-btn>
+              <v-divider></v-divider>
+              <edit-lecturer-dialog
+                :lecturer="lecturer"
+              ></edit-lecturer-dialog>
+              <delete-lecturer-dialog
+                :lecturer="lecturer"
+              ></delete-lecturer-dialog>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -89,10 +96,14 @@
   import AddGradeDistributionDialog from "../GradeDistribution/Create";
   import AddCommentDialog from "../Comment/LecturerComment";
   import GradeDistributionDialog from '../Dialogs/GradeDistribution'
+  import EditLecturerDialog from './EditLecturerDialog'
+  import DeleteLecturerDialog from './DeleteLecturerDialog'
 
   export default {
     name: "Lecturer",
-    components: {AddGradeDistributionDialog, AddCommentDialog, GradeDistributionDialog},
+    components: {
+      DeleteLecturerDialog,
+      AddGradeDistributionDialog, AddCommentDialog, GradeDistributionDialog, EditLecturerDialog},
     metaInfo: {
       // title will be injected into parent titleTemplate
       title: "Lecturer"

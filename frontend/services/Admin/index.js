@@ -8,7 +8,7 @@ export default {
     return Api().post('admin/events/' + event_id + '/delete')
   },
   deleteLecturer(lecturer_id){
-    return Api().post('admin/delete-lecturer/')
+    return Api().post('admin/lecturers/'+lecturer_id+'/delete')
   },
   deleteComment(note_id, comment_id){
     return Api().post('admin/comments/' + comment_id + '/delete')
@@ -20,8 +20,7 @@ export default {
     return Api().post('admin/events/' + event.id + '/update', event)
   },
   editLecturer(lecturer){
-    return true;
-    // return Api().post('notes/')
+    return Api().post('admin/lecturers/'+lecturer.id + '/update', lecturer)
   },
   editUser(user_id, data){
     return Api().post('admin/users/' + user_id + '/update', data)

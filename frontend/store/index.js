@@ -387,6 +387,22 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
+      adminEditLecturer({commit}, payload){
+        Admin.editLecturer(payload).then(result => {
+          commit('postRequest', true)
+        }).error(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
+      adminDeleteLecturer({commit}, payload){
+        Admin.deleteLecturer(payload).then(result => {
+          commit('postRequest', true)
+        }).error(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       addTerm({commit}, payload){
         Term.addTerm({
           'name': payload

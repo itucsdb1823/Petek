@@ -112,7 +112,7 @@ class LecturerDeleteAdmin(Resource):
 
         if lecturer.exists() is True:
             Comment().where([['type', '=', 'lecturers'], ['type_id', '=', lecturer_id]]).get().delete()
-            GradeDistribution().where('lecturer_id', '=', lecturer['id']).get().delete()
+            GradeDistribution().where('lecturer_id', '=', lecturer_id).get().delete()
 
             lecturer.delete()
             return response({
