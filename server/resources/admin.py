@@ -86,6 +86,7 @@ class UserDeleteAdmin(Resource):
         print(user_id, file=sys.stderr)
         if user.exists():
             Comment().where('user_id', user_id).get().delete()
+            Event().where('user_id', user_id).get().delete()
             GradeDistribution().where('user_id', user_id).get().delete()
             lecturers = Lecturer().where('user_id', user_id).get()
             for lecturer in lecturers.data():
@@ -108,7 +109,11 @@ class LecturerDeleteAdmin(Resource):
     @jwt_required
     def post(self, lecturer_id):
         lecturer = Lecturer().where('id', lecturer_id).first()
+
         if lecturer.exists() is True:
+            Comment().where([['type', '=', 'lecturers'], ['type_id', '=', lecturer_id]]).get().delete()
+            GradeDistribution().where('lecturer_id', '=', lecturer['id']).get().delete()
+
             lecturer.delete()
             return response({
                 'message': 'Lecturer deleted'
@@ -124,6 +129,15 @@ class LecturerDeleteAdmin(Resource):
 class LecturerUpdateAdmin(Resource):
     def post(self, lecturer_id):
         args = parser.parse_args()
+
+        # Check if the email is already taken or not
+        email = args['email']
+        lecturer = Lecturer().where('email', email).first()
+        if lecturer.exists() and lecturer.ATTRIBUTES['id'] != lecturer_id:
+            return response({
+                'errors': 'This email is already taken'
+            }, 400)
+
         lecturer = Lecturer().where('id', '=', lecturer_id).first()
         if lecturer.exists() is True:
             lecturer.update({
@@ -219,6 +233,12 @@ class CourseDeleteAdmin(Resource):
     @jwt_required
     def post(self, course_id):
         course = Course().where('id', '=', course_id).first()
+        notes = Note().where('course_id', course_id).get()
+        for note in notes:
+            note.delete()
+        grade_dists = GradeDistribution().where('course_id', course_id).get()
+        for grade_dist in grade_dists:
+            grade_dist.delete()
 
         if course.exists():
             course.delete()
@@ -228,6 +248,25 @@ class CourseDeleteAdmin(Resource):
         return response({
             'message': 'Course does not exist'
         }, 404)
+
+
+class CourseUpdateAdmin(Resource):
+    @jwt_required
+    def post(self, course_id):
+        args = parser.parse_args()
+        name = args['name']
+
+        course = Course().where('id', '=', course_id).first()
+        if course.exists() is False:
+            return response({
+                'message': 'That course does not exist'
+            }, 401)
+        course.update({
+            'name': name,
+        })
+        return response({
+            'message': 'Course successfully updated!'
+        }, 200)
 
 
 class TermAddAdmin(Resource):
@@ -258,6 +297,12 @@ class TermDeleteAdmin(Resource):
     @jwt_required
     def post(self, term_id):
         term = Term().where('id', '=', term_id).first()
+        notes = Note().where('term_id', term_id).get()
+        for note in notes:
+            note.delete()
+        grade_dists = GradeDistribution().where('term_id', term_id).get()
+        for grade_dist in grade_dists:
+            grade_dist.delete()
 
         if term.exists():
             term.delete()
@@ -267,6 +312,28 @@ class TermDeleteAdmin(Resource):
         return response({
             'message': 'Term does not exist'
         }, 404)
+
+
+class TermUpdateAdmin(Resource):
+    @jwt_required
+    def post(self, term_id):
+        args = parser.parse_args()
+        season = args['season']
+        term_year = args['term_year']
+
+        term = Term().where('id', '=', term_id).first()
+        if term.exists() is False:
+            return response({
+                'message': 'That term does not exist'
+            }, 401)
+        term.update({
+            'season': season,
+            'term_year': term_year,
+        })
+        return response({
+            'message': 'Term successfully updated!'
+        }, 200)
+
 
 
 class CommentDeleteAdmin(Resource):
