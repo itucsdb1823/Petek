@@ -10,7 +10,11 @@ import Note from '../components/Notes/Note.vue'
 import NoteCreate from '../components/Notes/Create.vue'
 import Users from '../components/User/Users'
 import User from '../components/User/User'
+import Event from '../components/Events/Event'
+import Events from '../components/Events/Events'
+import EventCreate from '../components/Events/Create'
 import Courses from '../components/Course/Courses'
+import Terms from '../components/Term/Terms'
 
 // The meta data for your routes
 const meta = require('./meta.json')
@@ -63,6 +67,21 @@ export function createRouter () {
           component: Note
         },
         {
+          path: '/events',
+          name: 'Events',
+          component: Events
+        },
+        {
+          path: '/events/create',
+          name: 'EventCreate',
+          component: EventCreate
+        },
+        {
+          path: '/events/:event_id',
+          name: 'Event',
+          component: Event
+        },
+        {
           path: '/lecturers/create',
           name: 'LecturerCreate',
           component: LecturerCreate
@@ -91,6 +110,11 @@ export function createRouter () {
           path: '/admin/courses',
           name: 'Courses',
           component: Courses
+        },
+        {
+          path: '/admin/terms',
+          name: 'Terms',
+          component: Terms
         }
       ]
     })

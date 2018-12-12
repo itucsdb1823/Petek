@@ -145,17 +145,19 @@
         let menuItems = [
           { icon: 'apps', title: 'Home', to: '/' },
           { icon: 'reorder', title: 'Notes', to: '/notes' },
+          { icon: 'event', title: 'Events', to: '/events' },
           { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
           { icon: 'face', title: 'Register', to: '/register' },
           { icon: 'lock_open', title: 'Login', to: '/login' },
         ];
         if(this.userIsAuthenticated){
-            menuItems = [
-                { icon: 'apps', title: 'Home', to: '/' },
-                { icon: 'reorder', title: 'Notes', to: '/notes' },
-              { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
-              { icon: 'person', title: 'Profile', to: `/users/${this.user.slug}`},
-            ]
+          menuItems = [
+            { icon: 'apps', title: 'Home', to: '/' },
+            { icon: 'reorder', title: 'Notes', to: '/notes' },
+            { icon: 'event', title: 'Events', to: '/events' },
+            { icon: 'portrait', title: 'Lecturers', to: '/lecturers' },
+            { icon: 'person', title: 'Profile', to: `/users/${this.user.slug}`},
+          ]
         }
         return menuItems;
       },

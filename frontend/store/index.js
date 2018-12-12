@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import Auth from '../services/Auth'
 import Note from '../services/Note'
+import Event from '../services/Event'
 import Lecturer from '../services/Lecturer'
 import Term from '../services/Term'
 import Course from '../services/Course'
@@ -34,6 +35,8 @@ const storeOptions = {
       terms: [],
       courses: [],
       notes: [],
+      events: [],
+      event: {},
       lecturer: {},
       lecturers: [],
       gradeDistributions: [],
@@ -292,6 +295,14 @@ const storeOptions = {
           commit('postRequest', false)
         })
       },
+      createEvent({commit}, payload){
+        Event.create(payload).then(result => {
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('setError', error.response.data.errors)
+          commit('postRequest', false)
+        })
+      },
       getNotes({commit}, payload){
         Note.getNotes().then(result => {
           commit('setNotes', result.data.notes)
@@ -304,6 +315,24 @@ const storeOptions = {
       getNote({commit}, payload){
         Note.getNote(payload).then(result => {
           commit('setNote', result.data.notes)
+          commit('getRequest', true)
+        }).catch(error => {
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
+      getEvent({commit}, payload){
+        Event.getEvent(payload).then(result => {
+          commit('setEvent', result.data.event)
+          commit('getRequest', true)
+        }).catch(error => {
+          commit('getRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
+      getEvents({commit}, payload){
+        Event.getEvents().then(result => {
+          commit('setEvents', result.data.events)
           commit('getRequest', true)
         }).catch(error => {
           commit('getRequest', false)
@@ -386,8 +415,24 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
+      deleteEvent({commit}, payload){
+        Event.deleteEvent(payload).then(result => {
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       adminDeleteNote({commit}, payload){
         Admin.deleteNote(payload).then(result => {
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
+      adminDeleteEvent({commit}, payload){
+        Admin.deleteEvent(payload).then(result => {
           commit('postRequest', true)
         }).catch(error => {
           commit('postRequest', false)
@@ -402,8 +447,24 @@ const storeOptions = {
           commit('setError', error.response.data.errors)
         })
       },
+      editEvent({commit}, payload){
+        Event.editEvent(payload).then(result => {
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
       adminEditNote({commit}, payload){
         Admin.editNote(payload).then(result => {
+          commit('postRequest', true)
+        }).catch(error => {
+          commit('postRequest', false)
+          commit('setError', error.response.data.errors)
+        })
+      },
+      adminEditEvent({commit}, payload){
+        Admin.editEvent(payload).then(result => {
           commit('postRequest', true)
         }).catch(error => {
           commit('postRequest', false)
@@ -439,6 +500,12 @@ const storeOptions = {
       },
       setNote(state, payload){
         state.note = payload;
+      },
+      setEvent(state, payload){
+        state.event = payload
+      },
+      setEvents(state, payload){
+        state.events = payload
       },
       setLecturers(state, payload){
         state.lecturers = payload;
@@ -517,6 +584,12 @@ const storeOptions = {
       },
       note(state){
         return state.note
+      },
+      event(state){
+        return state.event
+      },
+      events(state){
+        return state.events
       },
       terms(state){
         return state.terms

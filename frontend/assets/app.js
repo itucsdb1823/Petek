@@ -11,7 +11,7 @@ import {
   VToolbar,
   VCard,
   transitions, VTextField, VAlert, VDataTable, VSelect, VCheckbox, VDivider, VDialog, VImg,
-  VProgressCircular
+  VProgressCircular, VDatePicker
 } from 'vuetify'
 import '../node_modules/vuetify/src/stylus/app.styl'
 import App from './App.vue'
@@ -44,7 +44,8 @@ Vue.use(Vuetify, {
     VDivider,
     VDialog,
     VImg,
-    VProgressCircular
+    VProgressCircular,
+    VDatePicker
   },
   theme: {
     primary: '#ee44aa',
