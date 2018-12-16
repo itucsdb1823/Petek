@@ -28,6 +28,8 @@ python dbinit.py
 
 You will see some options in here. For example, to import database tables hit '1'.
 
+After creating the tables use the ```cd ..``` command to go back and run ```python server.py``` command to start the Server (Flask App).
+
 ### Frontend
 - Go to frontend directory with `cd frontend` command.
 - Run `npm install` to install npm packages to your computer. This command will create a directory in the frontend path called `node_modules`. Note that, you need to install NPM to run this command.
