@@ -20,11 +20,20 @@ the information for a note.
   :scale: 100 %
   :alt: The input form for creating a note.
 
-.. toctree::
-
 *Title* is the title of the note and *lecturer* is
 the lecturer of the course. The *course id* (ex. ATA) and *code* (ex. 101) can be
 selected from the dropdown menus. The *English* check box can be selected if the
 course is in English. The *term* of the course is selected and the cloud
 storage link (ex. Google Drive or Dropbox link) containing the course note
 is entered to the *link* area. The note is submitted with again the Create Note button.
+
+When you click on a note, you will see the comments added to that note and
+the cloud link (via Go To Link button) to go to the contents of the note. You can also report the
+note to the admins if you think it's not appropriate.
+
+.. figure:: ../../Screenshots/NoteDetail.png
+  :scale: 100 %
+  :alt: Details of a note.
+
+The comments will be explained in more detail in the comments section.
+
