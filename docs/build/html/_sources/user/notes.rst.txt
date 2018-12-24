@@ -3,20 +3,22 @@ Notes
 
 The **Notes** tab is used for retrieving the notes from the database,
 creating notes or updating/deleting your existing notes.
+A user can't update/delete another user's note.
+
 When you click the **Notes** tab you first see the 5 most
 recently added notes and information about them such as their title and lecturer.
 You can use the create note button to create notes.
 
 .. figure:: ../../Screenshots/CreateNoteButton.png
     :scale: 100 %
-    :alt: map to buried treasure
+    :alt: Green button for creating a note.
 
 When you click the button a new page will show up, prompting you to enter
 the information for a note.
 
 .. figure:: ../../Screenshots/CreateNote.png
   :scale: 100 %
-  :alt: map to buried treasure
+  :alt: The input form for creating a note.
 
 .. toctree::
 
