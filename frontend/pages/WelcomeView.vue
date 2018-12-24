@@ -6,11 +6,11 @@
       </div>
       <v-card>
         <v-card-text>
-          <p>Welcome to the Webpack SSR template.</p>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications. For more information on Vuetify, check out the <a href="https://vuetifyjs.com" target="_blank">documentation</a>. If you have questions, please join the official <a href="https://gitter.im/vuetifyjs/Lobby" target="_blank" title="chat">gitter</a>. Find a bug? Report it on the github <a href="https://github.com/vuetifyjs/vuetify/issues" target="_blank" title="contribute">issue board</a>.</p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
+          <p>Welcome to the Petek Project.</p>
+          <p>Not Kutusu has been built for ITU students to find the desired course notes easily. Before sharing a course note, you need to fill the inputs such as drive/cloud link, lecturer and course code informations. In that way, another student can search any course note easily by entering its code or lecturer. </p>
+          <p>Thank you for using Petek and I look forward to bringing more exciting features in the future.</p>
           <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
+            <em><small>&mdash; Ali Tolga Dinçer & Yavuz Koca</small></em>
           </div>
         </v-card-text>
         <v-card-actions>
