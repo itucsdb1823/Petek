@@ -1,7 +1,7 @@
 Installation
 ==============
 
-*This project runs separately as frontend and backend. For that reason, you need install some requirements separately*
+*This project runs separately as frontend and backend. For that reason, you need install some requirements separately.*
 
 Install this project from github_ repository into your computer.
 
