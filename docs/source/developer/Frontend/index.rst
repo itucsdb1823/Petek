@@ -1,5 +1,5 @@
 Frontend Guide for Developer
-===============
+================================
 
 On the frontend directory run::
 

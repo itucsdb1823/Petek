@@ -1,7 +1,7 @@
 Installation
 ==============
 
-*This project runs separately as frontend and backend. In that reason, you need install some requirements separately*
+*This project runs separately as frontend and backend. For that reason, you need install some requirements separately*
 
 Install this project from github_ repository into your computer.
 
@@ -29,7 +29,7 @@ After creating the database, run these commands to create tables::
     cd server
     python dbinit.py
 
-After running second command, program will asks some options. Hit 1 to create tables. Of course you can run the seeders to add dummy data.
+After running the second command, program will ask for some options. Hit 1 to create tables. Of course, you can also run the seeders to add dummy data.
 
 
 You are all set. You can run the server by simply::
