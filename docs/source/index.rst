@@ -5,11 +5,8 @@ Welcome to itucsdbNN's documentation!
 
 :Members:
 
-   * Member 1
-   * Member 2
-   * Member 3
-   * Member 4
-   * Member 5
+   * Ali Tolga Dinçer
+   * Yavuz Koca
 
 **project description goes here (a few paragraphs)**
 
