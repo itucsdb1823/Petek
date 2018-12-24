@@ -1,7 +1,7 @@
-Welcome to itucsdbNN's documentation!
+Welcome to itucsdb23's documentation!
 =====================================
 
-:Team: Team Name
+:Team: Petek
 
 :Members:
 
@@ -15,5 +15,6 @@ Contents:
 .. toctree::
    :maxdepth: 1
 
+   installation/index
    user/index
    developer/index
