@@ -11,21 +11,10 @@ Database Design
 Code
 ----
 
-**explain the technical structure of your code**
-
-**to include a code listing, use the following example**::
-
-   .. code-block:: python
-
-      class Foo:
-
-         def __init__(self, x):
-            self.x = x
+Since we separated backend and frontend, you can check the guides separately using the links given below:
 
 .. toctree::
+   :maxdepth: 1
 
-   member1
-   member2
-   member3
-   member4
-   member5
+   Backend/index
+   Frontend/index

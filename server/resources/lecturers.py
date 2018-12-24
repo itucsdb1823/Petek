@@ -33,7 +33,6 @@ class AddLecturer(Resource):
             'user_id': user_id
         })
 
-
         if lecturer.validate() is True:
             lecturer.save()
             return response({
