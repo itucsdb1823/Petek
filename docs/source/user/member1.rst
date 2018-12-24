@@ -1,5 +1,4 @@
 Parts Implemented by Ali Tolga Dinçer
-=======================================
 
 Since our application is a platform for sharing notes, let's start with the
 **Notes** tab. When you click the **Notes** tab you first see the 5 most
