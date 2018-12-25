@@ -27,6 +27,130 @@ done by checking if the request contains "/admin/" in it's second part and if th
 of the user is admin.
 
 ***********
+Models
+***********
+
+Before dive into the resources, it would be better to go through the models first.
+
+Models folder in the server directory holds the required tables' models. For example, Note model is responsible of notes table. It can perform some actions related to notes table such as create, delete, update etc.::
+
+    from server.models.Base import Base
+
+    class Note(Base):
+        ATTRIBUTES = {}
+        COLUMNS = {}
+        TABLE = 'notes'
+
+Every model has some variables. For example, **ATTRIBUTES** variable specifies the returned columns on **SELECT** queries.::
+
+    Note.get().data()
+
+will return all notes data as array of objects. Inside of each object, only the key's that specified in the **ATTRIBUTES** will be returned. To exemplify, In **User** model, there is no **password** column in the **ATTRIBUTES** dictionary to prevent security issues.
+
+
+There is another variable in the Model which called **COLUMNS**. **COLUMNS** variable refers the **INSERT INTO** values. When new object is tried to create, it tries to insert all elements inside of the **COLUMNS** dictionary. In that way, when we try to create a Note **id** column is never given::
+
+    note = Note()
+    note.create({
+        'title': title,
+        'content': content,
+        'lecturer': lecturer,
+        'link': link,
+        'course_id': course_id,
+        'course_code': course_code,
+        'english': english,
+        'term_id': term_id,
+        'user_id': user_id,
+        'slug': note.generateSlug(name=title)
+    })
+
+Base Model
+----------
+
+If you have noticed, all models are inherited from **Base** Model. In Base Model, we have written some general code of segments. Here is the explanations of Base Model:
+
+ERRORS
+^^^^^^
+Errors array is used whenever an error has occurred during the creating, saving, updating or getting the data. This is useful for frontend side and used very frequently.
+
+HIDDEN
+^^^^^^
+When it is not wanted to see some columns by the user, it is putted inside of the HIDDEN dictionary. In that way, when getting the data with **SELECT FROM** command, it gets hidden.
+
+UPDATES
+^^^^^^^^
+
+We may not want to update all columns always. It is good practice to write certain columns in the **UPDATE** query when only some columns are going to change. So, when **method** is called, it writes the columns into this variable::
+
+    def update(self, *args):
+        for key, value in args[0].items():
+            self.UPDATES[key] = value
+
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("UPDATE " + self.TABLE + " SET " +
+                    self.generateUpdateColumns() + " WHERE " +
+                    self.generateWhereCondition()+" returning *",
+                    self.generateUpdateValues())
+        returnedValue = cur.fetchone()
+        self.setData(returnedValue)
+        conn.commit()
+
+RESPONSE
+^^^^^^^^
+
+When getting the data back, it is written into RESPONSE array. It checks if the current key is in the ATTRIBUTES dictionary and NOT in the HIDDEN dictionary.::
+
+    for column, value in row.items():
+        if column in self.ATTRIBUTES:
+            self.ATTRIBUTES[column] = value
+        elif column in self.HIDDEN:
+            self.HIDDEN[column] = value
+        self.RESPONSE = self.ATTRIBUTES
+
+CONDITIONS
+^^^^^^^^^^
+
+When we call the **where** function, it appends the elements into the CONDITIONS dictionary. In that way, when calling any query, delete or update operations, it adds these conditions as well.::
+
+    def where(self, *args):
+        if len(args) == 2:  # where('id', 5)
+            self.CONDITIONS.append([args[0], '=', args[1]])
+        elif len(args) == 3:  # where('id','=', 5)
+            self.CONDITIONS.append([args[0], args[1], args[2]])
+        elif len(args) == 1 and isinstance(args[0], list):  # where([['id','=',5],['slug', '=', 'asdf]])
+            for condition in args[0]:
+                self.CONDITIONS.append([condition[0], condition[1], condition[2]])
+        return self
+
+LIMIT & ORDERBY
+^^^^^^^^^^^^^^^^
+
+LIMIT and ORDERBY are pretty straight forward. Like it is added to end of the queries in the where function, limit and order by also added to the end of the queries.
+
+
+Generate Slug
+^^^^^^^^^^^^^
+
+Since we have some slug columns in the notes, lecturers and users tables, we have implemented common function that generates slug and checks its uniqueness from the table.::
+
+    def generateSlug(self, name):
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        slug = slugify(name)
+        slug_is_not_unique = True
+        i = 2
+        tslug = slug
+        while slug_is_not_unique:
+            cur.execute("SELECT * FROM "+self.TABLE+" WHERE slug=%s LIMIT 1", (slug,))
+            found = cur.fetchone()
+            if found is not None:
+                slug = tslug + str(i)
+                i += 1
+            else:
+                slug_is_not_unique = False
+        return slug
+
+
+***********
 Resources
 ***********
 
