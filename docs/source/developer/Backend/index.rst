@@ -199,8 +199,6 @@ So, we import the *flask_jwt_simple* module and the *jwt_required* class to prev
 You can insert this pragma to any resource that
 you want to make available for only logged in users.
 
-----------BURASI SİLİNEBİLİR----------
-
 Now let's create an event. To do that, we use the Event model under
 the models folder. The models folder contains the classes used in our application
 and a base class. The base class contains functions for the CRUD operations.
