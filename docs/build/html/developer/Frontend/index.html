@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Frontend Guide for Developer &mdash; ITUCSDB1823  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Backend Guide for Developer" href="../Backend/index.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ITUCSDB1823
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#database-design">Database Design</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#code">Code</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../Backend/index.html">Backend Guide for Developer</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Frontend Guide for Developer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#vue-js">Vue JS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vuetify">Vuetify</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#routes">Routes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#components">Components</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#services">Services</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#axios">Axios</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#vuex">Vuex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ITUCSDB1823</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer Guide</a> &raquo;</li>
+        
+      <li>Frontend Guide for Developer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/developer/Frontend/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frontend-guide-for-developer">
+<h1>Frontend Guide for Developer<a class="headerlink" href="#frontend-guide-for-developer" title="Permalink to this headline">¶</a></h1>
+<p>On the frontend directory run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">npm</span> <span class="n">run</span> <span class="n">dev</span>
+</pre></div>
+</div>
+<p>command to start the client side of the project.</p>
+<div class="section" id="vue-js">
+<h2>Vue JS<a class="headerlink" href="#vue-js" title="Permalink to this headline">¶</a></h2>
+<p>In this project, we used <a class="reference external" href="https://vuejs.org/">Vue</a>.js framework to build the frontend side. You can get more information about this framework using <a class="reference external" href="https://vuejs.org/">this</a> link.</p>
+<p>If we look at to core of the Vue JS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;app&quot;</span><span class="o">&gt;</span>
+    <span class="p">{{</span> <span class="n">message</span> <span class="p">}}</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="n">app</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Vue</span><span class="p">({</span>
+  <span class="n">el</span><span class="p">:</span> <span class="s1">&#39;#app&#39;</span><span class="p">,</span>
+  <span class="n">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">message</span><span class="p">:</span> <span class="s1">&#39;Hello Vue!&#39;</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Hello Vue!
+</pre></div>
+</div>
+<p>We can assign if statement using <strong>v-if</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;app-3&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">span</span> <span class="n">v</span><span class="o">-</span><span class="k">if</span><span class="o">=</span><span class="s2">&quot;seen&quot;</span><span class="o">&gt;</span><span class="n">Now</span> <span class="n">you</span> <span class="n">see</span> <span class="n">me</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="n">app3</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Vue</span><span class="p">({</span>
+  <span class="n">el</span><span class="p">:</span> <span class="s1">&#39;#app-3&#39;</span><span class="p">,</span>
+  <span class="n">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">seen</span><span class="p">:</span> <span class="n">true</span>
+  <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Now</span> <span class="n">you</span> <span class="n">see</span> <span class="n">me</span>
+</pre></div>
+</div>
+<p>Similarly, to run for loop:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">div</span> <span class="n">v</span><span class="o">-</span><span class="k">for</span><span class="o">=</span><span class="s2">&quot;item in items&quot;</span><span class="o">&gt;</span>
+    <span class="p">{{</span> <span class="n">item</span> <span class="p">}}</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">var</span> <span class="n">app4</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Vue</span><span class="p">({</span>
+    <span class="n">data</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">items</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;item1&#39;</span><span class="p">,</span> <span class="s1">&#39;item2&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">item1</span>
+<span class="n">item2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="vuetify">
+<h2>Vuetify<a class="headerlink" href="#vuetify" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://vuetifyjs.com/en/">Vuetify</a> is a material component framework for VueJS. Since Vuetify follows the material design standard, it allows you to create good looking applications.</p>
+<p>Here is some code samples from vuetify:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&lt;template&gt;
+  &lt;v-container&gt;
+    &lt;v-layout row&gt;
+      &lt;v-flex xs12 sm6 offset-sm3&gt;
+        &lt;v-card&gt;
+          &lt;v-card-text&gt;
+            &lt;v-container&gt;
+              &lt;form @submit.prevent=&quot;create_note&quot;&gt;
+                &lt;!--Title Input Field--&gt;
+                &lt;v-layout row&gt;
+                  &lt;v-flex xs12&gt;
+                    &lt;v-text-field
+                      name=&quot;title&quot;
+                      label=&quot;Title&quot;
+                      id=&quot;title&quot;
+                      v-model=&quot;title&quot;
+                      type=&quot;text&quot;
+                      placeholder=&quot;Ata 101 Çıkmış Sorular&quot;
+                      required
+                    &gt;
+                    &lt;/v-text-field&gt;
+                  &lt;/v-flex&gt;
+                &lt;/v-layout&gt;
+              &lt;/form&gt;
+            &lt;/v-container&gt;
+          &lt;/v-card-text&gt;
+        &lt;/v-card&gt;
+      &lt;/v-flex&gt;
+    &lt;/v-layout&gt;
+  &lt;/v-container
+&lt;/template&gt;
+</pre></div>
+</div>
+<p>In here, it creates a responsive NoteCreate form. <em>You can find this code in this</em> <a class="reference external" href="https://github.com/itucsdb1823/itucsdb1823/blob/master/frontend/components/Notes/Create.vue">Link</a>. For example, <strong>v-layout</strong> tag is used for <cite>&lt;div class=”row”&gt;</cite> tag.</p>
+<p>To give a column, we can use <strong>v-flex</strong> tag.</p>
+<p>For more information, you can visit official documentation <a class="reference external" href="https://vuetifyjs.com/en/">page</a></p>
+</div>
+<div class="section" id="routes">
+<h2>Routes<a class="headerlink" href="#routes" title="Permalink to this headline">¶</a></h2>
+<p>We have implemented our routes in frontend/router/index.js <a class="reference external" href="https://github.com/itucsdb1823/itucsdb1823/blob/master/frontend/router/index.js">file</a></p>
+<p>For example, when <strong>/login</strong> route is fired, it runs the <strong>Login</strong> component:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="n">path</span><span class="p">:</span> <span class="s1">&#39;/login&#39;</span><span class="p">,</span>
+  <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;Login&#39;</span><span class="p">,</span>
+  <span class="n">component</span><span class="p">:</span> <span class="n">Login</span>
+<span class="p">},</span>
+</pre></div>
+</div>
+<p>Login component is defined in <strong>/frontend/components/User/Login.vue</strong> directory. You can also see the import code of it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Login</span> <span class="kn">from</span> <span class="s1">&#39;../components/User/Login.vue&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="components">
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this headline">¶</a></h2>
+<p>In <strong>/components/</strong> folder, we have several components such as <cite>Login</cite>, <cite>Register</cite>, <cite>Note</cite> etc. Each components has three sections:</p>
+<ul class="simple">
+<li>Template</li>
+<li>Script</li>
+<li>Style</li>
+</ul>
+<div class="section" id="template">
+<h3>Template<a class="headerlink" href="#template" title="Permalink to this headline">¶</a></h3>
+<p>Between <strong>template</strong> tags, we run our <strong>HTML</strong> codes. Since we use <strong>Vuetify</strong>, we did not write too much HTML codes. Instead, we used Vuetify styled tags. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">template</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">v</span><span class="o">-</span><span class="n">btn</span> <span class="nd">@click</span><span class="o">=</span><span class="s2">&quot;some_method&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;some_class&quot;</span><span class="o">&gt;</span>
+        <span class="n">Click</span> <span class="n">Me</span>
+    <span class="o">&lt;/</span><span class="n">v</span><span class="o">-</span><span class="n">btn</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">template</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="script">
+<h3>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h3>
+<p>Between <strong>script</strong> tags, we can write our JavaScript codes such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
+    <span class="n">export</span> <span class="n">default</span> <span class="p">{</span>
+        <span class="n">methods</span><span class="p">:</span> <span class="p">{</span>
+            <span class="n">some_method</span><span class="p">(){</span>
+                <span class="n">console</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s1">&#39;You clicked me&#39;</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="style">
+<h3>Style<a class="headerlink" href="#style" title="Permalink to this headline">¶</a></h3>
+<p>Between <strong>style</strong> tags, we can write our own css such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">style</span> <span class="n">scoped</span><span class="o">&gt;</span>
+    <span class="o">.</span><span class="n">some_class</span><span class="p">{</span>
+        <span class="n">font</span><span class="o">-</span><span class="n">size</span><span class="p">:</span> <span class="mi">23</span><span class="n">px</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">style</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="services">
+<h2>Services<a class="headerlink" href="#services" title="Permalink to this headline">¶</a></h2>
+<p>To communicate with API, we used some services which are located under the <strong>services</strong> folder. For example, to get the notes from backend we can run this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Api</span> <span class="kn">from</span> <span class="s1">&#39;../Api&#39;</span>
+<span class="n">export</span> <span class="n">default</span> <span class="p">{</span>
+  <span class="n">getNotes</span><span class="p">(){</span>
+    <span class="k">return</span> <span class="n">Api</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notes&#39;</span><span class="p">)</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>It will send a request to <strong>http://backend_url/api/notes</strong> endpoint and will return a response. To make requests, we used Axios.</p>
+<p>To make get request:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Api</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To make post request:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Api</span><span class="p">()</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="axios">
+<h2>Axios<a class="headerlink" href="#axios" title="Permalink to this headline">¶</a></h2>
+<p>Axios is the Javascript library allows you to make HTTP requests. We have created main Api.js file in <strong>/services</strong> folder. All services communicates with this file.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">axios</span> <span class="kn">from</span> <span class="s1">&#39;axios&#39;</span>
+<span class="n">export</span> <span class="n">default</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">axios</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+        <span class="n">baseURL</span><span class="p">:</span> <span class="s1">&#39;http://localhost:5000/api&#39;</span><span class="p">,</span>
+    <span class="p">})</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="vuex">
+<h2>Vuex<a class="headerlink" href="#vuex" title="Permalink to this headline">¶</a></h2>
+<p>We also used state management system which is Vuex. In <strong>store/index.js</strong> file, we created our functions to communicate with the services. This functions are called from components.</p>
+<p>For example, inside of the Notes/Note.vue file, we are fetching the note from the backend:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>beforeCreate(){
+  let note_slug = this.$route.params.note_slug
+  this.$store.dispatch(&#39;getNote&#39;, note_slug)
+},
+</pre></div>
+</div>
+<p>When we dispatch the getNote function, its called from actions object in the <strong>store/index.js</strong> file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">Note</span> <span class="kn">from</span> <span class="s1">&#39;../services/Note&#39;</span>
+
+<span class="n">const</span> <span class="n">storeOptions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">state</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">note</span><span class="p">:</span> <span class="n">null</span>
+    <span class="p">}</span>
+    <span class="n">actions</span><span class="p">:</span> <span class="p">{</span>
+        <span class="n">getNote</span><span class="p">(){</span>
+            <span class="n">Note</span><span class="o">.</span><span class="n">getNote</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">result</span> <span class="o">=&gt;</span> <span class="p">{</span>
+              <span class="n">commit</span><span class="p">(</span><span class="s1">&#39;setNote&#39;</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">notes</span><span class="p">)</span>
+              <span class="n">commit</span><span class="p">(</span><span class="s1">&#39;getRequest&#39;</span><span class="p">,</span> <span class="n">true</span><span class="p">)</span>
+            <span class="p">})</span><span class="o">.</span><span class="n">catch</span><span class="p">(</span><span class="n">error</span> <span class="o">=&gt;</span> <span class="p">{</span>
+              <span class="n">commit</span><span class="p">(</span><span class="s1">&#39;getRequest&#39;</span><span class="p">,</span> <span class="n">false</span><span class="p">)</span>
+              <span class="n">commit</span><span class="p">(</span><span class="s1">&#39;setError&#39;</span><span class="p">,</span> <span class="n">error</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">errors</span><span class="p">)</span>
+            <span class="p">})</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>After getting the note, we are setting the state.note variable with <cite>commit(‘setNote’)</cite> command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">setNote</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">payload</span><span class="p">){</span>
+  <span class="n">state</span><span class="o">.</span><span class="n">note</span> <span class="o">=</span> <span class="n">payload</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>In that way, we will be able to reach the note variable from the Note component with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>computed: {
+  note(){
+    return this.$store.getters.note // state.note
+  },
+}
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../Backend/index.html" class="btn btn-neutral" title="Backend Guide for Developer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, ITUCSDB1823
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

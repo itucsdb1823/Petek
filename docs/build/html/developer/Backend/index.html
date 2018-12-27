@@ -1,0 +1,502 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Backend Guide for Developer &mdash; ITUCSDB1823  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Frontend Guide for Developer" href="../Frontend/index.html" />
+    <link rel="prev" title="Developer Guide" href="../index.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> ITUCSDB1823
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html#database-design">Database Design</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#code">Code</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Backend Guide for Developer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#routes">Routes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#models">Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resources">Resources</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#seeders">Seeders</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../Frontend/index.html">Frontend Guide for Developer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">ITUCSDB1823</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer Guide</a> &raquo;</li>
+        
+      <li>Backend Guide for Developer</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/developer/Backend/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="backend-guide-for-developer">
+<h1>Backend Guide for Developer<a class="headerlink" href="#backend-guide-for-developer" title="Permalink to this headline">¶</a></h1>
+<p>On the root directory run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">server</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>command to start the server. <strong>server.py</strong> file runs the commands in the <strong>server/__init__.py</strong> file.</p>
+<div class="section" id="routes">
+<h2>Routes<a class="headerlink" href="#routes" title="Permalink to this headline">¶</a></h2>
+<p>Routing of the backend is done in the <em>routes.py</em> file inside the <em>server</em> folder.
+The Api class in the flask_restful module is used for adding resources.</p>
+<p>Example route for <strong>register</strong> resource:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_restful</span> <span class="k">import</span> <span class="n">Api</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">Api</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+<span class="n">api</span><span class="o">.</span><span class="n">add_resource</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">Register</span><span class="p">,</span> <span class="s1">&#39;/api/register&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <em>routes.py</em> script contains every route for CRUD operations of each table. Additionally,
+it contains the admin routes and the function to check if the user is admin. The admin check is
+done by checking if the request contains “/admin/” in it’s second part and if the role
+of the user is admin.</p>
+</div>
+<div class="section" id="models">
+<h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
+<p>Before dive into the resources, it would be better to go through the models first.</p>
+<p>Models folder in the server directory holds the required tables’ models. For example, Note model is responsible of notes table. It can perform some actions related to notes table such as create, delete, update etc.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">server.models.Base</span> <span class="k">import</span> <span class="n">Base</span>
+
+<span class="k">class</span> <span class="nc">Note</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">ATTRIBUTES</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">COLUMNS</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">TABLE</span> <span class="o">=</span> <span class="s1">&#39;notes&#39;</span>
+</pre></div>
+</div>
+<p>Every model has some variables. For example, <strong>ATTRIBUTES</strong> variable specifies the returned columns on <strong>SELECT</strong> queries.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Note</span><span class="o">.</span><span class="n">get</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>will return all notes data as array of objects. Inside of each object, only the key’s that specified in the <strong>ATTRIBUTES</strong> will be returned. To exemplify, In <strong>User</strong> model, there is no <strong>password</strong> column in the <strong>ATTRIBUTES</strong> dictionary to prevent security issues.</p>
+<p>There is another variable in the Model which called <strong>COLUMNS</strong>. <strong>COLUMNS</strong> variable refers the <strong>INSERT INTO</strong> values. When new object is tried to create, it tries to insert all elements inside of the <strong>COLUMNS</strong> dictionary. In that way, when we try to create a Note <strong>id</strong> column is never given:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">note</span> <span class="o">=</span> <span class="n">Note</span><span class="p">()</span>
+<span class="n">note</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+    <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+    <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
+    <span class="s1">&#39;lecturer&#39;</span><span class="p">:</span> <span class="n">lecturer</span><span class="p">,</span>
+    <span class="s1">&#39;link&#39;</span><span class="p">:</span> <span class="n">link</span><span class="p">,</span>
+    <span class="s1">&#39;course_id&#39;</span><span class="p">:</span> <span class="n">course_id</span><span class="p">,</span>
+    <span class="s1">&#39;course_code&#39;</span><span class="p">:</span> <span class="n">course_code</span><span class="p">,</span>
+    <span class="s1">&#39;english&#39;</span><span class="p">:</span> <span class="n">english</span><span class="p">,</span>
+    <span class="s1">&#39;term_id&#39;</span><span class="p">:</span> <span class="n">term_id</span><span class="p">,</span>
+    <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+    <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="n">note</span><span class="o">.</span><span class="n">generateSlug</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<div class="section" id="base-model">
+<h3>Base Model<a class="headerlink" href="#base-model" title="Permalink to this headline">¶</a></h3>
+<p>If you have noticed, all models are inherited from <strong>Base</strong> Model. In Base Model, we have written some general code of segments. Here is the explanations of Base Model:</p>
+<div class="section" id="errors">
+<h4>ERRORS<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h4>
+<p>Errors array is used whenever an error has occurred during the creating, saving, updating or getting the data. This is useful for frontend side and used very frequently.</p>
+</div>
+<div class="section" id="hidden">
+<h4>HIDDEN<a class="headerlink" href="#hidden" title="Permalink to this headline">¶</a></h4>
+<p>When it is not wanted to see some columns by the user, it is putted inside of the HIDDEN dictionary. In that way, when getting the data with <strong>SELECT FROM</strong> command, it gets hidden.</p>
+</div>
+<div class="section" id="updates">
+<h4>UPDATES<a class="headerlink" href="#updates" title="Permalink to this headline">¶</a></h4>
+<p>We may not want to update all columns always. It is good practice to write certain columns in the <strong>UPDATE</strong> query when only some columns are going to change. So, when <strong>method</strong> is called, it writes the columns into this variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">UPDATES</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">(</span><span class="n">cursor_factory</span><span class="o">=</span><span class="n">psycopg2</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">RealDictCursor</span><span class="p">)</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;UPDATE &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">TABLE</span> <span class="o">+</span> <span class="s2">&quot; SET &quot;</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">generateUpdateColumns</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; WHERE &quot;</span> <span class="o">+</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">generateWhereCondition</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot; returning *&quot;</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">generateUpdateValues</span><span class="p">())</span>
+    <span class="n">returnedValue</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">returnedValue</span><span class="p">)</span>
+    <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="response">
+<h4>RESPONSE<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h4>
+<p>When getting the data back, it is written into RESPONSE array. It checks if the current key is in the ATTRIBUTES dictionary and NOT in the HIDDEN dictionary.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">column</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ATTRIBUTES</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ATTRIBUTES</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">HIDDEN</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">HIDDEN</span><span class="p">[</span><span class="n">column</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">RESPONSE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ATTRIBUTES</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conditions">
+<h4>CONDITIONS<a class="headerlink" href="#conditions" title="Permalink to this headline">¶</a></h4>
+<p>When we call the <strong>where</strong> function, it appends the elements into the CONDITIONS dictionary. In that way, when calling any query, delete or update operations, it adds these conditions as well.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># where(&#39;id&#39;, 5)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CONDITIONS</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>  <span class="c1"># where(&#39;id&#39;,&#39;=&#39;, 5)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CONDITIONS</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># where([[&#39;id&#39;,&#39;=&#39;,5],[&#39;slug&#39;, &#39;=&#39;, &#39;asdf]])</span>
+        <span class="k">for</span> <span class="n">condition</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CONDITIONS</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">condition</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">condition</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">condition</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="limit-orderby">
+<h4>LIMIT &amp; ORDERBY<a class="headerlink" href="#limit-orderby" title="Permalink to this headline">¶</a></h4>
+<p>LIMIT and ORDERBY are pretty straight forward. Like it is added to end of the queries in the where function, limit and order by also added to the end of the queries.</p>
+</div>
+<div class="section" id="generate-slug">
+<h4>Generate Slug<a class="headerlink" href="#generate-slug" title="Permalink to this headline">¶</a></h4>
+<p>Since we have some slug columns in the notes, lecturers and users tables, we have implemented common function that generates slug and checks its uniqueness from the table.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">generateSlug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">(</span><span class="n">cursor_factory</span><span class="o">=</span><span class="n">psycopg2</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">RealDictCursor</span><span class="p">)</span>
+    <span class="n">slug</span> <span class="o">=</span> <span class="n">slugify</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">slug_is_not_unique</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">tslug</span> <span class="o">=</span> <span class="n">slug</span>
+    <span class="k">while</span> <span class="n">slug_is_not_unique</span><span class="p">:</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM &quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">TABLE</span><span class="o">+</span><span class="s2">&quot; WHERE slug=</span><span class="si">%s</span><span class="s2"> LIMIT 1&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">slug</span><span class="p">,))</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">slug</span> <span class="o">=</span> <span class="n">tslug</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">slug_is_not_unique</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">slug</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="resources">
+<h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
+<p>The resources folder contains the necessary web resources for each route. To create a custom
+resource, we use the <em>flask_restful</em> module and it’s <em>Resource</em> class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_restful</span> <span class="k">import</span> <span class="n">Resource</span>
+
+<span class="k">class</span> <span class="nc">CreateEvent</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="c1"># your code here...</span>
+</pre></div>
+</div>
+<p>In order to add an argument, we again use the flask_restful module. The reqparse class is used
+to parse arguments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_restful</span> <span class="k">import</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">reqparse</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">reqparse</span><span class="o">.</span><span class="n">RequestParser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Title must be a string&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">CreateEvent</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="c1"># your code here...</span>
+</pre></div>
+</div>
+<p>We added an argument named title. Now we can parse and get the argument that was sent through
+the request. For an example, let’s create a POST request:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_restful</span> <span class="k">import</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">reqparse</span>
+<span class="kn">from</span> <span class="nn">flask_jwt_simple</span> <span class="k">import</span> <span class="n">jwt_required</span><span class="p">,</span> <span class="n">get_jwt_identity</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">reqparse</span><span class="o">.</span><span class="n">RequestParser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Title must be a string&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">CreateEvent</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="nd">@jwt_required</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The user sent a post request and sent an argument with name(key) title.
+We parsed that argument using the reqparse class and assigned the value with
+the key “title” to our variable named title. Now, we can use this variable when
+we are creating or updating an event.</p>
+<p>In this part, we also added the jwt_required pragma. The jwt is a token used for handling
+authentication and sessions. We don’t want any user to create an event without signing up.
+So, we import the <em>flask_jwt_simple</em> module and the <em>jwt_required</em> class to prevent this.
+You can insert this pragma to any resource that
+you want to make available for only logged in users.</p>
+<p>Now let’s create an event. To do that, we use the Event model under
+the models folder. The models folder contains the classes used in our application
+and a base class. The base class contains functions for the CRUD operations.
+It runs the SQL commands written in these functions.
+All the other models inherit from it and use these
+functions in their custom functions.</p>
+<p>Continuing with our event, we create an instance of the Event class and call the
+necessary functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask_restful</span> <span class="k">import</span> <span class="n">Resource</span><span class="p">,</span> <span class="n">reqparse</span>
+<span class="kn">from</span> <span class="nn">flask_jwt_simple</span> <span class="k">import</span> <span class="n">jwt_required</span><span class="p">,</span> <span class="n">get_jwt_identity</span>
+<span class="kn">from</span> <span class="nn">server.models.Event</span> <span class="k">import</span> <span class="n">Event</span>
+<span class="kn">from</span> <span class="nn">server.helpers</span> <span class="k">import</span> <span class="n">response</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">reqparse</span><span class="o">.</span><span class="n">RequestParser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Title must be a string&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Description must be a string&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;max_participant&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Max participant must be a number&#39;</span><span class="p">)</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;started_at&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start date must be a string&#39;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">CreateEvent</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+    <span class="nd">@jwt_required</span>
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+    <span class="n">max_participant</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;max_participant&#39;</span><span class="p">]</span>
+    <span class="n">started_at</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;started_at&#39;</span><span class="p">]</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">get_jwt_identity</span><span class="p">()[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+
+    <span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+    <span class="n">event</span><span class="o">.</span><span class="n">create</span><span class="p">({</span>
+        <span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+        <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+        <span class="s1">&#39;max_participant&#39;</span><span class="p">:</span> <span class="n">max_participant</span><span class="p">,</span>
+        <span class="s1">&#39;started_at&#39;</span><span class="p">:</span> <span class="n">started_at</span><span class="p">,</span>
+        <span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="n">user_id</span>
+    <span class="p">})</span>
+
+    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">response</span><span class="p">({</span>
+            <span class="s1">&#39;errors&#39;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">getErrors</span><span class="p">()</span>
+        <span class="p">},</span> <span class="mi">401</span><span class="p">)</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">()</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="n">event</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">response</span><span class="p">({</span>
+        <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">plus</span><span class="p">(</span><span class="s1">&#39;user&#39;</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">data</span><span class="p">())</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
+    <span class="p">},</span> <span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We have created our event :)</p>
+<p>We used the response function in the helpers.py script. This function takes a
+dictionary and an HTTP status code and creates an HTTP response from them.</p>
+<p>Details about the HTTP codes can be found <a class="reference external" href="https://www.restapitutorial.com/httpstatuscodes.html">here</a></p>
+</div>
+<div class="section" id="seeders">
+<h2>Seeders<a class="headerlink" href="#seeders" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>migrations</strong> folder contained the table creation commands for each table. Similarly,
+the <strong>seeders</strong> folder contains the scripts to seed each table with a custom amount
+of random data. This makes things very practical while testing the database operations.</p>
+<p>The functions are called by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">server</span>
+<span class="n">python</span> <span class="n">dbinit</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>From the options, choose 3 first and then choose the tables you want to seed random data
+by separating the table numbers with a space. The default insert value is 10 elements
+but it can be modified from the source code by
+adding parameters to the functions in dbinit.py</p>
+<p>An example of a seeder is below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="k">def</span> <span class="nf">lecturers_table_seeder</span><span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">fake</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT id FROM users&quot;</span><span class="p">)</span>
+    <span class="n">users</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">xs</span> <span class="ow">in</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num</span><span class="p">):</span>
+        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;INSERT INTO lecturers(name, email, slug, created_at, user_id)</span>
+<span class="s2">                    VALUES(</span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">) returning id&quot;&quot;&quot;</span><span class="p">,</span>
+                    <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fake</span><span class="o">.</span><span class="n">email</span><span class="p">()),</span> <span class="nb">str</span><span class="p">(</span><span class="n">fake</span><span class="o">.</span><span class="n">slug</span><span class="p">()),</span>
+                     <span class="nb">str</span><span class="p">(</span><span class="n">fake</span><span class="o">.</span><span class="n">date_time_this_month</span><span class="p">()),</span> <span class="nb">int</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">users</span><span class="p">))))</span>
+</pre></div>
+</div>
+<p>The cur parameter is the cursor of the psycopg2 module which is used for
+connecting with the database.</p>
+<p>The fake parameter is an instance of the Faker class of the
+faker module. The faker module is a popular python module which is used for
+creating random data in different types (name, email, text, …) and languages
+(‘tr_TR’, ‘en_US’, …).</p>
+<p>If there are references in the table we are seeding, we first fetch all the IDs
+using cursor.fetchall() and put them to an array. Then we use the random module
+and select a random element from that array while inserting.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../Frontend/index.html" class="btn btn-neutral float-right" title="Frontend Guide for Developer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral" title="Developer Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, ITUCSDB1823
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
