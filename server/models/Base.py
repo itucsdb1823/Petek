@@ -215,11 +215,6 @@ class Base:
         for key, value in args[0].items():
             self.UPDATES[key] = value
 
-        print("UPDATE " + self.TABLE + " SET " +
-                    self.generateUpdateColumns() + " WHERE " +
-                    self.generateWhereCondition()+" returning *", file=sys.stderr)
-        print(self.generateUpdateValues(), file=sys.stderr)
-
         cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         cur.execute("UPDATE " + self.TABLE + " SET " +
                     self.generateUpdateColumns() + " WHERE " +
