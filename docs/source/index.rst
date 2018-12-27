@@ -1,19 +1,20 @@
-.. ITUCSDB18NN documentation master file, created as a template.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to itucsdb23's documentation!
+=====================================
 
-Welcome to ITUCSDB18NN's documentation!
-=======================================
+:Team: Petek
+
+:Members:
+
+   * Ali Tolga Dinçer
+   * Yavuz Koca
+
+**project description goes here (a few paragraphs)**
+
+Contents:
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   installation/index
+   user/index
+   developer/index
