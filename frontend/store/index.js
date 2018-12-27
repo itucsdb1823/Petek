@@ -41,6 +41,7 @@ const storeOptions = {
       lecturers: [],
       gradeDistributions: [],
       gradeDistribution: {},
+      gradeAdded: false,
       /*
       If request is null, no request is sent recently.
       If request is true, post request sent and returned success recently.
@@ -170,14 +171,18 @@ const storeOptions = {
         getBase64(file).then(
           data => {
             payload.image = data;
-            console.log(payload.image)
-            GradeDistribution.createGradeDistribution(payload)
+              GradeDistribution.createGradeDistribution(payload)
               .then(result => {
+                commit('appendGrade', result.data.grade_distribution)
                 commit('postRequest', true)
+                commit('gradeAdded', true)
+                setTimeout(() => {commit('gradeAdded', false)}, 1000)
               }).catch(error => {
                 commit('postRequest', false)
                 commit('setError', error.response.data.errors)
             });
+
+
           }
         )
           .catch(error => {
@@ -490,6 +495,9 @@ const storeOptions = {
     },
     // commit
     mutations: {
+      gradeAdded(state, payload){
+        state.gradeAdded = payload;
+      },
       removeGradeDistributionByIndex(state, payload){
         state.lecturer.grade_distributions.splice(payload, 1)
       },
@@ -504,6 +512,13 @@ const storeOptions = {
       },
       deleteLecturerComment(state, payload){
         state.lecturer.comments.splice(payload, 1)
+      },
+      appendGrade(state, payload){
+        if(state.lecturer.grade_distributions.length === 0){
+          state.lecturer.grade_distributions.unshift(payload)
+        }else{
+          state.lecturer.grade_distributions.unshift(payload)
+        }
       },
       setCourses(state, payload){
         state.courses = payload
@@ -618,6 +633,9 @@ const storeOptions = {
       },
       lecturer(state){
         return state.lecturer
+      },
+      gradeAdded(state){
+        return state.gradeAdded
       }
     }
 }

@@ -164,9 +164,11 @@
             image: this.image
           }
 
+
           this.$store.dispatch('createGradeDistribution', gradeDistribution)
-          this.addGradeDistributionDialog = false;
-          location.reload();
+
+          this.addGradeDistributionDialog = false
+          this.$store.commit('setError', ['Image is loading, please wait'])
         }
       },
       formIsValid() {
@@ -192,6 +194,9 @@
         user(){
           return this.$store.getters.user
         },
+        gradeAdded(){
+          return this.$store.getters.gradeAdded
+        }
       },
       created(){
         this.$store.dispatch('getTerms')
@@ -209,6 +214,12 @@
           if(value === true){
             this.$store.commit('postRequest', null)
             this.addGradeDistributionDialog = false
+          }
+        },
+        gradeAdded(value){
+          if(value === true){
+            this.addGradeDistributionDialog = false;
+            // location.reload();
           }
         }
       }

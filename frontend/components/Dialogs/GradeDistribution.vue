@@ -2,8 +2,8 @@
     <v-dialog persistent v-model="gradeDistributionDialog" max-width="590">
       <v-img
         slot="activator"
-        :src="`http://localhost:5000/images/${n.image}`"
-        :lazy-src="`http://localhost:5000/images/${n.image}`"
+        :src="`${url1}/images/${n.image}`"
+        :lazy-src="`${url1}/images/${n.image}`"
         aspect-ratio="2"
         class="grey lighten-2"
       >
@@ -21,8 +21,8 @@
         <v-container>
           <v-layout row wrap>
             <v-img
-              :src="`http://localhost:5000/images/${n.image}`"
-              :lazy-src="`http://localhost:5000/images/${n.image}`"
+              :src="`${url1}/images/${n.image}`"
+              :lazy-src="`${url1}/images/${n.image}`"
               aspect-ratio="1"
               class="grey lighten-2"
             >
@@ -67,6 +67,8 @@
     data(){
       return {
         gradeDistributionDialog: false,
+        url1: 'http://localhost:5000',
+        url2: 'https://dummy-server-08.herokuapp.com'
       }
     },
     computed: {
